@@ -20,7 +20,7 @@
             "input": "apps/landing-page/public"
           }
         ],
-        "styles": ["apps/landing-page/src/styles.css"]
+        "styles": ["apps/landing-page/src/styles.scss"]
       },
       "configurations": {
         "production": {

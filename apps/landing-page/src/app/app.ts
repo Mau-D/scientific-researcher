@@ -10,5 +10,4 @@ import { NxWelcome } from './nx-welcome';
 })
 export class App {
   protected title = 'landing-page';
-  protected allo:string = 'allo';
 }
