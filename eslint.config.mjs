@@ -29,6 +29,10 @@ export default [
               onlyDependOnLibsWithTags: ['scope:shop', 'scope:shared'],
             },
             {
+              sourceTag: 'scope:landing-page',
+              onlyDependOnLibsWithTags: ['scope:landing-page', 'scope:shared'],
+            },
+            {
               sourceTag: 'scope:api',
               onlyDependOnLibsWithTags: ['scope:api', 'scope:shared'],
             },

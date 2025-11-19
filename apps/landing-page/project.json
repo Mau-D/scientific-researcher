@@ -4,7 +4,7 @@
   "projectType": "application",
   "prefix": "app",
   "sourceRoot": "apps/landing-page/src",
-  "tags": [],
+  "tags": ["type:application", "scope:landing-page"],
   "targets": {
     "build": {
       "executor": "@angular/build:application",

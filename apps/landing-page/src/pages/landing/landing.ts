@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
+import { Hero } from "./sections/hero/hero";
 
 @Component({
   selector: 'app-landing',
-  imports: [],
+  imports: [Hero],
   templateUrl: './landing.html',
-  styleUrl: './landing.css'
+  styleUrl: './landing.scss'
 })
 export class Landing {
 
