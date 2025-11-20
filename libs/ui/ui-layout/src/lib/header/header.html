@@ -1,1 +1,33 @@
-<p>header works!</p>
+<header class="app-header w-2/3 mx-auto flex justify-between">
+  <div class="flex justify-baseline gap-2.5">
+    <div class="logo-area">
+      <img src="assets/ui/logos/faviconcopy.png" alt="Logo">
+    </div>
+    <nav>
+      <ul>
+        @for (route of routes; track route.path) {
+        <li>
+          <a [routerLink]="route.path">{{ route.title }}</a>
+          <!-- Submenu -->
+          @if (route.children?.length) {
+          <ul>
+            @for (child of routes; track child.path) {
+            <li>
+              <a [routerLink]="child.path">{{ child.title }}</a>
+            </li>
+            }
+          </ul>
+          }
+        </li>
+        }
+      </ul>
+
+      <!-- Contenu injecté depuis le parent -->
+      <ng-content select="[nav-links]"></ng-content>
+    </nav>
+  </div>
+
+  <div class="user-area">
+    <ng-content select="[user-menu]"></ng-content>
+  </div>
+</header>

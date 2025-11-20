@@ -18,7 +18,12 @@
           {
             "glob": "**/*",
             "input": "apps/landing-page/public"
-          }
+          },
+          {
+          "glob": "**/*",
+          "input": "libs/ui/ui-assets/src/assets",
+          "output": "assets/ui"
+        }
         ],
         "styles": ["apps/landing-page/src/styles.scss"]
       },
