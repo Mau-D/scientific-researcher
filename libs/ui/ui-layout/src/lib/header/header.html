@@ -1,33 +1,34 @@
-<header class="app-header w-2/3 mx-auto flex justify-between">
-  <div class="flex justify-baseline gap-2.5">
-    <div class="logo-area">
-      <img src="assets/ui/logos/faviconcopy.png" alt="Logo">
-    </div>
-    <nav>
-      <ul>
-        @for (route of routes; track route.path) {
-        <li>
-          <a [routerLink]="route.path">{{ route.title }}</a>
-          <!-- Submenu -->
-          @if (route.children?.length) {
-          <ul>
-            @for (child of routes; track child.path) {
-            <li>
-              <a [routerLink]="child.path">{{ child.title }}</a>
-            </li>
+<header class="app-header w-screen flex py-1.5 border-b-2">
+  <div class="container flex justify-between mx-auto">
+    <div class="flex justify-baseline gap-8">
+      <div class="logo-area">
+        <img class="cursor-pointer grayscale-100 hover:-translate-y-1 hover:grayscale-0 duration-200" src="assets/ui/logos/faviconcopy.png" alt="Logo" />
+      </div>
+      <nav class="my-auto">
+        <ul class="flex justify-around gap-4">
+          @for (route of routes; track route.path) {
+          <li class="text-gray-400 underline">
+            <a [routerLink]="route.path">{{ route.title }}</a>
+            <!-- Submenu -->
+            @if (route.children?.length) {
+            <ul>
+              @for (child of routes; track child.path) {
+              <li>
+                <a [routerLink]="child.path">{{ child.title }}</a>
+              </li>
+              }
+            </ul>
             }
-          </ul>
+          </li>
           }
-        </li>
-        }
-      </ul>
+        </ul>
 
-      <!-- Contenu injecté depuis le parent -->
-      <ng-content select="[nav-links]"></ng-content>
-    </nav>
-  </div>
-
-  <div class="user-area">
-    <ng-content select="[user-menu]"></ng-content>
+        <!-- Contenu injecté depuis le parent -->
+        <ng-content select="[nav-links]"></ng-content>
+      </nav>
+    </div>
+    <div>
+      <lib-login-button></lib-login-button>
+    </div>
   </div>
 </header>
