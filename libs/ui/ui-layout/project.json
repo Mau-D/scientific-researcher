@@ -2,7 +2,6 @@
   "name": "ui-layout",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/ui/ui-layout/src",
-  "importPath": "@org/ui-layout",
   "prefix": "lib",
   "projectType": "library",
   "tags": ["type:ui", "scope:shared"],
@@ -11,5 +10,4 @@
       "executor": "@nx/eslint:lint"
     }
   }
- 
 }
