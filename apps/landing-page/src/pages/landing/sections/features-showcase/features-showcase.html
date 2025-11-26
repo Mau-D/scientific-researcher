@@ -1,15 +1,18 @@
-<section class="container mx-auto p-5 flex justify-baseline w-full flex-wrap">
+<p><mat-slide-toggle>Slide me!</mat-slide-toggle></p>
+<section class="container mx-auto p-5 flex justify-between w-full flex-wrap">
+  @for (item of showcaseItems; track item.title) {
   <div
-    class="px-3 mb-2.5 py-5 flex justify-between items-start w-[32%] border-2 border-gray-300 rounded-lg"
+    class="px-3 mb-2.5 py-5 flex justify-baseline items-start w-[32%] border-2 border-gray-300 rounded-lg"
   >
+  <!-- <mat-icon fontIcon="home">home</mat-icon> -->
+<mat-icon fontSet="material-symbols-outlined">home</mat-icon>
+
     <i class="w-1/4 h-auto"></i>
     <div class="flex flex-col gap-2 w-3/4 pl-1">
-      <h2 class="text-2xl font-semibold text-gray-600 ">Recherche</h2>
-      <p class="text-gray-500 mb-5">
-        Rechercher dans plus de 20 différentes bases de données à travers le
-        monde.
-      </p>
+      <h2 class="text-2xl font-semibold text-gray-600">{{item.title}}</h2>
+      <p class="text-gray-500 mb-5">{{item.text}}</p>
       <lib-muted-button></lib-muted-button>
     </div>
   </div>
+  }
 </section>
