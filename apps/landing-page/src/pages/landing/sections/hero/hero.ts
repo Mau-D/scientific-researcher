@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
+import { FeaturesShowcase } from '../features-showcase/features-showcase';
 
 @Component({
   selector: 'app-hero',
-  imports: [],
+  imports: [FeaturesShowcase],
   templateUrl: './hero.html',
   styleUrl: './hero.scss'
 })
