@@ -5,3 +5,10 @@
 @import "../../../tailwind.css";
 @import '@angular/material/prebuilt-themes/cyan-orange.css';
 //TODO:Faire un custom theme
+
+// Custom style
+.mat-icon.material-symbols-outlined{
+    font-size: unset !important;
+    width: unset !important;
+    height: unset !important;
+}
