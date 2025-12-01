@@ -1,9 +1,9 @@
-<div class="container mx-auto w-full flex-wrap grid grid-cols-4 gap-4">
+<div class="container w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
   @for (item of showcaseItems; track item.title) {
   <div
     class="px-2.5 mb-2.5 gap-3 py-4 flex justify-between border-2 border-gray-300 rounded-lg"
   >
-    <span class="text-gray-500 text-3xl h-auto">
+    <span class="text-gray-500 text-4xl h-auto opacity-80">
       <mat-icon fontSet="material-symbols-outlined">{{item.icon}}</mat-icon>
     </span>
     <!-- https://fonts.google.com/icons?hl=fr -->

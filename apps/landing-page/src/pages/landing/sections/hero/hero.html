@@ -1,5 +1,5 @@
 <section
-  class="relative mx-auto z-10 flex flex-col justify-around w-full min-h-screen h-full"
+  class="relative mx-auto flex flex-col items-end justify-end w-full min-h-screen h-full"
 >
   <video
     [playbackRate]="0.3"
@@ -11,10 +11,10 @@
     playsinline
     preload="auto"
   ></video>
-  <div class="min-h-full w-full absolute -z-1 bg-white/75"></div>
-  <div class="container flex flex-col mx-auto mb-10 mt-20 max-w-[800px] gap-10">
-    <p class="text-7xl font-semibold">Scientific-Researcher</p>
-    <h1 class="text-3xl text-shadow-neutral-800">
+  <div class="min-h-full w-full absolute -z-1 bg-white/75 dark:bg-black/75"></div>
+  <div class="container text-center lg:text-left flex flex-col mx-auto mb-20 mt-40 lg:mt-20 max-w-[800px] gap-10 px-5 lg:px-0">
+    <p class="text-5xl lg:text-7xl font-semibold">Scientific-Researcher</p>
+    <h1 class="text-xl lg:text-3xl text-shadow-neutral-800">
       <span class="font-bold">Automatisation, clarté et précision.</span>
       Scientific Researcher automatise la récupération de documentation API et
       t’offre une suite complète d’outils pour filtrer, explorer, analyser et
@@ -26,5 +26,7 @@
       Abonnez-vous
     </button>
   </div>
-  <app-features-showcase></app-features-showcase>
+  <div class="container flex mx-auto items-end px-5 lg:px-0">
+    <app-features-showcase></app-features-showcase>
+  </div>
 </section>

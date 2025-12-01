@@ -2,13 +2,21 @@
 /* @tailwind components; */
 /* @tailwind utilities;  */
 /* @import "tailwindcss"; */
-@import "../../../tailwind.css";
+@import '../../../tailwind.css';
 @import '@angular/material/prebuilt-themes/cyan-orange.css';
 //TODO:Faire un custom theme
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
 // Custom style
-.mat-icon.material-symbols-outlined{
-    font-size: unset !important;
-    width: unset !important;
-    height: unset !important;
+.mat-icon.material-symbols-outlined {
+  font-size: unset !important;
+  width: unset !important;
+  height: unset !important;
 }
+//TODO:Tester pour réduire l'épaisseur des lignes des icônes
+
+// .mat-icon.material-symbols-outlined.ms-thick {
+//   font-family: "Material Symbols Outlined" !important;
+//   font-variation-settings: 'FILL' 1, 'wght' 100, 'GRAD' 200, 'opsz' 48 !important;
+//   font-size: 48px !important;
+// }
