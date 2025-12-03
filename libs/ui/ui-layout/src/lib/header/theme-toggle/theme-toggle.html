@@ -1,5 +1,9 @@
-<mat-slide-toggle
-  [checked]="theme() === 'dark'"
-  (change)="onToggle($event)"
-  >Mode sombre</mat-slide-toggle
->
+<!-- TODO: Changer l'icône directement sur le slider -->
+<mat-slide-toggle hideIcon = 'true' [checked]="theme() === 'dark'" (change)="onToggle($event)">
+  <span class="text-black text-3xl flex">
+    <mat-icon fontSet="material-symbols-outlined">
+      {{ theme() === 'dark' ? 'dark_mode' : theme() === 'light' ? 'light_mode' :
+      'monitor' }}
+    </mat-icon>
+  </span>
+</mat-slide-toggle>

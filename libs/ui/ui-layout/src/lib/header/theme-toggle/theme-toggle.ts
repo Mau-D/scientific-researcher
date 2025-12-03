@@ -2,9 +2,11 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { MatSlideToggleModule, MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { ThemeService } from './theme-service';
 import { Theme } from './theme.model';
+import { MatIconModule } from '@angular/material/icon';
+
 @Component({
   selector: 'lib-theme-toggle',
-  imports: [MatSlideToggleModule],
+  imports: [MatSlideToggleModule, MatIconModule],
   templateUrl: './theme-toggle.html',
   styleUrl: './theme-toggle.css',
 })

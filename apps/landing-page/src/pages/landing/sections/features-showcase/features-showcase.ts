@@ -1,10 +1,9 @@
-import { Component, inject } from '@angular/core';
-import {DomSanitizer} from '@angular/platform-browser';
-import { MutedButton } from '@org/buttons';
-import { ShowcaseItem } from './showcase.model';
-import { SHOWCASE_ITEMS } from './showcase.data';
+import { Component } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
+import { MutedButton } from '@org/buttons';
+import { SHOWCASE_ITEMS } from './showcase.data';
+import { ShowcaseItem } from './showcase.model';
  
 @Component({
   selector: 'app-features-showcase',

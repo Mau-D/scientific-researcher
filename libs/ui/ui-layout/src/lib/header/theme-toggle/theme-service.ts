@@ -5,20 +5,6 @@ import { Theme } from './theme.model';
   providedIn: 'root',
 })
 export class ThemeService {
-  //  initTheme() {
-  //   const theme = localStorage['theme'];
-  //   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  //   document.documentElement.classList.toggle('dark', theme === 'dark' || (!theme && prefersDark));
-  // }
-
-  // setTheme(theme: 'dark' | 'light' | 'system') {
-  //   if (theme === 'system') {
-  //     localStorage.removeItem('theme');
-  //   } else {
-  //     localStorage['theme'] = theme;
-  //   }
-  //   this.initTheme();
-  // }
   initTheme(): void {
 
     const storedTheme = localStorage['theme'] as Theme | undefined;
