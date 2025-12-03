@@ -1,8 +1,12 @@
-<header class="app-header w-full flex p-1.5 border-b-2 absolute bg-white">
+<header class="app-header w-full flex p-1.5 border-b-2 absolute bg-white z-50">
   <div class="container flex justify-between mx-auto">
     <div class="flex justify-baseline gap-8">
       <div class="logo-area">
-        <img class="cursor-pointer grayscale-100 hover:-translate-y-1 hover:grayscale-0 duration-200" src="assets/ui/logos/faviconcopy.png" alt="Logo" />
+        <img
+          class="cursor-pointer grayscale-100 hover:-translate-y-1 hover:grayscale-0 duration-200"
+          src="assets/ui/logos/faviconcopy.png"
+          alt="Logo"
+        />
       </div>
       <nav class="my-auto">
         <ul class="flex justify-around gap-4">
@@ -27,8 +31,13 @@
         <ng-content select="[nav-links]"></ng-content>
       </nav>
     </div>
-    <div>
-      <lib-login-button></lib-login-button>
+    <div class="flex items-center gap-5">
+      <div>
+        <lib-login-button></lib-login-button>
+      </div>
+      <div>
+        <lib-theme-toggle></lib-theme-toggle>
+      </div>
     </div>
   </div>
 </header>
