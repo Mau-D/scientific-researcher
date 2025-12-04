@@ -100,7 +100,7 @@
     "@nx/angular:application": {
       "e2eTestRunner": "playwright",
       "linter": "eslint",
-      "style": "css",
+      "style": "scss",
       "unitTestRunner": "vitest"
     },
     "@nx/angular:library": {
@@ -108,7 +108,10 @@
       "unitTestRunner": "vitest"
     },
     "@nx/angular:component": {
-      "style": "css"
+      "style": "scss"
+    },
+     "@schematics/angular:component": {
+      "style": "scss"
     }
   },
   "nxCloudId": "691a02e661703dd71f0d8346"
