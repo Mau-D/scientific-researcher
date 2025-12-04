@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
   selector: 'lib-muted-button',
   imports: [],
   templateUrl: './muted-button.html',
-  styleUrl: './muted-button.css'
+  styleUrl: './muted-button.scss'
 })
 export class MutedButton {
 

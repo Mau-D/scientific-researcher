@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
   selector: 'lib-login-button',
   imports: [],
   templateUrl: './login-button.html',
-  styleUrl: './login-button.css'
+  styleUrl: './login-button.scss'
 })
 export class LoginButton {
 

@@ -7,7 +7,7 @@ import { Header, Footer, ThemeService } from '@org/ui-layout';
   imports: [RouterModule, Header, Footer],
   selector: 'app-root',
   templateUrl: './app.html',
-  styleUrl: './app.css',
+  styleUrl: './app.scss',
 })
 export class App {
   private readonly themeService = inject(ThemeService);

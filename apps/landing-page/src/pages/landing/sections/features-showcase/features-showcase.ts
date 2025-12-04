@@ -9,7 +9,7 @@ import { ShowcaseItem } from './showcase.model';
   selector: 'app-features-showcase',
   imports: [MutedButton, MatSlideToggleModule, MatIconModule],
   templateUrl: './features-showcase.html',
-  styleUrl: './features-showcase.css',
+  styleUrl: './features-showcase.scss',
 })
 
 export class FeaturesShowcase {

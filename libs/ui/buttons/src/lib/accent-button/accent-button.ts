@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
   selector: 'lib-accent-button',
   imports: [],
   templateUrl: './accent-button.html',
-  styleUrl: './accent-button.css'
+  styleUrl: './accent-button.scss'
 })
 export class AccentButton {
 
