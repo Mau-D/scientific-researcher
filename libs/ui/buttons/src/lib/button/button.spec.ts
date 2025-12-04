@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AccentButton } from './accent-button';
+import { Button } from './button';
 
-describe('AccentButton', () => {
-  let component: AccentButton;
-  let fixture: ComponentFixture<AccentButton>;
+describe('Button', () => {
+  let component: Button;
+  let fixture: ComponentFixture<Button>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AccentButton]
+      imports: [Button]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(AccentButton);
+    fixture = TestBed.createComponent(Button);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

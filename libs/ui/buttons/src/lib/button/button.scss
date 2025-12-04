@@ -1,0 +1,10 @@
+@import '../../../../../../tailwind.css';
+
+@layer components{
+  .accent-button{
+    @apply mx-auto bg-orange-500 text-white px-14 py-[16px] rounded-lg hover:bg-black duration-500 cursor-pointer;
+  }
+  .muted-button{
+    @apply dark:text-white mx-auto border-2 border-gray-300 text-gray-500 px-7 py-2 rounded-lg hover:bg-black duration-500 cursor-pointer;
+  }
+}

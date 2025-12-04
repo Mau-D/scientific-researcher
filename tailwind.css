@@ -2,14 +2,5 @@
 /* Pour l'Intellisense de l'extension Tailwind */
 /* Placer le chemin de ce fichier dans le JSON des settings du VSCODE */
 
-@import '@angular/material/prebuilt-themes/cyan-orange.css';
-//TODO:Faire un custom theme
-//TODO: Vérifier le dark mode avec les thèmes
-@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
-@custom-variant dark (&:where(.dark, .dark *));
 
-/* Changer les variables du thème */
-/* @theme{
- --color-orange-500: green;
-} */
 

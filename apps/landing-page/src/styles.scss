@@ -13,8 +13,24 @@
 //   font-variation-settings: 'FILL' 1, 'wght' 100, 'GRAD' 200, 'opsz' 48 !important;
 //   font-size: 48px !important;
 // }
+
+@import '@angular/material/prebuilt-themes/cyan-orange.css';
+/* TODO:Faire un custom theme */
+/* TODO: Vérifier le dark mode avec les thèmes */
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Changer les variables du thème */
+/* @theme{
+ --color-orange-500: green;
+} */
 /* Layer for custom styles (base/components/utilities)*/
 @layer base {
   h1 { @apply text-9xl; }
   h2 { @apply text-xl; }
+}
+@layer components{
+  .big-title{
+    @apply text-5xl lg:text-7xl font-semibold;
+  }
 }
