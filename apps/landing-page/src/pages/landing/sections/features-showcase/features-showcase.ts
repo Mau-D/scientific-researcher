@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, computed } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { Button } from '@org/buttons';
@@ -14,5 +14,4 @@ import { ShowcaseItem } from './showcase.model';
 
 export class FeaturesShowcase {
   showcaseItems: ShowcaseItem[] = SHOWCASE_ITEMS;
-  
 }
