@@ -11,7 +11,8 @@ module.exports = {
         "layer",
         "variants",
         "responsive",
-        "screen"
+        "screen", 
+        "theme"
       ]
     }]
   }

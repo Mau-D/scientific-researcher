@@ -1,17 +1,17 @@
-<header class="app-header w-full flex p-1.5 border-b-2 absolute bg-white z-50">
+<header class="app-header w-full flex p-1.5 shadow-sm absolute bg-white z-50">
   <div class="container flex justify-between mx-auto">
     <div class="flex justify-baseline gap-8">
-      <div class="logo-area">
+      <a routerLink="" class="logo-area">
         <img
           class="cursor-pointer grayscale-100 hover:-translate-y-1 hover:grayscale-0 duration-200"
           src="assets/ui/logos/faviconcopy.png"
           alt="Logo"
         />
-      </div>
+      </a>
       <nav class="my-auto">
         <ul class="flex justify-around gap-4">
           @for (route of routes; track route.path) {
-          <li class="text-gray-400 underline">
+          <li class="text-gray-400 underline hover:text-cyan-500">
             <a [routerLink]="route.path">{{ route.title }}</a>
             <!-- Submenu -->
             @if (route.children?.length) {
@@ -26,8 +26,6 @@
           </li>
           }
         </ul>
-
-        <!-- Contenu injecté depuis le parent -->
         <ng-content select="[nav-links]"></ng-content>
       </nav>
     </div>

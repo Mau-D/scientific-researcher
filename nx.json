@@ -110,7 +110,7 @@
     "@nx/angular:component": {
       "style": "scss"
     },
-     "@schematics/angular:component": {
+    "@schematics/angular:component": {
       "style": "scss"
     }
   },

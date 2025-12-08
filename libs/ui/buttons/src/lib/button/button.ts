@@ -11,7 +11,7 @@ export class Button {
   // label = input.required<string>();
   // styleLayer = input<string>();
   label = input.required<string>();
-  variant = input<'accent-button' | 'muted-button'>('accent-button');
+  variant = input<'primary-button' | 'secondary-button' | 'muted-button'>('primary-button');
   routerLink = input<string | null>(null);
   href = input<string | null>(null);
   classes = computed(() => {

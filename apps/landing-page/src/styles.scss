@@ -1,3 +1,4 @@
+
 @import '../../../tailwind.css';
 
 // Custom style
@@ -26,11 +27,11 @@
 } */
 /* Layer for custom styles (base/components/utilities)*/
 @layer base {
-  h1 { @apply text-9xl; }
-  h2 { @apply text-xl; }
-}
-@layer components{
-  .big-title{
-    @apply text-5xl lg:text-7xl font-semibold;
+  h1 {
+    @apply text-9xl;
+  }
+  h2 {
+    @apply text-xl;
   }
 }
+

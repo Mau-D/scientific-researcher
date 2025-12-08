@@ -1,10 +1,18 @@
+// @use '@design/styles/index.scss';
+@use 'libs/design/styles/src/index.scss' as *;
+
 @import '../../../../../../tailwind.css';
 
+
+
 @layer components{
-  .accent-button{
-    @apply mx-auto bg-orange-500 text-white px-14 py-[16px] rounded-lg hover:bg-black duration-500 cursor-pointer;
+  .primary-button{
+    @apply mx-auto bg-primary text-white px-14 py-4 rounded-sm hover:bg-secondary duration-500 cursor-pointer;
+  }
+  .secondary-button{
+    @apply mx-auto bg-secondary text-white px-14 py-4 rounded-sm hover:bg-primary duration-500 cursor-pointer;
   }
   .muted-button{
-    @apply dark:text-white mx-auto border-2 border-gray-300 text-gray-500 px-7 py-2 rounded-lg hover:bg-black duration-500 cursor-pointer;
+    @apply dark:text-white mx-auto border-2 border-gray-300 text-gray-500 px-7 py-2 rounded-sm hover:bg-black duration-500 cursor-pointer;
   }
 }
