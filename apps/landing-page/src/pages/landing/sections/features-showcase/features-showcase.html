@@ -3,21 +3,22 @@
 >
   @for (item of showcaseItems; track item.title) {
   <div
-    class="px-2.5 mb-2.5 gap-3 py-4 flex justify-between border-2 border-gray-300 rounded-lg"
+    class="dark:dark:border-white shadow-default px-2.5 mb-2.5 gap-3 py-4 flex justify-between border-1 border-gray-dark rounded-lg"
   >
-    <span class="dark:text-white text-gray-500 text-4xl h-auto opacity-80">
+    <span class="dark:text-white text-dark-bkg text-4xl h-auto opacity-80">
       <mat-icon fontSet="material-symbols-outlined">{{item.icon}}</mat-icon>
     </span>
     <!-- https://fonts.google.com/icons?hl=fr -->
 
     <div class="flex flex-col justify-between">
       <div class="">
-        <h2 class="dark:text-white text-xl text-gray-600 mb-1.5">
+        <h2 class="dark:text-white text-xl text-dark-bkg mb-1.5">
           {{item.title}}
         </h2>
-        <p class="dark:text-white text-gray-500 mb-3">{{item.text}}</p>
+        <p class="dark:text-white text-gray-dark mb-3">{{item.text}}</p>
       </div>
       <lib-button [variant]="'muted-button'" [label]="'En savoir plus'"></lib-button>
+   
     </div>
   </div>
   }

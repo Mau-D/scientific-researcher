@@ -17,22 +17,18 @@
 // }
 
 @import '@angular/material/prebuilt-themes/cyan-orange.css';
-/* TODO:Faire un custom theme */
-/* TODO: Vérifier le dark mode avec les thèmes */
-@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
-@custom-variant dark (&:where(.dark, .dark *));
 
-/* Changer les variables du theme */
-/* @theme{
- --color-orange-500: green;
-} */
-/* Layer for custom styles (base/components/utilities)*/
-// @layer base {
-//   h1 {
-//     @apply text-9xl;
-//   }
-//   h2 {
-//     @apply text-xl;
-//   }
-// }
 
+
+
+@layer components{
+  .primary-button{
+    @apply mx-auto bg-primary text-white px-14 py-4 rounded-sm hover:bg-primary-hover duration-500 cursor-pointer;
+  }
+  .secondary-button{
+    @apply mx-auto bg-secondary text-white px-14 py-4 rounded-sm hover:bg-secondary-hover duration-500 cursor-pointer;
+  }
+  .muted-button{
+    @apply dark:text-white mx-auto border-1 border-black rounded-lg text-black dark:text-white px-7 py-2 hover:bg-black hover:text-white duration-500 cursor-pointer dark:text-white;
+  }
+}

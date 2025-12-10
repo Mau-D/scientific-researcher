@@ -3,16 +3,20 @@
 
 @import '../../../../../../tailwind.css';
 
-
-
-@layer components{
-  .primary-button{
-    @apply mx-auto bg-primary text-white px-14 py-4 rounded-sm hover:bg-primary-hover duration-500 cursor-pointer;
-  }
-  .secondary-button{
-    @apply mx-auto bg-secondary text-white px-14 py-4 rounded-sm hover:bg-secondary-hover duration-500 cursor-pointer;
-  }
-  .muted-button{
-    @apply dark:text-white mx-auto border-2 border-gray-300 text-gray-500 px-7 py-2 rounded-sm hover:bg-black duration-500 cursor-pointer;
+.dark\:text-white {
+  @media (prefers-color-scheme: dark) {
+    color: vwhite;
   }
 }
+
+// @layer components{
+//   .primary-button{
+//     @apply mx-auto bg-primary text-white px-14 py-4 rounded-sm hover:bg-primary-hover duration-500 cursor-pointer;
+//   }
+//   .secondary-button{
+//     @apply mx-auto bg-secondary text-white px-14 py-4 rounded-sm hover:bg-secondary-hover duration-500 cursor-pointer;
+//   }
+//   .muted-button{
+//     @apply mx-auto border-1 border-black rounded-lg text-black dark:text-white px-7 py-2 hover:bg-black hover:text-white duration-500 cursor-pointer;
+//   }
+// }
