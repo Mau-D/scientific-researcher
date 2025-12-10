@@ -20,10 +20,15 @@
             "input": "apps/landing-page/public"
           },
           {
-          "glob": "**/*",
-          "input": "libs/ui/ui-assets/src/assets",
-          "output": "assets/ui"
-        }
+            "glob": "**/*",
+            "input": "libs/ui/ui-assets/src/assets",
+            "output": "assets/ui"
+          },
+          {
+            "glob": "**/*",
+            "input": "apps/landing-page/src/assets",
+            "output": "apps/assets"
+          }
         ],
         "styles": ["apps/landing-page/src/styles.scss"]
       },

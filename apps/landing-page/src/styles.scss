@@ -1,3 +1,4 @@
+@use 'libs/design/styles/src/index.scss' as *;
 
 @import '../../../tailwind.css';
 
@@ -21,17 +22,17 @@
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Changer les variables du thème */
+/* Changer les variables du theme */
 /* @theme{
  --color-orange-500: green;
 } */
 /* Layer for custom styles (base/components/utilities)*/
-@layer base {
-  h1 {
-    @apply text-9xl;
-  }
-  h2 {
-    @apply text-xl;
-  }
-}
+// @layer base {
+//   h1 {
+//     @apply text-9xl;
+//   }
+//   h2 {
+//     @apply text-xl;
+//   }
+// }
 

@@ -11,7 +11,7 @@
       <nav class="my-auto">
         <ul class="flex justify-around gap-4">
           @for (route of routes; track route.path) {
-          <li class="text-gray-400 underline hover:text-cyan-500">
+          <li class="text-gray-400 underline hover:text-primary">
             <a [routerLink]="route.path">{{ route.title }}</a>
             <!-- Submenu -->
             @if (route.children?.length) {

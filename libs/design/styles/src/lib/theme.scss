@@ -1,5 +1,17 @@
 @theme base {
-  --color-primary: #4f46e5;
-  --color-secondary: #64748b;
+  --color-primary: #2ABADD;
+  --color-secondary: #005AF2;
   --color-danger: #ef4444;
+  --color-dark: #10172B;
+  --color-gray-dark: #707376;
+  --color-gray-light:#A5A6AA;
+  --color-dark-bkg: #010514;
+  --color-primary-hover: #1CA5C6;
+  --color-secondary-hover:#004CCE
+   --my-gradient-dark: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0%,
+    black 100%
+  );
+  --shadow-default: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
 }
