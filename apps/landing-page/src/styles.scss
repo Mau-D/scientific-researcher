@@ -7,6 +7,7 @@
   font-size: unset !important;
   width: unset !important;
   height: unset !important;
+  line-height: unset !important;
 }
 // TODO:Tester pour réduire l'épaisseur des lignes des icônes
 
@@ -32,6 +33,6 @@
     @apply shadow-default hover:shadow-default-hover mx-auto border border-gray-light rounded-lg text-black px-7 py-2 hover:bg-black hover:text-white duration-700 cursor-pointer dark:text-white;
   }
   .pricing-card{
-    @apply  text-center border border-gray-x-light shadow-default hover:shadow-default-hover rounded-lg text-black px-6 py-12 bg-white;
+    @apply  text-center border border-gray-x-light shadow-default hover:shadow-default-hover rounded-lg text-black px-6 py-12 bg-white duration-700;
   }
 }
