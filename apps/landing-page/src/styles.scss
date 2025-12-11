@@ -29,6 +29,9 @@
     @apply shadow-default hover:shadow-default-hover mx-auto bg-secondary text-white px-14 py-4 rounded-sm hover:bg-secondary-hover duration-700 cursor-pointer;
   }
   .muted-button{
-    @apply shadow-default hover:shadow-default-hover dark:text-white mx-auto border-1 border-gray-light rounded-lg text-black dark:text-white px-7 py-2 hover:bg-black hover:text-white duration-700 cursor-pointer dark:text-white;
+    @apply shadow-default hover:shadow-default-hover mx-auto border border-gray-light rounded-lg text-black px-7 py-2 hover:bg-black hover:text-white duration-700 cursor-pointer dark:text-white;
+  }
+  .pricing-card{
+    @apply  text-center border border-gray-x-light shadow-default hover:shadow-default-hover rounded-lg text-black px-6 py-12 bg-white;
   }
 }
