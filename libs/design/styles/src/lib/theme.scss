@@ -11,19 +11,21 @@
   --color-primary: #2ABADD;
   --color-secondary: #005AF2;
   --color-danger: #ef4444;
-  --color-dark: #10172B;
+  --color-dark: #142441;
   --color-gray-dark: #707376;
   --color-gray-light:#A5A6AA;
+  // --color-gray-light:#edf6f6;
   --color-dark-bkg: #010514;
   --color-primary-hover: #1CA5C6;
-  --color-secondary-hover:#004CCE
+  --color-primary-bkg: #E9F8F8;
+  --color-secondary-hover:#004CCE;
    --my-gradient-dark: linear-gradient(
     to bottom,
     rgba(0, 0, 0, 0) 0%,
     black 100%
   );
   --shadow-default: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
+  --shadow-default-hover: 0 3px 10px 0 rgba(0, 0, 0, 0.5);
   --default-font-family: "DM Sans", sans-serif; 
 }
-
 

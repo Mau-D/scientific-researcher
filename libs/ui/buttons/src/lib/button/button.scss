@@ -8,15 +8,4 @@
     color: vwhite;
   }
 }
-
-// @layer components{
-//   .primary-button{
-//     @apply mx-auto bg-primary text-white px-14 py-4 rounded-sm hover:bg-primary-hover duration-500 cursor-pointer;
-//   }
-//   .secondary-button{
-//     @apply mx-auto bg-secondary text-white px-14 py-4 rounded-sm hover:bg-secondary-hover duration-500 cursor-pointer;
-//   }
-//   .muted-button{
-//     @apply mx-auto border-1 border-black rounded-lg text-black dark:text-white px-7 py-2 hover:bg-black hover:text-white duration-500 cursor-pointer;
-//   }
-// }
+// @layer components available in style.scss app
