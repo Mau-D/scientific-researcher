@@ -32,6 +32,9 @@
   .muted-button{
     @apply shadow-default hover:shadow-default-hover mx-auto border border-gray-light rounded-lg text-black px-7 py-2 hover:bg-black hover:text-white duration-700 cursor-pointer dark:text-white;
   }
+   .dark-card{
+    @apply  text-center border border-white shadow-light rounded-lg text-black p-12 bg-white;
+  }
   .pricing-card{
     @apply  text-center border border-gray-x-light shadow-default hover:shadow-default-hover rounded-lg text-black px-6 py-12 bg-white duration-700;
   }
