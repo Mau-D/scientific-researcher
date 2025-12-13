@@ -1,12 +1,41 @@
-<form>
-  <mat-form-field>
-    <mat-label>Login</mat-label>
-    <input matInput />
+<form
+  class="flex flex-col justify-center"
+  #ContactForm="ngForm"
+  (ngSubmit)="save()"
+>
+  <div class="grid grid-cols-2 gap-4">
+    <mat-form-field class="flex flex-col justify-baseline items-baseline py-5">
+      <mat-label for="firstname">Prénom</mat-label>
+      <input name="firstname" required type="text" matInput />
+    </mat-form-field>
+    <mat-form-field class="flex flex-col justify-baseline items-baseline py-5">
+      <mat-label for="lastname">Nom</mat-label>
+      <input matInput name="lastname" required type="text" />
+    </mat-form-field>
+  </div>
+
+  <mat-form-field class="flex flex-col justify-baseline items-baseline py-5">
+    <mat-label for="title">Titre ou profession</mat-label>
+    <input matInput name="title" required type="text" />
   </mat-form-field>
-  <mat-form-field>
-    <mat-label>Password</mat-label>
-    <input matInput type="password" />
+  <mat-form-field class="flex flex-col justify-baseline items-baseline py-5">
+    <mat-label for="email">Courriel</mat-label>
+    <input matInput name="email" required type="email" />
   </mat-form-field>
-  <mat-divider />
-  <button matButton="filled">Se Logger</button>
+  <mat-form-field class="example-full-width">
+    <mat-label>Votre message</mat-label>
+    <textarea
+      matInput
+      placeholder="Votre commentaire est très important pour moi."
+    ></textarea>
+  </mat-form-field>
+  <div class="flex flex-col justify-baseline items-center py-5">
+    <button
+      class="muted-button"
+      [disabled]="!ContactForm.form.valid"
+      type="submit"
+    >
+      Envoyer
+    </button>
+  </div>
 </form>
