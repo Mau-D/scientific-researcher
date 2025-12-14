@@ -1,5 +1,7 @@
 export interface ContactFormData {
-  name: string;
+  firstname: string;
+  lastname: string;
+  title: string;
   email: string;
   message: string;
 }
