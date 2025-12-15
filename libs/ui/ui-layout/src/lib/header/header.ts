@@ -15,5 +15,6 @@ export class Header implements OnInit {
   private nav = inject(Navigation);
   ngOnInit(): void {
     this.routes = this.nav.getNavigationRoutes();
+    console.log('Header routes', this.routes);
   }
 }
