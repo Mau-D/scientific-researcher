@@ -1,7 +1,7 @@
 import { Route } from '@angular/router';
 import { Landing } from '../pages/landing/landing';
 import { About } from '../pages/about/about';
-import { LandingShell } from '../../shell/landing-shell/landing-shell';
+import { LandingShell } from '../landing-shell/landing-shell';
 export const appRoutes: Route[] = [
   {
     path: '',
