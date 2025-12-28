@@ -1,0 +1,33 @@
+/* TODO: Vérifier le dark mode avec les themes */
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+@custom-variant dark (&:where(.dark, .dark *));
+@font-face {
+  font-family: DM Sans;
+  font-style: normal;
+  font-display: swap;
+  src: url('../../../../ui/ui-assets/src/assets/fonts/DMSans-VariableFont_opsz,wght.ttf')
+    format('truetype');
+}
+@theme base {
+  --color-primary: #2abadd;
+  --color-secondary: #005af2;
+  --color-danger: #ef4444;
+  --color-dark: #142441;
+  --color-gray-dark: #707376;
+  --color-gray-light: #a5a6aa;
+  --color-gray-x-light: #d4dade;
+  --color-dark-bkg: #010514;
+  --color-primary-hover: #1ca5c6;
+  --color-primary-bkg: #e9f8f8;
+  --color-light-bkg: #f5f9fc;
+  --color-secondary-hover: #004cce;
+  --my-gradient-dark: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0%,
+    #000 100%
+  );
+  --shadow-default: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
+  --shadow-light: 0 3px 10px 0 rgba(255, 255, 255, 0.5);
+  --shadow-default-hover: 0 3px 10px 0 rgba(0, 0, 0, 0.5);
+  --default-font-family: 'DM Sans', sans-serif;
+}

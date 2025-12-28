@@ -1,0 +1,41 @@
+<header class="app-header w-full flex p-1.5 shadow-default absolute bg-white z-50">
+  <div class="container flex justify-between mx-auto">
+    <div class="flex justify-baseline gap-8">
+      <a routerLink="" class="logo-area">
+        <img
+          class="cursor-pointer grayscale-100 hover:-translate-y-1 hover:grayscale-0 duration-200"
+          src="assets/ui/logos/faviconcopy.png"
+          alt="Logo"
+        />
+      </a>
+      <nav class="my-auto">
+        <ul class="flex justify-around gap-4">
+          @for (route of routes; track route.path) {
+          <li class="text-gray-400 underline hover:text-primary">
+            <a [routerLink]="route.path">{{ route.title }}</a>
+            <!-- Submenu -->
+            @if (route.children?.length) {
+            <ul>
+              @for (child of routes; track child.path) {
+              <li>
+                <a [routerLink]="child.path">{{ child.title }}</a>
+              </li>
+              }
+            </ul>
+            }
+          </li>
+          }
+        </ul>
+        <ng-content select="[nav-links]"></ng-content>
+      </nav>
+    </div>
+    <div class="flex items-center gap-5">
+      <div>
+        <lib-login-button></lib-login-button>
+      </div>
+      <div>
+        <lib-theme-toggle></lib-theme-toggle>
+      </div>
+    </div>
+  </div>
+</header>

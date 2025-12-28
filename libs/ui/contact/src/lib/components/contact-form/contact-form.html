@@ -1,0 +1,77 @@
+<form
+  class="flex flex-col justify-center"
+  [formGroup]="form"
+  (ngSubmit)="submit()"
+>
+  <div class="grid grid-cols-2 gap-4">
+    <mat-form-field>
+      <mat-label>Prénom</mat-label>
+      <input matInput formControlName="firstname" />
+      <mat-error>
+        @if (form.controls.firstname.touched && form.controls.firstname.hasError('required')) {
+          Le prénom est requis
+        }
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Nom</mat-label>
+      <input matInput formControlName="lastname" />
+      <mat-error>
+        @if (form.controls.lastname.touched && form.controls.lastname.hasError('required')) {
+          Le nom est requis
+        }
+      </mat-error>
+    </mat-form-field>
+  </div>
+
+  <mat-form-field>
+    <mat-label>Titre ou profession</mat-label>
+    <input matInput formControlName="title" />
+    <mat-error>
+      @if (form.controls.title.touched && form.controls.title.hasError('required')) {
+        Le titre est requis
+      }
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Courriel</mat-label>
+    <input matInput type="email" formControlName="email" />
+
+    <mat-error>
+      @if (form.controls.email.touched) {
+        @if (form.controls.email.hasError('required')) {
+          Le courriel est requis
+        }
+        @if (form.controls.email.hasError('email')) {
+          Courriel invalide
+        }
+      }
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Votre message</mat-label>
+    <textarea
+      matInput
+      placeholder="Votre commentaire est très important pour moi."
+      formControlName="message"
+    ></textarea>
+    <mat-error>
+      @if (form.controls.message.touched && form.controls.message.hasError('required')) {
+        Le message est requis
+      }
+    </mat-error>
+  </mat-form-field>
+
+  <div class="flex justify-center py-5">
+    <button
+      class="muted-button"
+      type="submit"
+      [disabled]="form.invalid"
+    >
+      Envoyer
+    </button>
+  </div>
+</form>

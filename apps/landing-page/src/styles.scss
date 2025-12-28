@@ -1,5 +1,44 @@
-/* @tailwind base; */
-/* @tailwind components; */
-/* @tailwind utilities;  */
-/* @import "tailwindcss"; */
-@import "../../../tailwind.css";
+@use 'libs/design/styles/src/index.scss' as *;
+
+@import '../../../tailwind.css';
+
+// Custom style
+.mat-icon.material-symbols-outlined {
+  font-size: unset !important;
+  width: unset !important;
+  height: unset !important;
+  line-height: 40px !important;
+}
+// TODO:Tester pour réduire l'épaisseur des lignes des icônes
+
+// .mat-icon.material-symbols-outlined.ms-thick {
+//   font-family: "Material Symbols Outlined" !important;
+//   font-variation-settings: 'FILL' 1, 'wght' 100, 'GRAD' 200, 'opsz' 48 !important;
+//   font-size: 48px !important;
+// }
+
+@import '@angular/material/prebuilt-themes/azure-blue.css';
+
+/* Override Material system tokens */
+:root {
+--mat-sys-primary:#2abadd;
+
+}
+
+@layer components{
+  .primary-button{
+    @apply mx-auto shadow-default hover:shadow-default-hover bg-primary text-white px-14 py-4 rounded-sm hover:bg-primary-hover duration-700 cursor-pointer;
+  }
+  .secondary-button{
+    @apply shadow-default hover:shadow-default-hover mx-auto bg-secondary text-white px-14 py-4 rounded-sm hover:bg-secondary-hover duration-700 cursor-pointer;
+  }
+  .muted-button{
+    @apply shadow-default hover:shadow-default-hover mx-auto border border-gray-light rounded-lg text-black px-7 py-2 hover:bg-black hover:text-white duration-700 cursor-pointer dark:text-white;
+  }
+   .dark-card{
+    @apply  text-center border border-white shadow-light rounded-lg text-black p-20 bg-white;
+  }
+  .pricing-card{
+    @apply  text-center border border-gray-x-light shadow-default hover:shadow-default-hover rounded-lg text-black px-6 py-12 bg-white duration-700;
+  }
+}

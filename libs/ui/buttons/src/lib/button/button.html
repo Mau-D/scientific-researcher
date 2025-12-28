@@ -1,0 +1,7 @@
+@if (isRouter()) {
+<a [routerLink]="routerLink()" [class]="classes()"> {{ label() }} </a>
+} @else if (isLink()) {
+<a [href]="href()" [class]="classes()"> {{ label() }} </a>
+} @else {
+<button type="button" [class]="classes()">{{ label() }}</button>
+}

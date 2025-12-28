@@ -1,0 +1,11 @@
+// @use '@design/styles/index.scss';
+@use 'libs/design/styles/src/index.scss' as *;
+
+@import '../../../../../../tailwind.css';
+
+.dark\:text-white {
+  @media (prefers-color-scheme: dark) {
+    color: vwhite;
+  }
+}
+// @layer components available in style.scss app

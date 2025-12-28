@@ -1,0 +1,94 @@
+<section
+  id="pricing"
+  class="min-h-screen bg-light-bkg flex overflow-hidden justify-center"
+>
+  <div
+    class="flex justify-around items-stretch flex-wrap h-full w-1/2 my-auto [&_.pricing-card]:even:translate-y-20"
+  >
+    <div class="pricing-card w-5/12">
+      <div>
+        <span class="text-gray-light text-6xl h-auto">
+          <mat-icon fontSet="material-symbols-outlined">track_changes</mat-icon>
+        </span>
+      </div>
+      <h3 class="text-4xl font-bold">Standard Pack</h3>
+      <h4 class="text-lg text-gray-dark p-5 text-center z-20">
+        Scientific Researcher automatise la récupération de documentation API
+      </h4>
+
+      <div class="p-5 flex justify-center">
+        <p class="text-xl align-text-top text-dark">$</p>
+        <p class="text-7xl text-dark font-bold">99</p>
+        <p class="self-end text-sm text-gray-dark">/Mo</p>
+      </div>
+      <div class="p-5 flex justify-center">
+        <ul
+          class="list-none text-sm [&_li]:py-2 [&_li]:even:text-primary pb-10"
+        >
+          <li>5 Users</li>
+          <li>20 Projects</li>
+          <li>Limited Support</li>
+        </ul>
+      </div>
+      <lib-button
+        [variant]="'primary-button'"
+        [label]="'Voir le plan standard'"
+      ></lib-button>
+    </div>
+    <div class="pricing-card w-5/12">
+      <div>
+        <span class="text-gray-light text-6xl h-auto">
+          <mat-icon fontSet="material-symbols-outlined"
+            >corporate_fare</mat-icon
+          >
+        </span>
+      </div>
+      <h3 class="text-4xl font-bold">Corporate Pack</h3>
+      <h4 class="text-lg text-gray-dark p-5 text-center z-20">
+        Scientific Researcher automatise la récupération de documentation API
+      </h4>
+
+      <div class="p-5 flex justify-center">
+        <p class="text-xl align-text-top text-dark">$</p>
+        <p class="text-7xl text-dark font-bold">199</p>
+        <p class="self-end text-sm text-gray-dark">/Mo</p>
+      </div>
+      <div class="p-5 flex justify-center pb-10">
+        <ul class="list-none text-sm [&_li]:py-2 [&_li]:even:text-primary">
+          <li>50 Users</li>
+          <li>Unlimited Projects</li>
+          <li>24/7 Support</li>
+        </ul>
+      </div>
+      <lib-button
+        [variant]="'secondary-button'"
+        [label]="'Voir le plan corporate'"
+      ></lib-button>
+    </div>
+  </div>
+
+  <div class="min-h-full flex justify-baseline items-center w-1/2 relative">
+    <img
+      class="absolute right-0 top-0 opacity-80"
+      src="assets/ui/images/circles-right.png"
+      alt="shape"
+    />
+    <div class="pl-10 pr-40 z-10">
+      <h2 class="text-7xl font-bold pb-5 z-20">Voici nos plans flexibles</h2>
+      <h3 class="text-lg text-gray-dark pr-20 pb-5 text-justify z-20">
+        Scientific Researcher automatise la récupération de documentation API et
+        t’offre une suite complète d’outils pour filtrer, explorer, analyser et
+        traduire les contenus techniques avec exactitude.
+      </h3>
+      <!-- TODO:Video et lien -->
+      <div class="flex items-center">
+        <div class="bg-gray-x-light border rounded-full h-20 w-20 border-gray-x-light flex justify-center items-center">
+          <span class="text-black text-5xl flex justify-center items-center">
+            <mat-icon class="" fontSet="material-symbols-outlined">play_circle</mat-icon>
+          </span>
+        </div>
+        <h4 class="text-3xl text-dark pl-5">Vidéo de présentation</h4>
+      </div>
+    </div>
+  </div>
+</section>
