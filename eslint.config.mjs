@@ -40,6 +40,23 @@ export default [
               sourceTag: 'type:data',
               onlyDependOnLibsWithTags: ['type:data'],
             },
+            {
+              sourceTag: 'type:application',
+              onlyDependOnLibsWithTags: [
+                'type:feature',
+                'type:ui',
+                'type:data',
+                'type:util',
+              ],
+            },
+            {
+              sourceTag: 'type:ui',
+              onlyDependOnLibsWithTags: ['type:util'],
+            },
+            {
+              sourceTag: 'scope:research-app',
+              onlyDependOnLibsWithTags: ['scope:research', 'scope:shared'],
+            },
           ],
         },
       ],

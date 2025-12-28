@@ -8,9 +8,8 @@
       <mat-label>Prénom</mat-label>
       <input matInput formControlName="firstname" />
       <mat-error>
-        @if (form.controls.firstname.touched && form.controls.firstname.hasError('required')) {
-          Le prénom est requis
-        }
+        @if (form.controls.firstname.touched &&
+        form.controls.firstname.hasError('required')) { Le prénom est requis }
       </mat-error>
     </mat-form-field>
 
@@ -18,9 +17,8 @@
       <mat-label>Nom</mat-label>
       <input matInput formControlName="lastname" />
       <mat-error>
-        @if (form.controls.lastname.touched && form.controls.lastname.hasError('required')) {
-          Le nom est requis
-        }
+        @if (form.controls.lastname.touched &&
+        form.controls.lastname.hasError('required')) { Le nom est requis }
       </mat-error>
     </mat-form-field>
   </div>
@@ -29,9 +27,8 @@
     <mat-label>Titre ou profession</mat-label>
     <input matInput formControlName="title" />
     <mat-error>
-      @if (form.controls.title.touched && form.controls.title.hasError('required')) {
-        Le titre est requis
-      }
+      @if (form.controls.title.touched &&
+      form.controls.title.hasError('required')) { Le titre est requis }
     </mat-error>
   </mat-form-field>
 
@@ -40,14 +37,9 @@
     <input matInput type="email" formControlName="email" />
 
     <mat-error>
-      @if (form.controls.email.touched) {
-        @if (form.controls.email.hasError('required')) {
-          Le courriel est requis
-        }
-        @if (form.controls.email.hasError('email')) {
-          Courriel invalide
-        }
-      }
+      @if (form.controls.email.touched) { @if
+      (form.controls.email.hasError('required')) { Le courriel est requis } @if
+      (form.controls.email.hasError('email')) { Courriel invalide } }
     </mat-error>
   </mat-form-field>
 
@@ -59,15 +51,14 @@
       formControlName="message"
     ></textarea>
     <mat-error>
-      @if (form.controls.message.touched && form.controls.message.hasError('required')) {
-        Le message est requis
-      }
+      @if (form.controls.message.touched &&
+      form.controls.message.hasError('required')) { Le message est requis }
     </mat-error>
   </mat-form-field>
 
   <div class="flex justify-center py-5">
     <button
-      class="muted-button"
+      class="muted-button disabled:opacity-50"
       type="submit"
       [disabled]="form.invalid"
     >
@@ -75,3 +66,5 @@
     </button>
   </div>
 </form>
+<!-- TODO: Ajouter un checkbox pour accepter d'être contacté -->
+ <!-- TODO:Envoyer un courriel avec les informations -->

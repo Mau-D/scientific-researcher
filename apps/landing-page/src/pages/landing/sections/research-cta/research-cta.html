@@ -1,0 +1,38 @@
+<section
+  class="overflow-y-hidden text-white relative mx-auto flex flex-col items-end justify-end w-full"
+>
+  <img
+    class="absolute z-5 object-cover w-auto h-full left-0 opacity-10"
+    src="apps/assets/images/women-w-book.png"
+    alt="women-w-book"
+  />
+  <img
+    class="absolute -z-5 right-0 scale-y-[-1]"
+    src="assets/ui/images/circles-right.png"
+    alt="bkg circles"
+  />
+  <!-- <img
+    class="absolute z-10 object-cover w-full h-full"
+    src="assets/ui/images/hd-1.jpg"
+    alt="background image"
+  /> -->
+  <div class="min-h-full w-full absolute -z-1 bg-black"></div>
+  <div
+    class="z-10 text-white container text-center flex flex-col mx-auto py-40 max-w-[800px] gap-10 px-5"
+  >
+    <p class="text-7xl font-extrabold">Scientific-Researcher</p>
+    <h1 class="text-xl lg:text-3xl text-white">
+      <span class="font-bold">Automatisation, clarté et précision.</span>
+      Scientific Researcher automatise la récupération de documentation API et
+      t’offre une suite complète d’outils pour filtrer, explorer, analyser et
+      traduire les contenus techniques avec exactitude.
+    </h1>
+    <lib-button
+      class="mx-auto"
+      [href]="'http://localhost:61952/'"
+      [variant]="'secondary-button'"
+      [label]="'Débutez votre recherche'"
+    ></lib-button>
+  </div>
+</section>
+<!-- TODO: Créer des variables d'environnements pour les redirection à l'app de recherche -->

@@ -1,0 +1,92 @@
+{
+  "name": "research-app",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "prefix": "app",
+  "sourceRoot": "apps/research-app/src",
+  "tags": ["type:application", "scope:research-app"],
+  "targets": {
+    "build": {
+      "executor": "@angular/build:application",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/research-app",
+        "browser": "apps/research-app/src/main.ts",
+        "polyfills": ["zone.js"],
+        "tsConfig": "apps/research-app/tsconfig.app.json",
+        "inlineStyleLanguage": "scss",
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "apps/research-app/public"
+          },
+          {
+            "glob": "**/*",
+            "input": "libs/ui/ui-assets/src/assets",
+            "output": "assets/ui"
+          }
+        ],
+        "styles": ["apps/research-app/src/styles.scss"]
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "1mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "4kb",
+              "maximumError": "8kb"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "development": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "serve": {
+      "continuous": true,
+      "executor": "@angular/build:dev-server",
+      "options": {
+        "port": 61952,
+        "host": "localhost"
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "research-app:build:production"
+        },
+        "development": {
+          "buildTarget": "research-app:build:development"
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "extract-i18n": {
+      "executor": "@angular/build:extract-i18n",
+      "options": {
+        "buildTarget": "research-app:build"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "serve-static": {
+      "continuous": true,
+      "executor": "@nx/web:file-server",
+      "options": {
+        "buildTarget": "research-app:build",
+        "port": 61952,
+        "staticFilePath": "dist/apps/research-app/browser",
+        "spa": true
+      }
+    }
+  }
+}

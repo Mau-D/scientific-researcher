@@ -8,11 +8,33 @@ import { NavRoute } from '@org/models'
 export class Navigation {
   private router = inject(Router);
   
+  // getNavigationRoutes(): NavRoute[] {
+  //   console.log('in getNavigationRoutes')
+  //   return this.router.config
+  //     .map(route => this.mapRoute(route))
+  //     .filter(route => route !== null) as NavRoute[];
+  // }
   getNavigationRoutes(): NavRoute[] {
-    return this.router.config
-      .map(route => this.mapRoute(route))
-      .filter(route => route !== null) as NavRoute[];
-  }
+  const topRoutes = this.router.config;
+  const navRoutes: NavRoute[] = [];
+
+  topRoutes.forEach(route => {
+    if (route.children) {
+      route.children.forEach(child => {
+        const mapped = this.mapRoute(child);
+        if (mapped) {
+          navRoutes.push(mapped);
+        }
+      });
+    } else {
+      const mapped = this.mapRoute(route);
+      if (mapped) navRoutes.push(mapped);
+    }
+  });
+
+  console.log('Navigation Routes', navRoutes);
+  return navRoutes;
+}
   private mapRoute(route: Route): NavRoute | null {
     if (!route.data?.['showInNavbar']) {
       return null;

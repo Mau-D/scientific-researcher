@@ -1,9 +1,11 @@
-<header class="app-header w-full flex p-1.5 shadow-default absolute bg-white z-50">
-  <div class="container flex justify-between mx-auto">
-    <div class="flex justify-baseline gap-8">
-      <a routerLink="" class="logo-area">
+<header
+  class="app-header w-full flex p-1.5 shadow-default absolute bg-white z-50"
+>
+  <div class="container flex justify-between mx-auto gap-4">
+    <div class="flex justify-baseline">
+      <a routerLink="" class="mr-4">
         <img
-          class="cursor-pointer grayscale-100 hover:-translate-y-1 hover:grayscale-0 duration-200"
+          class="cursor-pointer grayscale-100 hover:-translate-y-1 hover:grayscale-0 duration-200 "
           src="assets/ui/logos/faviconcopy.png"
           alt="Logo"
         />
@@ -29,13 +31,9 @@
         <ng-content select="[nav-links]"></ng-content>
       </nav>
     </div>
-    <div class="flex items-center gap-5">
-      <div>
-        <lib-login-button></lib-login-button>
-      </div>
-      <div>
-        <lib-theme-toggle></lib-theme-toggle>
-      </div>
+    <div class="flex items-center gap-4">
+      <lib-login-button></lib-login-button>
+      <lib-theme-toggle></lib-theme-toggle>
     </div>
   </div>
 </header>
