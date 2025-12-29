@@ -30,7 +30,8 @@
       "@org/buttons": ["libs/ui/buttons/src/index.ts"],
       "@org/styles": ["libs/design/styles/src/index.ts"],
       "@org/contact": ["libs/ui/contact/src/index.ts"],
-      "@org/research": ["libs/research/src/index.ts"]
+      "@org/research": ["libs/research/src/index.ts"],
+      "@org/config": ["libs/shared/config/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
