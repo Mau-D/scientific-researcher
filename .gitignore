@@ -1,5 +1,11 @@
 # See https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
-**/src/environments/environment*.ts
+
+# Ignore tous les fichiers environment
+libs/shared/config/src/lib/environment*.ts
+
+# Sauf le fichier example
+!libs/shared/config/src/lib/environment.example.ts
+
 # compiled output
 dist
 tmp
