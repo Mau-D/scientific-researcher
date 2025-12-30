@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Search } from '../../features/search/search';
+
 @Component({
   selector: 'app-search-page',
   imports: [Search],
@@ -8,4 +9,5 @@ import { Search } from '../../features/search/search';
 })
 export class SearchPage {
 
+ 
 }
