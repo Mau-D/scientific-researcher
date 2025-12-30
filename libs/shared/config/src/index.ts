@@ -1,1 +1,2 @@
-export * from './lib/config/config';
+export * from './lib/environment.dev';
+// export { environment as prodEnvironment } from './lib/environment.prod';

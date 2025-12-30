@@ -8,6 +8,13 @@ export default [
   {
     files: ['**/*.ts'],
     rules: {
+      '@nx/enforce-module-boundaries': [
+        'error',
+        {
+          enforceBuildableLibDependency: true,
+          allow: ['*'],
+        }
+      ],
       '@angular-eslint/directive-selector': [
         'error',
         {
