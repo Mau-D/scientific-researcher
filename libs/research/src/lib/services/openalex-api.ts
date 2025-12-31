@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class OpenalexApi {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
   private baseUrl = `${environment.apiUrl}`;
   // TODO: Define methods to interact with the OpenAlex API
   // search(query: string) {
@@ -17,8 +17,11 @@ export class OpenalexApi {
   search():Observable<{ message: string }> {
     console.log(this.baseUrl);
     console.log('OpenalexApi search method called');
-    const result = this.http.get<{ message: string }>(`${this.baseUrl}`);
+    const result = this.http.get<{ message: string }>(`${this.baseUrl}/hello`);
     console.log(result.forEach((res) => console.log('YO C\'est mon message:',res.message)));
     return result;
+  }
+  getLatestWorkTitle() {
+    return this.http.get<{ title: string }>(`${this.baseUrl}/works/latest-title`);
   }
 }

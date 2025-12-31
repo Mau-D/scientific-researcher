@@ -1,8 +1,7 @@
-import { Component, inject, effect } from '@angular/core';
-import { ResearchCard } from '@org/ui-layout';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { Subject, switchMap } from 'rxjs';
+import { Component, inject, signal, resource, type ResourceLoaderParams  } from '@angular/core';
+import { firstValueFrom } from 'rxjs'; // Pour gérer le cas initial
 import { OpenalexApi } from '@org/research';
+import { ResearchCard } from '@org/ui-layout';
 
 @Component({
   selector: 'app-search',
@@ -12,23 +11,26 @@ import { OpenalexApi } from '@org/research';
 })
 export class Search {
   private api = inject(OpenalexApi);
-  // // 1. Un Subject pour émettre un événement à chaque clic
-  // private click$ = new Subject<void>();
+  trigger = signal(0);
+  // On crée une méthode explicite
+  incrementTrigger() {
+    this.trigger.update(n => n + 1);
+  }
 
-  // // 2. On transforme le flux de clics en flux de données, puis en Signal
-  // // switchMap garantit qu'on appelle l'API à chaque clic
-  // data = toSignal(this.click$.pipe(switchMap(() => this.api.search())));
-  // constructor() {
-  //   // 3. Effet pour logger le résultat dans la console dès que 'data' change
-  //   effect(() => {
-  //     const currentVal = this.data();
-  //     if (currentVal) {
-  //       console.log('Bouton cliqué, message reçu :', currentVal.message);
-  //     }
-  //   });
-  // }
+  workResource = resource<{ title: string } | undefined, number>({
+    params: () => this.trigger(),
+
+    loader: async ({ params }: ResourceLoaderParams<number>) => {
+      if (params === 0) return undefined;
+
+      return await firstValueFrom(
+        this.api.getLatestWorkTitle()
+      );
+    },
+  });
+
+  
   search() {
     this.api.search();
-    // this.click$.next();
   }
 }
