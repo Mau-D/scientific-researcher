@@ -2,6 +2,8 @@
 
 # Ignore tous les fichiers environment
 libs/shared/config/src/lib/environment*.ts
+apps/backend/.env*
+
 
 # Sauf le fichier example
 !libs/shared/config/src/lib/environment.example.ts

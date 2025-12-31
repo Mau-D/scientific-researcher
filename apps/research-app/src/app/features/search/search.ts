@@ -17,7 +17,7 @@ export class Search {
     this.trigger.update(n => n + 1);
   }
 
-  workResource = resource<{ title: string } | undefined, number>({
+  workResource = resource<{work: { display_name: string  } } | undefined, number>({
     params: () => this.trigger(),
 
     loader: async ({ params }: ResourceLoaderParams<number>) => {

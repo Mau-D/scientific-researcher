@@ -9,4 +9,9 @@ export class WorksController {
     const title = await this.worksService.getWorkTitle();
     return { title }; // On retourne un objet, c'est mieux pour l'extensibilité
   }
+  @Get('one-work')
+  async getWork() {
+    const work = await this.worksService.getWorkById('W2741809807');
+    return { work };
+  }
 }

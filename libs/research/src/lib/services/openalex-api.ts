@@ -22,6 +22,10 @@ export class OpenalexApi {
     return result;
   }
   getLatestWorkTitle() {
-    return this.http.get<{ title: string }>(`${this.baseUrl}/works/latest-title`);
+
+    const result = this.http.get<{  work: { display_name: string  } }>(`${this.baseUrl}/works/one-work`);
+    console.log(result.forEach((res) => console.log('Display_Name',res.work.display_name)));
+    return result;
+
   }
 }
