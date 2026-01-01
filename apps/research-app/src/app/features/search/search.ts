@@ -1,6 +1,7 @@
 import { Component, inject, signal, resource, type ResourceLoaderParams  } from '@angular/core';
 import { firstValueFrom } from 'rxjs'; // Pour gérer le cas initial
 import { OpenalexApi } from '@org/research';
+import { OpenAlexWork } from '@org/models';
 import { ResearchCard } from '@org/ui-layout';
 
 @Component({
@@ -17,20 +18,18 @@ export class Search {
     this.trigger.update(n => n + 1);
   }
 
-  workResource = resource<{work: { display_name: string  } } | undefined, number>({
+  workResource = resource<OpenAlexWork | undefined, number>({
     params: () => this.trigger(),
 
     loader: async ({ params }: ResourceLoaderParams<number>) => {
       if (params === 0) return undefined;
-
-      return await firstValueFrom(
-        this.api.getLatestWorkTitle()
+      const datas = await firstValueFrom(
+        this.api.getDatasWork()
       );
+      console.log('Fetching work data from OpenAlexApi...', );
+      console.log('Fetching work data from OpenAlexApi...', datas.display_name);
+
+      return datas;
     },
   });
-
-  
-  search() {
-    this.api.search();
-  }
 }

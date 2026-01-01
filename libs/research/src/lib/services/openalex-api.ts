@@ -1,31 +1,24 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '@org/config';
-import { Observable } from 'rxjs';
+import { OpenAlexWork } from '@org/models';
 @Injectable({
   providedIn: 'root',
 })
 export class OpenalexApi {
   private readonly http = inject(HttpClient);
   private baseUrl = `${environment.apiUrl}`;
-  // TODO: Define methods to interact with the OpenAlex API
-  // search(query: string) {
-  //   return this.http.get(`${this.baseUrl}/works`, {
-  //     params: { q: query }
-  //   });
-  // }
-  search():Observable<{ message: string }> {
-    console.log(this.baseUrl);
-    console.log('OpenalexApi search method called');
-    const result = this.http.get<{ message: string }>(`${this.baseUrl}/hello`);
-    console.log(result.forEach((res) => console.log('YO C\'est mon message:',res.message)));
-    return result;
-  }
-  getLatestWorkTitle() {
+  workId = 'W2741809807';
+  getDatasWork() {
+    const result = this.http.get<OpenAlexWork>(
+      `${this.baseUrl}/works/work-id/${this.workId}`
+    );
+    // TODO: Optimiser ce code et utiliser la meilleure structure possible
+    const name = result.forEach((work) => work.display_name);
+    const subscribe = result.subscribe((result) =>
+      console.log('Display name in OpenalexApi:', result.display_name)
+    );
 
-    const result = this.http.get<{  work: { display_name: string  } }>(`${this.baseUrl}/works/one-work`);
-    console.log(result.forEach((res) => console.log('Display_Name',res.work.display_name)));
     return result;
-
   }
 }

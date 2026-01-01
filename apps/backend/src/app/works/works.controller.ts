@@ -1,17 +1,12 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { WorksService } from './works.service';
 
 @Controller('works')
 export class WorksController {
   constructor(private readonly worksService: WorksService) {}
-  @Get('latest-title')
-  async getLatestTitle() {
-    const title = await this.worksService.getWorkTitle();
-    return { title }; // On retourne un objet, c'est mieux pour l'extensibilité
-  }
-  @Get('one-work')
-  async getWork() {
-    const work = await this.worksService.getWorkById('W2741809807');
-    return { work };
+  @Get('work-id/:id')
+  async getWork(@Param('id') id: string) {
+    const work = await this.worksService.getWorkById(id);
+    return  work ;
   }
 }
