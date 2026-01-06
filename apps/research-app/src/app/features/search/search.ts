@@ -1,16 +1,13 @@
 import {
   Component,
   inject,
-  signal,
-  ResourceLoaderParams,
   resource,
+  signal
 } from '@angular/core';
 import { firstValueFrom } from 'rxjs'; // Pour gérer le cas initial
-// import { of, Observable,  } from 'rxjs';
-import { OpenalexApi } from '@org/research';
 import { OpenAlexWork } from '@org/models';
+import { OpenalexApi } from '@org/research';
 import { ResearchCard } from '@org/ui-layout';
-import { rxResource } from '@angular/core/rxjs-interop'; // Import spécifique pour RxJS
 @Component({
   selector: 'app-search',
   imports: [ResearchCard],
@@ -39,10 +36,10 @@ export class Search {
   // .status() : L'état précis (Idle, Loading, Resolved, Error).
   // .reload() : Une méthode pour forcer manuellement le rafraîchissement.
 
-//   readonly data = this.workResource.value;
-//   readonly error = this.workResource.error;
-//   readonly loading = this.workResource.isLoading;
-// }
+// Alias pour le template
+  workData = this.workResource.value;
+  isLoading = this.workResource.isLoading;
+  error = this.workResource.error;
 // Méthode pour mettre à jour la recherche
 //   performSearch(newId: string): void {
 //     this.searchId.set(newId);
