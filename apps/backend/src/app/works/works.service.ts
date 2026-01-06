@@ -14,7 +14,7 @@ export class WorksService {
     const url = `${this.base}${this.works}/${id}`;
 // TODO: Vérifier log 3 fois par demande
     const response = await firstValueFrom(this.http.get(url));
-    console.log('Response data in WorksService:', response.data.display_name);
+    console.log('Response data in WorksService:', response.data.display_name, '!');
     return response.data as OpenAlexWork;
   }
 }
