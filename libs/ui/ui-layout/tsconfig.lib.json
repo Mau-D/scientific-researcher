@@ -7,10 +7,7 @@
     "inlineSources": true,
     "types": [],
     "baseUrl": ".", 
-    "paths": {
-      "@org/shared/config": ["libs/shared/config/src/index.ts"],
-      "@org/shared/models": ["libs/shared/models/src/index.ts"],
-    }
+    
   },
   "exclude": [
     "src/**/*.spec.ts",

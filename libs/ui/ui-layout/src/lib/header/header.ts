@@ -12,7 +12,7 @@ import { ThemeToggle } from './theme-toggle/theme-toggle'
 })
 export class Header implements OnInit {
   routes: NavRoute[] = [];
-  private nav = inject(Navigation);
+  private readonly nav = inject(Navigation);
   ngOnInit(): void {
     this.routes = this.nav.getNavigationRoutes();
     console.log('Header routes', this.routes);

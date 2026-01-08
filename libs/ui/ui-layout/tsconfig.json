@@ -8,7 +8,13 @@
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "module": "preserve"
+    "module": "preserve",
+    "paths": {
+      "@org/models": ["../../shared/models/src/index.ts"],
+      "@org/core": ["../../core/src/index.ts"],
+      "@org/buttons": ["../../ui/buttons/src/index.ts"],
+      "@org/contact": ["../../ui/contact/src/index.ts"]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

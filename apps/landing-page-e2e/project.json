@@ -4,7 +4,6 @@
   "projectType": "application",
   "sourceRoot": "apps/landing-page-e2e/src",
   "implicitDependencies": ["landing-page"],
-  "// targets": "to see all targets run: nx show project landing-page-e2e --web",
   "targets": {
     "e2e": {
       "executor": "nx:noop"
