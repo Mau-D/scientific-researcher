@@ -1,23 +1,26 @@
 // TODO: Vérifier les champs avec la Docs et ajouter ceux nécessaires
 
 export interface OpenAlexWork {
-  id: string;
-  doi: string | null;
-  title: string;
-  display_name: string;
+  id: string; //The OpenAlex ID for this work.
+  doi: string | null; //All the external identifiers that we know about for this work.
+  display_name: string; //The title of this work.
+  // abstract_inverted_index: { [key: string]: number[] } | null; // encodes information about the abstract's words and their positions within the text.
+  language: string; //The language this work is written in, using ISO 639-1 codes.
   publication_year: number;
   publication_date: string;
-  type: string;
-  authorships: Authorship[];
-  primary_location: Location | null;
-  concepts: Concept[];
-  cited_by_count: number;
-  abstract_inverted_index: { [key: string]: number[] } | null;
-  referenced_works: string[];
-  related_works: string[];
-  counts_by_year: CountByYear[];
   updated_date: string;
-  created_date: string;
+  primary_topic: Topic | null;
+  locations_count: number; //Number of locations for this work.
+  type: WorkDTO;
+  primary_location: Location | null;
+  open_access: OpenAccess;
+    // authorships: Authorship[];
+  // concepts: Concept[];
+  // cited_by_count: number;
+  // referenced_works: string[];
+  // related_works: string[];
+  // counts_by_year: CountByYear[];
+  // updated_date: string;
 }
 
 export interface Authorship {
@@ -36,6 +39,12 @@ export interface Institution {
   ror?: string;
   country_code: string;
   type: string;
+}
+export interface OpenAccess {
+  is_oa: boolean;
+  oa_status: string;
+  oa_url: string;
+  any_repository_has_fulltext: boolean;
 }
 
 export interface Location {
@@ -61,3 +70,46 @@ export interface CountByYear {
   year: number;
   cited_by_count: number;
 }
+export interface Topic {
+  /** Identifiant OpenAlex du topic */
+  id: string;
+
+  /** Nom lisible du topic */
+  display_name: string;
+
+  /** Score de pertinence du topic pour ce work */
+  score: number;
+
+  /** Domaine scientifique principal */
+  domain?: {
+    id: string;
+    display_name: string;
+  };
+
+  /** Champ (field) scientifique */
+  field?: {
+    id: string;
+    display_name: string;
+  };
+
+  /** Sous-champ (subfield) */
+  subfield?: {
+    id: string;
+    display_name: string;
+  };
+}
+export interface WorkDTO {
+  type: WorkType;
+}
+export type WorkType =
+  | 'article'
+  | 'preprint'
+  | 'review'
+  | 'letter'
+  | 'editorial'
+  | 'erratum'
+  | 'libguides'
+  | 'supplementary-materials'
+  | 'paratext'
+  | string; // Pour couvrir tous les autres types éventuels
+
