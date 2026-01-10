@@ -1,17 +1,16 @@
-import { Controller, Get, Param, Req, Request } from '@nestjs/common';
+import { Controller, Get, Param, Query, Req, Request } from '@nestjs/common';
 import { WorksService } from './works.service';
+import { OpenAlexResponse, OpenAlexWork } from '@org/models';
 
 @Controller('works')
 export class WorksController {
   constructor(private readonly worksService: WorksService) {}
   @Get()
-  findAll(@Req() request: Request): string {
-    console.log(request.headers);
-    return 'This action returns all works';
+ async getSampleWorks(@Query('sample') sampleCount: string): Promise<OpenAlexResponse<OpenAlexWork>> {
+    return await this.worksService.getWorksSample(sampleCount);
   }
   @Get(':id')
-  async getWork(@Param('id') id: string) {
-    const work = await this.worksService.getWorkById(id);
-    return  work ;
+  async getWork(@Param('id') id: string): Promise<OpenAlexWork> {
+    return await this.worksService.getWorkById(id);
   }
 }

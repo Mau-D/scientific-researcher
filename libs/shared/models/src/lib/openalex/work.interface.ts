@@ -1,5 +1,27 @@
-// TODO: Vérifier les champs avec la Docs et ajouter ceux nécessaires
 
+//Le <T> est une sorte de variable pour les types. 
+//Exemple: Ici, on dit : "Je veux une réponse OpenAlex dont les résultats sont des 'Work'"
+// this.http.get<OpenAlexResponse<Work>>(url).subscribe(data => {
+//    console.log(data.results[0].title); 
+// });
+export interface OpenAlexResponse<T> {
+  meta: OpenAlexMeta;
+  results: T[];
+  group_by?: OpenAlexGroupByResult[]; // Optionnel, si vous utilisez les agrégations
+}
+
+export interface OpenAlexMeta {
+  count: number;         // Nombre total de résultats
+  db_response_time_ms: number;
+  page: number;          // Page actuelle
+  per_page: number;      // Résultats par page
+  groups_count: number | null;
+}
+export interface OpenAlexGroupByResult {
+  key: string;              // L'ID OpenAlex (ex: "https://openalex.org/institutions/I123")
+  key_display_name: string; // Le nom lisible (ex: "Université de Montréal")
+  count: number;            // Le nombre d'occurrences (ex: 450 articles)
+}
 export interface OpenAlexWork {
   id: string; //The OpenAlex ID for this work.
   doi: string | null; //All the external identifiers that we know about for this work.

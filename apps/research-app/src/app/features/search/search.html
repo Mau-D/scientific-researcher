@@ -2,7 +2,10 @@
 <section class="min-h-screen h-full flex flex-col justify-center items-center">
   <p>search-page works!</p>
   <button class="bg-blue-500 p-4" (click)="searchId.set('W2741809807')">
-    Récupérer le dernier titre
+    Récupérer un titre
+  </button> 
+  <button class="bg-blue-500 p-4 my-4" (click)="sampleWorks.set('10')">
+    Récupérer 10 résultats
   </button>
   @if (datasWork; as work) {
   <h1>{{ work?.display_name }}</h1>
@@ -24,14 +27,3 @@
     </span>
   </div>
 </section>
-<!-- @if (workResource.isLoading()) {
-  Loading…
-}
-
-@if (workResource.error(); as err) {
-  Error: {{ err }}
-}
-
-@if (workResource.value(); as work) {
-  {{ work?.title }}
-} -->
