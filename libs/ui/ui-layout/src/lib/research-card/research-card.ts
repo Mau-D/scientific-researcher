@@ -4,9 +4,11 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { OpenAlexWork } from '@org/models';
+import { Button } from '@org/buttons';
+
 @Component({
   selector: 'lib-research-card',
-  imports: [MatButtonModule, MatCardModule, MatDividerModule, MatIconModule],
+  imports: [MatButtonModule, MatCardModule, MatDividerModule, MatIconModule, Button],
   templateUrl: './research-card.html',
   styleUrl: './research-card.scss',
 })

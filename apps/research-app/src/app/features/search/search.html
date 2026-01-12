@@ -11,10 +11,10 @@
   </button>
   @if (datasWork; as work) {
   <div class="w-full flex flex-wrap justify-start items-center mx-auto p-5">
-    <h2 class="w-full text-left px-5 mb-5">Résultats de la recherche :</h2>
-    <span class="w-1/3">
+    <h2 class="w-full text-3xl text-left px-5 mb-5 underline text-gray-blue">Résultats de la recherche</h2>
+    <div class="grid grid-cols-3 gap-4">
       <lib-research-card [data]="datasWork"></lib-research-card>
-    </span>
+    </div>
   </div>
   }@else if (!isLoading() && !searchId()) {
   <p>En attente d'une recherche...</p>
