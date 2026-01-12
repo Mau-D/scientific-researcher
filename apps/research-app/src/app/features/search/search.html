@@ -1,29 +1,26 @@
 @let datasWork = workResource.value();
-<section class="w-dvw min-h-screen h-full flex flex-col justify-center items-center">
+<section
+  class="w-dvw min-h-screen h-full flex flex-col justify-center items-center"
+>
   <p>search-page works!</p>
   <button class="bg-blue-500 p-4" (click)="searchId.set('W2741809807')">
     Récupérer un titre
-  </button> 
+  </button>
   <button class="bg-blue-500 p-4 my-4" (click)="sampleWorks.set('10')">
     Récupérer 10 résultats
   </button>
   @if (datasWork; as work) {
-  <h1>{{ work?.display_name }}</h1>
-  }@else if (!isLoading() && !searchId()) {
-  <p>En attente d'une recherche...</p>
-}
-  @if (isLoading()) {
-  <p>Chargement en cours...</p>
-}
-
-@if (error()) {
-  <p class="error">Erreur : {{ error() }}</p>
-}
-  <div
-    class="container bg-amber-200 flex flex-wrap justify-center items-center mx-auto p-5"
-  >
+  <div class="w-full flex flex-wrap justify-start items-center mx-auto p-5">
+    <h2 class="w-full text-left px-5 mb-5">Résultats de la recherche :</h2>
     <span class="w-1/3">
       <lib-research-card [data]="datasWork"></lib-research-card>
     </span>
   </div>
+  }@else if (!isLoading() && !searchId()) {
+  <p>En attente d'une recherche...</p>
+  } @if (isLoading()) {
+  <p>Chargement en cours...</p>
+  } @if (error()) {
+  <p class="error">Erreur : {{ error() }}</p>
+  }
 </section>
