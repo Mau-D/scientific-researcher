@@ -1,10 +1,36 @@
-  <section class="w-dvw py-[100px] flex justify-center items-center flex-col text-center">
-    <h1>Bienvenue sur la page de recherche</h1>
-    <p>
-      Utilisez le composant de recherche ci-dessous pour trouver des articles
-      scientifiques.
-    </p>
-  </section>
-  <section class="w-dvw flex justify-center items-center">
-    <app-search></app-search>
-  </section>
+<section
+  class="text-dark relative flex flex-col justify-center items-center w-full"
+>
+  <img
+    class="absolute overflow-x-hidden z-5 object-cover h-auto w-[40dvw] left-0 top-0 opacity-60"
+    src="assets/ui/images/shape-16.png"
+    alt="women-w-book"
+  />
+  <img
+    class="absolute overflow-x-hidden -z-5 right-0 scale-y-[-1] w-[30dvw] opacity-40"
+    src="assets/ui/images/circles-right.png"
+    alt="bkg circles"
+  />
+  <!-- <img
+    class="absolute z-10 object-cover w-full h-full"
+    src="assets/ui/images/hd-1.jpg"
+    alt="background image"
+  /> -->
+  <div
+    class="z-10 text-dark text-center flex flex-col justify-center items-center py-40 w-full"
+  >
+    <div class="max-w-[800px]">
+      <p class="text-7xl font-extrabold">Explorez la recherche scientifique</p>
+      <h1 class="text-xl lg:text-3xl text-dark">
+        Recherchez parmi des millions de publications scientifiques à l’aide de
+        mots-clés. Accédez rapidement aux informations essentielles et aux
+        publications en libre accès grâce aux données ouvertes d’OpenAlex.
+      </h1>
+    </div>
+
+    <div class="flex justify-center items-center p-10 w-full">
+      <app-search></app-search>
+    </div>
+  </div>
+</section>
+<!-- TODO: Créer des variables d'environnements pour les redirection à l'app de recherche-->
