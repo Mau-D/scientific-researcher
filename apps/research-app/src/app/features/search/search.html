@@ -1,19 +1,22 @@
-@let datasWork = workResource.value();
-<section
-  class="flex flex-col justify-center items-center w-full"
->
+@let datasWork = workResource.value(); 
+@let sampleWorksResult =worksResource.value()?.results;
+<section class="flex flex-col justify-center items-center w-full">
   <p>search-page works!</p>
-  <button class="bg-blue-500 p-4" (click)="searchId.set('W2741809807')">
+  <!-- <button class="bg-blue-500 p-4" (click)="searchId.set('W2741809807')">
     Récupérer un titre
-  </button>
+  </button> -->
   <button class="bg-blue-500 p-4 my-4" (click)="sampleWorks.set('10')">
     Récupérer 10 résultats
   </button>
-  @if (datasWork; as work) {
+  @if (sampleWorksResult; as work) {
   <div class="w-full flex flex-wrap justify-start items-center mx-auto p-5">
-    <h2 class="w-full text-3xl text-left px-5 mb-5 underline text-gray-blue">Résultats de la recherche</h2>
+    <h2 class="w-full text-3xl text-left px-5 mb-5 underline text-gray-blue">
+      Résultats de la recherche
+    </h2>
     <div class="grid grid-cols-3 gap-4">
-      <lib-research-card [data]="datasWork"></lib-research-card>
+      @for(work of sampleWorksResult; track work.id) {
+        <lib-research-card [data]="work"></lib-research-card>
+      }
     </div>
   </div>
   }@else if (!isLoading() && !searchId()) {

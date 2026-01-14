@@ -14,6 +14,10 @@ import { Button } from '@org/buttons';
 })
 export class ResearchCard {
   data = input.required<OpenAlexWork | undefined>();
+  dataResult = computed(() => {
+    console.log('Data in ResearchCard:', this.data());
+    return this.data();
+  });
   dataId = computed(() => {
   const fullId = this.data()?.id; // ex: "https://openalex.org/W2741809807"
   if (!fullId) return undefined;

@@ -13,6 +13,8 @@ export class OpenalexApi {
     return this.http.get<OpenAlexWork>(`${this.baseUrl}/works/${id}`);
   }
   getWorksList(count: string) {
+    console.log('Fetching works list with count:', count);
+    
     return this.http.get<OpenAlexResponse<OpenAlexWork>>(
       `${this.baseUrl}/works?sample=${count}`
     );

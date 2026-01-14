@@ -13,9 +13,8 @@ export class Search {
   currentWork: OpenAlexWork | undefined;
   private api = inject(OpenalexApi);
   searchId = signal<string | undefined>(undefined);
-  sampleWorks = signal<string | undefined>(undefined);
+  sampleWorks = signal<string | undefined>(undefined);  
   workResource = resource<OpenAlexWork | undefined, string | undefined>({
-    // params: () => this.trigger(),
     params: () => this.searchId(),
     loader: async ({ params: id }) => {
       if (!id) return undefined;
@@ -27,7 +26,6 @@ export class Search {
   //Resource for get number of works
 
   worksResource = resource<OpenAlexResponse<OpenAlexWork>, string | undefined>({
-    // params: () => this.trigger(),
     params: () => this.sampleWorks(),
     loader: async ({ params: sampleCount }) => {
       if (!sampleCount || sampleCount === '0') {
