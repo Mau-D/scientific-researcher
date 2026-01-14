@@ -12,17 +12,17 @@ import { ResearchCard } from '@org/ui-layout';
 export class Search {
   currentWork: OpenAlexWork | undefined;
   private api = inject(OpenalexApi);
-  searchId = signal<string | undefined>(undefined);
+  // searchId = signal<string | undefined>(undefined);
   sampleWorks = signal<string | undefined>(undefined);  
-  workResource = resource<OpenAlexWork | undefined, string | undefined>({
-    params: () => this.searchId(),
-    loader: async ({ params: id }) => {
-      if (!id) return undefined;
-      const datas = await firstValueFrom(this.api.getDatasWork(id));
-      // console.log('Fetching work data from OpenAlexApi...', datas.display_name);
-      return datas;
-    },
-  });
+  // workResource = resource<OpenAlexWork | undefined, string | undefined>({
+  //   params: () => this.searchId(),
+  //   loader: async ({ params: id }) => {
+  //     if (!id) return undefined;
+  //     const datas = await firstValueFrom(this.api.getDatasWork(id));
+  //     // console.log('Fetching work data from OpenAlexApi...', datas.display_name);
+  //     return datas;
+  //   },
+  // });
   //Resource for get number of works
 
   worksResource = resource<OpenAlexResponse<OpenAlexWork>, string | undefined>({
@@ -49,9 +49,9 @@ export class Search {
   // .reload() : Une méthode pour forcer manuellement le rafraîchissement.
 
   // Alias pour le template
-  workData = this.workResource.value;
-  isLoading = this.workResource.isLoading;
-  error = this.workResource.error;
+  workData = this.worksResource.value;
+  isLoading = this.worksResource.isLoading;
+  error = this.worksResource.error;
   // Méthode pour mettre à jour la recherche
   //   performSearch(newId: string): void {
   //     this.searchId.set(newId);

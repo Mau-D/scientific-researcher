@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query, Req, Request } from '@nestjs/common';
+import { Controller, Get, Param, Query} from '@nestjs/common';
 import { WorksService } from './works.service';
 import { OpenAlexResponse, OpenAlexWork } from '@org/models';
 

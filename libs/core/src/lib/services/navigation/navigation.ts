@@ -8,12 +8,7 @@ import { NavRoute } from '@org/models'
 export class Navigation {
   private router = inject(Router);
   
-  // getNavigationRoutes(): NavRoute[] {
-  //   console.log('in getNavigationRoutes')
-  //   return this.router.config
-  //     .map(route => this.mapRoute(route))
-  //     .filter(route => route !== null) as NavRoute[];
-  // }
+  
   getNavigationRoutes(): NavRoute[] {
   const topRoutes = this.router.config;
   const navRoutes: NavRoute[] = [];

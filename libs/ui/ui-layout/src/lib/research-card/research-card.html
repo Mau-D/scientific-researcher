@@ -99,7 +99,6 @@
   <mat-card-actions>
     <div class="w-full flex justify-between items-center">
       <div>
-        <!-- @if (data()?.open_access?.is_oa) { -->
         <div>
           <span
             class="text-green-500 text-3xl mr-1 h-auto flex justify-center items-center"
@@ -118,47 +117,10 @@
             </p>
           </span>
         </div>
-        <!-- } @else {
-        <div>
-          <span
-            class="text-red-500 text-3xl mr-1 h-auto flex justify-center items-center"
-          >
-            <mat-icon fontSet="material-symbols-outlined"> lock </mat-icon>
-            <p class="text-gray-blue text-sm ml-2 text-bold">
-            Texte non disponible
-          </p>
-          </span>
-          
-        </div>
-        } -->
-        <!-- </div> <div >
-        @if (data()?.open_access?.is_oa) {
-        <div>
-          <span
-            class="text-green-500 text-3xl mr-1 h-auto flex justify-center items-center"
-          >
-            <mat-icon fontSet="material-symbols-outlined"> lock_open </mat-icon>
-            <p class="text-gray-blue text-sm ml-2 text-bold">Open access</p>
-          </span>
-          
-        </div>
-        } @else {
-        <div>
-          <span
-            class="text-red-500 text-3xl mr-1 h-auto flex justify-center items-center"
-          >
-            <mat-icon fontSet="material-symbols-outlined"> lock </mat-icon>
-            <p class="text-gray-blue text-sm ml-2 text-bold">
-            Texte non disponible
-          </p>
-          </span>
-          
-        </div>
-      }-->
       </div>
 
       <lib-button
-        [href]="'#pricing'"
+        [routerLink]="`/publication/${dataId()}`"
         [variant]="'primary-button'"
         [label]="'Consulter les détails'"
       ></lib-button>

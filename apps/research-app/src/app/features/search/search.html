@@ -1,4 +1,4 @@
-@let datasWork = workResource.value(); 
+<!-- @let datasWork = workResource.value();  -->
 @let sampleWorksResult =worksResource.value()?.results;
 <section class="flex flex-col justify-center items-center w-full">
   <p>search-page works!</p>
@@ -19,7 +19,7 @@
       }
     </div>
   </div>
-  }@else if (!isLoading() && !searchId()) {
+  }@else if (!isLoading() && !sampleWorksResult) {
   <p>En attente d'une recherche...</p>
   } @if (isLoading()) {
   <p>Chargement en cours...</p>
