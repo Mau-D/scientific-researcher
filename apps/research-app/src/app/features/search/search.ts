@@ -1,11 +1,25 @@
-import { Component, inject, resource, signal } from '@angular/core';
-import { firstValueFrom } from 'rxjs'; // Pour gérer le cas initial
+import {
+  Component,
+  inject,
+  resource,
+  signal,
+  viewChild
+} from '@angular/core';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
 import { OpenAlexResponse, OpenAlexWork } from '@org/models';
 import { OpenalexApi } from '@org/research';
 import { ResearchCard } from '@org/ui-layout';
+import { firstValueFrom } from 'rxjs'; // Pour gérer le cas initial
+
 @Component({
   selector: 'app-search',
-  imports: [ResearchCard],
+  imports: [
+    ResearchCard,
+    MatProgressSpinnerModule,
+    MatSidenavModule,
+    MatDrawer,
+  ],
   templateUrl: './search.html',
   styleUrl: './search.scss',
 })
@@ -13,7 +27,7 @@ export class Search {
   currentWork: OpenAlexWork | undefined;
   private api = inject(OpenalexApi);
   // searchId = signal<string | undefined>(undefined);
-  sampleWorks = signal<string | undefined>(undefined);  
+  sampleWorks = signal<string | undefined>(undefined);
   // workResource = resource<OpenAlexWork | undefined, string | undefined>({
   //   params: () => this.searchId(),
   //   loader: async ({ params: id }) => {
@@ -23,8 +37,21 @@ export class Search {
   //     return datas;
   //   },
   // });
-  //Resource for get number of works
+  // public openDetailsSide = false;
+  public idClicked: string | undefined;
+  drawer = viewChild(MatDrawer);
 
+  toggleDrawer() {
+    // this.openDetailsSide = !this.openDetailsSide;
+    this.drawer()?.toggle();
+  }
+  
+  onCardClicked(id: string): void {
+    this.idClicked = id;
+
+    this.toggleDrawer();
+    console.log('Card clicked');
+  }
   worksResource = resource<OpenAlexResponse<OpenAlexWork>, string | undefined>({
     params: () => this.sampleWorks(),
     loader: async ({ params: sampleCount }) => {

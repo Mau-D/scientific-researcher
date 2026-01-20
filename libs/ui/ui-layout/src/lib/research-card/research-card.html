@@ -2,7 +2,7 @@
   <mat-card-header class="flex flex-col justify-center items-start p-2.5 my-2">
     <!-- <mat-card-subtitle class="text-gray-blue text-xxs">#{{dataId()}}</mat-card-subtitle> -->
     <p class="text-gray-blue text-[9px]">#{{dataId()}}</p>
-    <mat-card-title class="text-gray-blue text-left"
+    <mat-card-title class="text-dark text-left"
       >{{data()?.display_name}}</mat-card-title
     >
   </mat-card-header>
@@ -61,12 +61,12 @@
       </div>
       <div class="w-1/2 px-1">
         <div
-          class="bg-gray-100 p-2.5 rounded-md flex justify-start items-center"
+          class="bg-gray-100 p-2.5 rounded-md flex justify-start items-start"
         >
           <p class="text-gray-light text-sm mr-2 leading-4 text-left">
             Source<br />principale:
           </p>
-          <div class="flex justify-start items-center">
+          <div class="flex justify-start items-start">
             <span
               class="dark:text-white text-primary text-2xl mr-1 h-auto flex justify-center items-center"
             >
@@ -84,7 +84,7 @@
     <mat-divider></mat-divider>
     <div class="py-2.5 flex justify-end items-center">
       <div class="w-1/2 px-1">
-        <div class="flex justify-start items-center">
+        <div class="flex justify-end items-center">
           <p class="text-gray-blue text-sm mr-2">Nombre de source:</p>
           <p
             class="text-sm text-primary font-bold bg-primary-bkg p-2.5 rounded-md"
@@ -105,25 +105,36 @@
             [style.display]="data()?.open_access?.is_oa ? 'flex' : 'none'"
           >
             <mat-icon fontSet="material-symbols-outlined"> lock_open </mat-icon>
-            <p class="text-gray-blue text-sm ml-2 text-bold">Open access</p>
+            <p class="text-gray-blue text-xs text-bold">Open access</p>
           </span>
           <span
             class="text-red-500 text-3xl mr-1 h-auto flex justify-center items-center"
             [style.display]="!data()?.open_access?.is_oa ? 'flex' : 'none'"
           >
             <mat-icon fontSet="material-symbols-outlined"> lock </mat-icon>
-            <p class="text-gray-blue text-sm ml-2 text-bold">
+            <p class="text-gray-blue text-sm ml-2 text-bold text-left">
               Texte non disponible
             </p>
           </span>
         </div>
       </div>
-
-      <lib-button
-        [routerLink]="`/publication/${dataId()}`"
-        [variant]="'primary-button'"
-        [label]="'Consulter les détails'"
-      ></lib-button>
+      <div class="flex justify-center items-center text-right">
+        @if (data()?.updated_date !== "") {
+        <p class="text-gray-light text-xs ml-2 text-bold mr-2">
+          Mise à jour le<br>{{data()?.updated_date | date:'dd MMM yyyy'}}
+        </p>
+        }
+        <lib-button
+          [variant]="'primary-button'"
+          [label]="'Détails'"
+          (click)="onClickForDetails()"
+        ></lib-button>  
+         <!-- <lib-button
+          [routerLink]="`/publication/${dataId()}`"
+          [variant]="'primary-button'"
+          [label]="'Détails'"
+        ></lib-button> -->
+      </div>
     </div>
   </mat-card-actions>
 </mat-card>

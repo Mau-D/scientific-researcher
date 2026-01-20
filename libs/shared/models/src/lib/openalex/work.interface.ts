@@ -35,6 +35,7 @@ export interface OpenAlexWork {
   locations_count: number; //Number of locations for this work.
   type: WorkDTO;
   primary_location: Location | null;
+  best_oa_location: OpenAlexBestOaLocation | null;
   open_access: OpenAccess;
     // authorships: Authorship[];
   // concepts: Concept[];
@@ -42,7 +43,6 @@ export interface OpenAlexWork {
   // referenced_works: string[];
   // related_works: string[];
   // counts_by_year: CountByYear[];
-  // updated_date: string;
 }
 
 export interface Authorship {
@@ -120,6 +120,37 @@ export interface Topic {
     display_name: string;
   };
 }
+export interface OpenAlexBestOaLocation {
+  /** Indique si la localisation est en libre accès */
+  is_oa: boolean;
+
+  /** Page de consultation (HTML) */
+  landing_page_url: string | null;
+
+  /** Lien direct vers le PDF (si disponible) */
+  pdf_url: string | null;
+
+  /** Informations sur la source */
+  source: {
+    id: string;
+    display_name: string;
+    type: 'publisher' | 'repository';
+    issn_l: string | null;
+    issn: string[] | null;
+    host_organization: string | null;
+  };
+
+  /** Licence open access (ex: CC-BY, CC-BY-NC) */
+  license: string | null;
+
+  /** Version du document */
+  version:OpenAlexVersion;
+}
+export type OpenAlexVersion =
+  | 'publishedVersion'
+  | 'acceptedVersion'
+  | 'submittedVersion'
+  | string;
 export interface WorkDTO {
   type: WorkType;
 }

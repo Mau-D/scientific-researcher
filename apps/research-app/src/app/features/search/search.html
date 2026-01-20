@@ -1,29 +1,52 @@
-<!-- @let datasWork = workResource.value();  -->
-@let sampleWorksResult =worksResource.value()?.results;
-<section class="flex flex-col justify-center items-center w-full">
-  <p>search-page works!</p>
-  <!-- <button class="bg-blue-500 p-4" (click)="searchId.set('W2741809807')">
-    Récupérer un titre
-  </button> -->
-  <button class="bg-blue-500 p-4 my-4" (click)="sampleWorks.set('10')">
-    Récupérer 10 résultats
-  </button>
-  @if (sampleWorksResult; as work) {
-  <div class="w-full flex flex-wrap justify-start items-center mx-auto p-5">
-    <h2 class="w-full text-3xl text-left px-5 mb-5 underline text-gray-blue">
-      Résultats de la recherche
-    </h2>
-    <div class="grid grid-cols-3 gap-4">
-      @for(work of sampleWorksResult; track work.id) {
-        <lib-research-card [data]="work"></lib-research-card>
-      }
-    </div>
-  </div>
-  }@else if (!isLoading() && !sampleWorksResult) {
-  <p>En attente d'une recherche...</p>
-  } @if (isLoading()) {
-  <p>Chargement en cours...</p>
-  } @if (error()) {
-  <p class="error">Erreur : {{ error() }}</p>
-  }
+@let sampleWorksResult =worksResource.value()?.results; @let sampleWorksMeta
+=worksResource.value()?.meta;
+<section class="">
+  <mat-drawer-container>
+    <mat-drawer
+      #drawer
+      mode="over"
+      hasBackdrop="true"
+      position="end"
+      class="max-h-dvh min-w-[80dvw] bg-amber-500"
+    >
+      <div class="h-full bg-amber-300">
+        <h2>Détails de la publication {{idClicked}}</h2>
+      </div>
+    </mat-drawer>
+    <mat-drawer-content class="">
+      <section class="flex flex-col justify-start items-center">
+        <button class="bg-blue-500 p-4 my-4" (click)="sampleWorks.set('10')">
+          Récupérer 10 résultats
+        </button>
+        @if (sampleWorksResult; as work) {
+        <h1 class="text-2xl mb-4">
+          Nombre de résultats : {{sampleWorksMeta?.count}}
+        </h1>
+        <div
+          class="w-full flex flex-wrap justify-start items-center mx-auto p-5"
+        >
+          <h2
+            class="w-full text-3xl text-left px-5 mb-5 underline text-gray-blue"
+          >
+            Résultats de la recherche
+          </h2>
+          <div class="grid grid-cols-1 gap-3 container">
+            @for(work of sampleWorksResult; track work.id) {
+            <lib-research-card
+              [data]="work"
+              (clickedForDetails)="onCardClicked($event)"
+            ></lib-research-card>
+            }
+          </div>
+        </div>
+        }@else if (!isLoading() && !sampleWorksResult) {
+        <p>En attente d'une recherche...</p>
+        } @if (isLoading()) {
+        <mat-spinner></mat-spinner>
+        } @if (error()) {
+        <p class="error">Erreur : {{ error() }}</p>
+        }
+      </section>
+    </mat-drawer-content>
+  </mat-drawer-container>
 </section>
