@@ -38,7 +38,7 @@ export class Search {
   //   },
   // });
   // public openDetailsSide = false;
-  public idClicked: string | undefined;
+  public idClicked= signal<string>('');
   drawer = viewChild(MatDrawer);
 
   toggleDrawer() {
@@ -47,11 +47,26 @@ export class Search {
   }
   
   onCardClicked(id: string): void {
-    this.idClicked = id;
+    this.idClicked.set(id);
 
     this.toggleDrawer();
     console.log('Card clicked');
   }
+  toggleScroll(isOpened: boolean) {
+  if (isOpened) {
+    document.body.classList.add('no-scroll');
+  } else {
+    document.body.classList.remove('no-scroll');
+  }
+}
+workResource = resource<OpenAlexWork | undefined, string | undefined>({
+    params: () => this.idClicked(),
+    loader: async ({ params: id }) => {
+      if (!id) return undefined;
+      const datas = await firstValueFrom(this.api.getDatasWork(id));
+      return datas;
+    },
+  });
   worksResource = resource<OpenAlexResponse<OpenAlexWork>, string | undefined>({
     params: () => this.sampleWorks(),
     loader: async ({ params: sampleCount }) => {

@@ -1,27 +1,41 @@
-@let sampleWorksResult =worksResource.value()?.results; @let sampleWorksMeta
-=worksResource.value()?.meta;
+@let sampleWorksResult =worksResource.value()?.results; @let
+sampleWorksMeta=worksResource.value()?.meta; @let data = workResource.value();
 <section class="">
-  <mat-drawer-container>
+  <div>
+    <button class="bg-blue-500 p-4 my-4" (click)="sampleWorks.set('10')">
+      Récupérer 10 résultats
+    </button>
+  </div>
+  @if (sampleWorksResult; as work) {
+  <div>
+    <h1 class="text-2xl mb-4">
+      Nombre de résultats : {{sampleWorksMeta?.count}}
+    </h1>
+  </div>
+  }
+  <mat-drawer-container autosize>
     <mat-drawer
       #drawer
       mode="over"
-      hasBackdrop="true"
+      hasBackdrop
+      (opened)="toggleScroll(true)"
+      (closed)="toggleScroll(false)"
       position="end"
-      class="max-h-dvh min-w-[80dvw] bg-amber-500"
+      class="max-h-dvh min-w-[80dvw] bg-amber-500 py-5 px-10 flex justify-baseline items-baseline"
     >
-      <div class="h-full bg-amber-300">
-        <h2>Détails de la publication {{idClicked}}</h2>
+      <div class="bg-amber-300 py-2">
+        <h2>Détails de la publication {{idClicked()}}</h2>
+      </div>
+      <div>
+      <lib-research-card [data]="data"></lib-research-card>
+
       </div>
     </mat-drawer>
-    <mat-drawer-content class="">
+
+    <mat-drawer-content class="min-w-dvw">
       <section class="flex flex-col justify-start items-center">
-        <button class="bg-blue-500 p-4 my-4" (click)="sampleWorks.set('10')">
-          Récupérer 10 résultats
-        </button>
         @if (sampleWorksResult; as work) {
-        <h1 class="text-2xl mb-4">
-          Nombre de résultats : {{sampleWorksMeta?.count}}
-        </h1>
+
         <div
           class="w-full flex flex-wrap justify-start items-center mx-auto p-5"
         >

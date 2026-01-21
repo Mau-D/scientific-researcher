@@ -2,7 +2,10 @@
 @use 'libs/design/styles/src/index.scss' as *;
 
 @import '../../../tailwind.css';
-
+.no-scroll {
+  overflow: hidden !important;
+  height: 100vh !important;
+}
 // Custom style
 .mat-icon.material-symbols-outlined {
   font-size: unset !important;
