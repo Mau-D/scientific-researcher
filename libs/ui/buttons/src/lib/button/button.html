@@ -1,7 +1,7 @@
 @if (isRouter()) {
-<a [routerLink]="routerLink()" [class]="classes()"> {{ label() }} </a>
+<a [routerLink]="routerLink()" [class]="classes()" [target]="blank() ? '_blank' : '_self'"> {{ label() }} </a>
 } @else if (isLink()) {
-<a [href]="href()" [class]="classes()"> {{ label() }} </a>
+<a [href]="href()" [class]="classes()" [target]="blank() ? '_blank' : '_self'" rel="noopener noreferrer"> {{ label() }} </a>
 } @else {
 <button type="button" [class]="classes()">{{ label() }}</button>
 }

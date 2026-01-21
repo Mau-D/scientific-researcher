@@ -1,5 +1,6 @@
-@let sampleWorksResult =worksResource.value()?.results; @let
-sampleWorksMeta=worksResource.value()?.meta; @let data = workResource.value();
+@let sampleWorksResult =worksResource.value()?.results; 
+@let sampleWorksMeta=worksResource.value()?.meta; 
+@let data = workResource.value();
 <section class="">
   <div>
     <button class="bg-blue-500 p-4 my-4" (click)="sampleWorks.set('10')">
@@ -21,14 +22,13 @@ sampleWorksMeta=worksResource.value()?.meta; @let data = workResource.value();
       (opened)="toggleScroll(true)"
       (closed)="toggleScroll(false)"
       position="end"
-      class="max-h-dvh min-w-[80dvw] bg-amber-500 py-5 px-10 flex justify-baseline items-baseline"
+      class="max-h-dvh min-w-[80dvw] py-5 px-10 flex justify-baseline items-baseline"
     >
-      <div class="bg-amber-300 py-2">
-        <h2>Détails de la publication {{idClicked()}}</h2>
+      <div class="text-left text-2xl py-2">
+        <h2>Détails de la publication #{{idClicked()}}</h2>
       </div>
       <div>
-      <lib-research-card [data]="data"></lib-research-card>
-
+      <app-work-details [data]="data"></app-work-details>
       </div>
     </mat-drawer>
 

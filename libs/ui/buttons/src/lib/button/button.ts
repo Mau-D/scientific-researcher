@@ -14,6 +14,7 @@ export class Button {
   variant = input<'primary-button' | 'secondary-button' | 'muted-button'>('primary-button');
   routerLink = input<string | null>(null);
   href = input<string | null>(null);
+  blank = input<boolean>(false);
   classes = computed(() => {
     return ['base', this.variant()].join(' ');
   });

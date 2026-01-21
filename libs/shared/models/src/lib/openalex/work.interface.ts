@@ -1,8 +1,7 @@
-
-//Le <T> est une sorte de variable pour les types. 
+//Le <T> est une sorte de variable pour les types.
 //Exemple: Ici, on dit : "Je veux une réponse OpenAlex dont les résultats sont des 'Work'"
 // this.http.get<OpenAlexResponse<Work>>(url).subscribe(data => {
-//    console.log(data.results[0].title); 
+//    console.log(data.results[0].title);
 // });
 export interface OpenAlexResponse<T> {
   meta: OpenAlexMeta;
@@ -11,22 +10,22 @@ export interface OpenAlexResponse<T> {
 }
 
 export interface OpenAlexMeta {
-  count: number;         // Nombre total de résultats
+  count: number; // Nombre total de résultats
   db_response_time_ms: number;
-  page: number;          // Page actuelle
-  per_page: number;      // Résultats par page
+  page: number; // Page actuelle
+  per_page: number; // Résultats par page
   groups_count: number | null;
 }
 export interface OpenAlexGroupByResult {
-  key: string;              // L'ID OpenAlex (ex: "https://openalex.org/institutions/I123")
+  key: string; // L'ID OpenAlex (ex: "https://openalex.org/institutions/I123")
   key_display_name: string; // Le nom lisible (ex: "Université de Montréal")
-  count: number;            // Le nombre d'occurrences (ex: 450 articles)
+  count: number; // Le nombre d'occurrences (ex: 450 articles)
 }
 export interface OpenAlexWork {
   id: string; //The OpenAlex ID for this work.
   doi: string | null; //All the external identifiers that we know about for this work.
   display_name: string; //The title of this work.
-  // abstract_inverted_index: { [key: string]: number[] } | null; // encodes information about the abstract's words and their positions within the text.
+  abstract_inverted_index: AbstractInvertedIndex | null;
   language: string; //The language this work is written in, using ISO 639-1 codes.
   publication_year: number;
   publication_date: string;
@@ -37,7 +36,7 @@ export interface OpenAlexWork {
   primary_location: Location | null;
   best_oa_location: OpenAlexBestOaLocation | null;
   open_access: OpenAccess;
-    // authorships: Authorship[];
+  // authorships: Authorship[];
   // concepts: Concept[];
   // cited_by_count: number;
   // referenced_works: string[];
@@ -144,8 +143,11 @@ export interface OpenAlexBestOaLocation {
   license: string | null;
 
   /** Version du document */
-  version:OpenAlexVersion;
+  version: OpenAlexVersion;
 }
+export type AbstractInvertedIndex = {
+  [word: string]: number[];
+};
 export type OpenAlexVersion =
   | 'publishedVersion'
   | 'acceptedVersion'
@@ -165,4 +167,3 @@ export type WorkType =
   | 'supplementary-materials'
   | 'paratext'
   | string; // Pour couvrir tous les autres types éventuels
-
