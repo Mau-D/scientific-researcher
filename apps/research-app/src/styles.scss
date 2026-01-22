@@ -4,6 +4,7 @@
 @import '../../../tailwind.css';
 .no-scroll {
   overflow: hidden !important;
+  min-height: 100%;
   height: 100vh !important;
 }
 // Custom style

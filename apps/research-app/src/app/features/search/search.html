@@ -1,6 +1,5 @@
-@let sampleWorksResult =worksResource.value()?.results; 
-@let sampleWorksMeta=worksResource.value()?.meta; 
-@let data = workResource.value();
+@let sampleWorksResult =worksResource.value()?.results; @let
+sampleWorksMeta=worksResource.value()?.meta; @let data = workResource.value();
 <section class="">
   <div>
     <button class="bg-blue-500 p-4 my-4" (click)="sampleWorks.set('10')">
@@ -14,21 +13,28 @@
     </h1>
   </div>
   }
-  <mat-drawer-container autosize>
-    <mat-drawer
+  <mat-drawer-container>
+    <!-- <mat-drawer
       #drawer
       mode="over"
       hasBackdrop
       (opened)="toggleScroll(true)"
       (closed)="toggleScroll(false)"
       position="end"
-      class="max-h-dvh min-w-[80dvw] py-5 px-10 flex justify-baseline items-baseline"
+      class="h-full min-h-dvh min-w-[80dvw] py-5 px-10 flex justify-baseline items-baseline"
+    > -->
+    <mat-drawer
+      #drawer
+      mode="over"
+      autoFocus="first-heading"
+      position="end"
+      class="h-full min-h-dvh min-w-[80dvw] py-5 px-10 flex justify-baseline items-baseline"
     >
       <div class="text-left text-2xl py-2">
         <h2>Détails de la publication #{{idClicked()}}</h2>
       </div>
       <div>
-      <app-work-details [data]="data"></app-work-details>
+        <app-work-details [data]="data"></app-work-details>
       </div>
     </mat-drawer>
 

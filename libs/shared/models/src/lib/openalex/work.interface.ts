@@ -36,14 +36,22 @@ export interface OpenAlexWork {
   primary_location: Location | null;
   best_oa_location: OpenAlexBestOaLocation | null;
   open_access: OpenAccess;
+  awards: Awards[];
   // authorships: Authorship[];
-  // concepts: Concept[];
+  concepts: Concept[];
   // cited_by_count: number;
   // referenced_works: string[];
   // related_works: string[];
   // counts_by_year: CountByYear[];
 }
-
+export interface Awards {
+  id: string;
+  display_name: string;
+  funder_award_id: string;
+  funder_id: string;
+  funder_display_name: string;
+  doi: string;
+}
 export interface Authorship {
   author_position: 'first' | 'middle' | 'last';
   author: {
@@ -161,32 +169,36 @@ export const OA_STATUS_DETAILS: Record<OaStatus, StatusDetail> = {
     label: 'Or (Gold)',
     icon: 'workspace_premium',
     color: '#FFD700',
-    description: 'Disponible librement sur le site de l\'éditeur dans une revue 100% Open Access.'
+    description:
+      "Disponible librement sur le site de l'éditeur dans une revue 100% Open Access.",
   },
   hybrid: {
     label: 'Hybride',
     icon: 'verified_user',
     color: '#4CAF50',
-    description: 'Article en libre accès dans une revue par ailleurs payante (frais payés par l\'auteur).'
+    description:
+      "Article en libre accès dans une revue par ailleurs payante (frais payés par l'auteur).",
   },
   green: {
     label: 'Vert (Green)',
     icon: 'archive',
     color: '#2E7D32',
-    description: 'Version déposée dans une archive ouverte (ex: HAL, arXiv) par l\'auteur.'
+    description:
+      "Version déposée dans une archive ouverte (ex: HAL, arXiv) par l'auteur.",
   },
   bronze: {
     label: 'Bronze',
     icon: 'visibility',
     color: '#CD7F32',
-    description: 'Gratuit à lire sur le site de l\'éditeur, mais sans licence libre explicite.'
+    description:
+      "Gratuit à lire sur le site de l'éditeur, mais sans licence libre explicite.",
   },
   closed: {
     label: 'Fermé',
     icon: 'lock',
     color: '#757575',
-    description: 'L\'accès nécessite un abonnement ou un paiement à l\'acte.'
-  }
+    description: "L'accès nécessite un abonnement ou un paiement à l'acte.",
+  },
 };
 export type OpenAccessInfo = {
   is_oa: boolean;

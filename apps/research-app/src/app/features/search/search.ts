@@ -32,6 +32,7 @@ export class Search {
   }
 
   onCardClicked(id: string): void {
+
     this.idClicked.set(id);
     this.toggleDrawer();
     console.log('Card clicked');
