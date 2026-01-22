@@ -101,9 +101,31 @@
             </p>
           </span>
         </div>
+        @if (oaDetails(); as details) {
+        <div class="mt-2">
+          <span
+            [style.color]="details.color"
+            class="text-3xl mr-1 h-auto flex justify-center items-center"
+          >
+            <mat-icon fontSet="material-symbols-outlined"
+              >{{ details.icon }}</mat-icon
+            >
+            <p class="text-gray-blue text-xs text-bold">{{ details.label }}</p>
+            <span
+              class="text-xl ml-1 h-auto flex justify-start items-start text-gray-blue hover:text-green-300"
+            >
+              <mat-icon
+                fontSet="material-symbols-outlined"
+                matTooltip="{{ details.description }}"
+                >info</mat-icon
+              >
+            </span>
+          </span>
+        </div>
+        
+        }
         <div class="mt-5">
           @if(pdfUrl){
-
           <lib-button
             [variant]="'muted-button'"
             [label]="'PDF accessible'"

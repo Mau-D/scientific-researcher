@@ -63,8 +63,8 @@ export interface Institution {
 }
 export interface OpenAccess {
   is_oa: boolean;
-  oa_status: string;
-  oa_url: string;
+  oa_status: OaStatus;
+  oa_url: string | null;
   any_repository_has_fulltext: boolean;
 }
 
@@ -147,6 +147,52 @@ export interface OpenAlexBestOaLocation {
 }
 export type AbstractInvertedIndex = {
   [word: string]: number[];
+};
+export type OaStatus = 'gold' | 'green' | 'hybrid' | 'bronze' | 'closed';
+export interface StatusDetail {
+  label: string;
+  icon: string;
+  color: string;
+  description: string;
+}
+
+export const OA_STATUS_DETAILS: Record<OaStatus, StatusDetail> = {
+  gold: {
+    label: 'Or (Gold)',
+    icon: 'workspace_premium',
+    color: '#FFD700',
+    description: 'Disponible librement sur le site de l\'éditeur dans une revue 100% Open Access.'
+  },
+  hybrid: {
+    label: 'Hybride',
+    icon: 'verified_user',
+    color: '#4CAF50',
+    description: 'Article en libre accès dans une revue par ailleurs payante (frais payés par l\'auteur).'
+  },
+  green: {
+    label: 'Vert (Green)',
+    icon: 'archive',
+    color: '#2E7D32',
+    description: 'Version déposée dans une archive ouverte (ex: HAL, arXiv) par l\'auteur.'
+  },
+  bronze: {
+    label: 'Bronze',
+    icon: 'visibility',
+    color: '#CD7F32',
+    description: 'Gratuit à lire sur le site de l\'éditeur, mais sans licence libre explicite.'
+  },
+  closed: {
+    label: 'Fermé',
+    icon: 'lock',
+    color: '#757575',
+    description: 'L\'accès nécessite un abonnement ou un paiement à l\'acte.'
+  }
+};
+export type OpenAccessInfo = {
+  is_oa: boolean;
+  oa_status: 'gold' | 'green' | 'hybrid' | 'bronze' | 'closed';
+  oa_url: string | null;
+  any_repository_has_fulltext: boolean;
 };
 export type OpenAlexVersion =
   | 'publishedVersion'
