@@ -6,7 +6,6 @@ import { OpenalexApi } from '@org/research';
 import { ResearchCard } from '@org/ui-layout';
 import { firstValueFrom } from 'rxjs'; // Pour gérer le cas initial
 import { WorkDetails } from '../work-details/work-details';
-
 @Component({
   selector: 'app-search',
   imports: [
