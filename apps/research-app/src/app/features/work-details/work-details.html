@@ -4,34 +4,37 @@
     <mat-card-title class="text-dark text-left"
       >{{data()?.display_name}}</mat-card-title
     >
+    @if (data()?.awards?.length !== 0 && data()?.awards !== undefined) {
     <mat-card-subtitle>
-      @if (data()?.awards?.length !== 0 || data()?.awards !== undefined) {
       <div>
-        <div>
-          @for (award of data()?.awards; track award.id) {
-          <div class="flex justify-start items-center mb-2 text-left">
-            <span
-              class="text-2xl mr-1 h-auto flex justify-center items-center text-[#FFD700]"
-            >
-              <mat-icon fontSet="material-symbols-outlined"
-                >award_star</mat-icon
+        <div class="flex justify-start items-start">
+          <p class="mr-3">Réconpense(s):</p>
+          <div class="flex flex-col justify-start items-start">
+            @for (award of data()?.awards; track award.id) {
+            <div class="flex justify-start items-center mb-2 text-left">
+              <span
+                class="text-2xl mr-1 h-auto flex justify-center items-center text-[#FFD700]"
               >
-            </span>
-            @if(award.display_name) {
-            <p class="text-gray-blue text-sm text-left">
-              {{ award.display_name }}
-            </p>
-            }@else {
-            <p class="text-gray-blue text-sm text-left">
-              {{ award.funder_display_name }}
-            </p>
+                <mat-icon fontSet="material-symbols-outlined"
+                  >award_star</mat-icon
+                >
+              </span>
+              @if(award.display_name) {
+              <p class="text-gray-blue text-sm text-left">
+                {{ award.display_name }}
+              </p>
+              }@else {
+              <p class="text-gray-blue text-sm text-left">
+                {{ award.funder_display_name }}
+              </p>
+              }
+            </div>
             }
           </div>
-          }
         </div>
       </div>
-      }
     </mat-card-subtitle>
+    }
   </mat-card-header>
   <mat-divider></mat-divider>
 
@@ -111,7 +114,7 @@
     <mat-divider></mat-divider>
     <div class="py-2.5 flex justify-center items-baseline">
       <div class="w-1/2 flex flex-col justify-start items-start">
-        <div>
+        <!-- <div>
           <span
             class="text-green-500 text-3xl mr-1 h-auto flex justify-center items-center"
             [style.display]="data()?.open_access?.is_oa ? 'flex' : 'none'"
@@ -128,7 +131,7 @@
               Texte non disponible
             </p>
           </span>
-        </div>
+        </div> -->
         @if (oaDetails(); as details) {
         <div class="mt-2">
           <span
