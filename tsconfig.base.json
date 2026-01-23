@@ -24,13 +24,13 @@
       "@org/shop/feature-products": ["libs/shop/feature-products/src/index.ts"],
       "@org/shop/shared-ui": ["libs/shop/shared-ui/src/index.ts"],
       "@org/ui-layout": ["libs/ui/ui-layout/src/index.ts"],
-      "@org/ui": ["shared/src/index.ts"],
       "@org/core": ["libs/core/src/index.ts"],
       "@org/ui-assets": ["libs/ui/ui-assets/src/index.ts"],
       "@org/buttons": ["libs/ui/buttons/src/index.ts"],
       "@org/styles": ["libs/design/styles/src/index.ts"],
       "@org/contact": ["libs/ui/contact/src/index.ts"],
-      "@org/research": ["libs/research/src/index.ts"]
+      "@org/research": ["libs/research/src/index.ts"],
+      "@org/config": ["libs/shared/config/src/index.ts"],
     }
   },
   "exclude": ["node_modules", "tmp"]

@@ -4,7 +4,7 @@
   "projectType": "application",
   "prefix": "app",
   "sourceRoot": "apps/research-app/src",
-  "tags": ["type:application", "scope:research-app"],
+  "tags": ["type:application", "scope:shared"],
   "targets": {
     "build": {
       "executor": "@angular/build:application",

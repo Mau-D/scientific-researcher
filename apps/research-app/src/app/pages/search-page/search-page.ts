@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
-import { ResearchCard } from '@org/ui-layout';
+import { Search } from '../../features/search/search';
+
 @Component({
   selector: 'app-search-page',
-  imports: [ResearchCard],
+  imports: [Search],
   templateUrl: './search-page.html',
   styleUrl: './search-page.scss',
 })
 export class SearchPage {
 
+ 
 }

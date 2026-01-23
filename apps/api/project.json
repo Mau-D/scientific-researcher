@@ -3,12 +3,12 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/api/src",
   "projectType": "application",
-  "tags": ["scope:api"],
   "release": {
     "docker": {
       "repositoryName": "org/angular-template-api"
     }
   },
+  "tags": ["scope:api"],
   "targets": {
     "build": {
       "executor": "@nx/esbuild:esbuild",

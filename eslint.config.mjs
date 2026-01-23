@@ -47,6 +47,27 @@ export default [
                 'type:ui',
                 'type:data',
                 'type:util',
+                'scope:shared'
+              ],
+            },
+            {
+              sourceTag: 'type:library',
+              onlyDependOnLibsWithTags: [
+                'type:feature',
+                'type:ui',
+                'type:data',
+                'type:util',
+                'scope:shared'
+              ],
+            },
+            {
+              sourceTag: 'scope:feature',
+              onlyDependOnLibsWithTags: [
+                'type:feature',
+                'type:ui',
+                'type:data',
+                'type:util',
+                'type:config'
               ],
             },
             {

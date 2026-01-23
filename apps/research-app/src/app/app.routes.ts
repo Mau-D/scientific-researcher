@@ -14,7 +14,7 @@ export const appRoutes: Route[] = [
         data: { title: 'Recherchez', showInNavbar: true },
       },
       {
-        path: 'publication:id',
+        path: 'publication/:id',
         component: PublicationPage,
         data: { title: 'Publication', showInNavbar: false },
       },
