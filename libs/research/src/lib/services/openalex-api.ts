@@ -14,7 +14,6 @@ export class OpenalexApi {
   }
   getWorksList(count: string, language: string) {
     console.log('Fetching works list with count:', count, language);
-    
     return this.http.get<OpenAlexResponse<OpenAlexWork>>(
       `${this.baseUrl}/works?sample=${count}&language=${language}`
     );
