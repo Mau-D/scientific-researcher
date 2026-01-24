@@ -22,16 +22,18 @@ export class WorksService {
     }
     return data;
   }
-   async getWorksSample(sampleCount: string) : Promise<OpenAlexResponse<OpenAlexWork>> {
-    const url = `${this.base}${this.works}?sample=${sampleCount}`;
-    const url2 = `${this.base}${this.works}?sample=${sampleCount}&filter=is_oa:true,language:fr|en`;
-    console.log('WorksService - getWorksSample URL:', url2);
+   async getWorksSample(sample: string, language: string) : Promise<OpenAlexResponse<OpenAlexWork>> {
+    const url = `${this.base}${this.works}?sample=${sample}`;
+    // const url2 = `${this.base}${this.works}?sample=${sampleCount}&filter=is_oa:true,language:fr|en`;
+    // const url2 = `${this.base}${this.works}?sample=${sampleCount}&filter=is_oa:true,language:fr`;
+    const url2 = `${this.base}${this.works}?sample=${sample}&filter=language:${language}`;
+    console.log('WorksService - getWorksSample URL:', url2, language);
     // On fait l'appel. Si Axios (httpService) reçoit une erreur 404/500, 
     // il lèvera une exception automatiquement.
     const { data } = await firstValueFrom(this.http.get<OpenAlexResponse<OpenAlexWork>>(url2));
     if (!data) {
       // Si l'API répond 200 mais sans données, on lance l'erreur manuellement
-      throw new NotFoundException(`Work with ID ${sampleCount} not found`);
+      throw new NotFoundException(`Work with ID ${sample} not found`);
     }
     // console.log('WorksService - getWorksSample data:', data);
     return data;

@@ -4,7 +4,7 @@ import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
 import { OpenAlexResponse, OpenAlexWork } from '@org/models';
 import { OpenalexApi } from '@org/research';
 import { ResearchCard } from '@org/ui-layout';
-import { firstValueFrom } from 'rxjs'; // Pour gérer le cas initial
+import { firstValueFrom, sample } from 'rxjs'; // Pour gérer le cas initial
 import { WorkDetails } from '../work-details/work-details';
 @Component({
   selector: 'app-search',
@@ -51,17 +51,19 @@ export class Search {
       return datas;
     },
   });
+  readonly language = signal('fr');
   worksResource = resource<OpenAlexResponse<OpenAlexWork>, string | undefined>({
     params: () => this.sampleWorks(),
-    loader: async ({ params: sampleCount }) => {
-      if (!sampleCount || sampleCount === '0') {
+    loader: async ({ params: sample }) => {
+      console.log('Loader worksResource triggered with sample:', sample);
+      if (!sample || sample === '0') {
         // Note: Le retour doit correspondre au type OpenAlexResponse ou lever une erreur/null
         // Pour éviter les erreurs de type, on peut retourner un objet vide typé
         return {} as OpenAlexResponse<OpenAlexWork>;
       }
       // Appel à votre API
       // firstValueFrom transforme votre Observable en Promise (requis par le loader)
-      const list = await firstValueFrom(this.api.getWorksList(sampleCount));
+      const list = await firstValueFrom(this.api.getWorksList(sample, this.language()));
 
       return list;
     },
