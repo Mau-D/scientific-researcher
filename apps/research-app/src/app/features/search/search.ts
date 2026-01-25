@@ -1,7 +1,7 @@
 import { Component, inject, resource, signal, viewChild } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
-import { OpenAlexResponse, OpenAlexWork } from '@org/models';
+import { OpenAlexFilters, OpenAlexResponse, OpenAlexWork } from '@org/models';
 import { OpenalexApi } from '@org/research';
 import { ResearchCard } from '@org/ui-layout';
 import { firstValueFrom } from 'rxjs'; // Pour gérer le cas initial
@@ -51,21 +51,20 @@ export class Search {
   });
   language = signal<string>('fr');
   sampleWorks = signal<string | undefined>(undefined);
+filtersToApply = signal<OpenAlexFilters>({language: this.language(), is_oa: true});  
 
-  worksResource = resource<
-    OpenAlexResponse<OpenAlexWork>,
-    { sampleWorks: string | undefined; lang: string }
-  >({
-    // params: () => {
-    //    return{ sample: this.sampleWorks(), lang: this.language() };
-    // }
-    params: () => ({ sampleWorks: this.sampleWorks(), lang: this.language() }),
+  worksResource = resource<OpenAlexResponse<OpenAlexWork>,{sampleWorks: string | undefined; filters: OpenAlexFilters}>({
+    
+    params: () => ({ sampleWorks: this.sampleWorks(), filters: this.filtersToApply() }),
     loader: async ({ params }) => {
+      const filters: string = Object.keys(params.filters)
+        .map((key) => `${key}:${(params.filters as OpenAlexFilters)[key as keyof OpenAlexFilters]}`)
+        .join(',');
       // Ici, params est ton objet { sample, language }
       console.log(
         'Loader worksResource triggered with params:',
         params.sampleWorks,
-        params.lang
+        filters
       );
       if (!params.sampleWorks || params.sampleWorks === '0') {
         // Note: Le retour doit correspondre au type OpenAlexResponse ou lever une erreur/null
@@ -75,7 +74,7 @@ export class Search {
       // Appel à votre API
       // firstValueFrom transforme votre Observable en Promise (requis par le loader)
       const list = await firstValueFrom(
-        this.api.getWorksList(params.sampleWorks, params.lang)
+        this.api.getWorksList(params.sampleWorks, filters)
       );
       return list;
     },

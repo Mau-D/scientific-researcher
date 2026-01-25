@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '@org/config';
-import { OpenAlexWork, OpenAlexResponse } from '@org/models';
+import { OpenAlexWork, OpenAlexResponse, OpenAlexFilters } from '@org/models';
 @Injectable({
   providedIn: 'root',
 })
@@ -12,10 +12,10 @@ export class OpenalexApi {
   getDatasWork(id: string) {
     return this.http.get<OpenAlexWork>(`${this.baseUrl}/works/${id}`);
   }
-  getWorksList(count: string, language: string) {
-    console.log('Fetching works list with count:', count, language);
+  getWorksList(count: string, filters: string) {
+    console.log('Fetching works list with count:', count, filters);
     return this.http.get<OpenAlexResponse<OpenAlexWork>>(
-      `${this.baseUrl}/works?sample=${count}&language=${language}`
+      `${this.baseUrl}/works?sample=${count}&filters=${filters}`
     );
   }
 }
