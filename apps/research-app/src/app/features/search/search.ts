@@ -1,11 +1,18 @@
 import { Component, inject, resource, signal, viewChild } from '@angular/core';
+import { FormBuilder, FormControl, ReactiveFormsModule, ɵInternalFormsSharedModule } from '@angular/forms';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
 import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
 import { OpenAlexFilters, OpenAlexResponse, OpenAlexWork } from '@org/models';
 import { OpenalexApi } from '@org/research';
 import { ResearchCard } from '@org/ui-layout';
 import { firstValueFrom } from 'rxjs'; // Pour gérer le cas initial
 import { WorkDetails } from '../work-details/work-details';
+
 @Component({
   selector: 'app-search',
   imports: [
@@ -14,14 +21,30 @@ import { WorkDetails } from '../work-details/work-details';
     MatSidenavModule,
     MatDrawer,
     WorkDetails,
-  ],
+    MatIconModule,
+    MatCheckboxModule,
+    MatExpansionModule,
+    MatSelectModule,
+    MatFormFieldModule,
+    ɵInternalFormsSharedModule,
+    ReactiveFormsModule
+],
   templateUrl: './search.html',
   styleUrl: './search.scss',
 })
 export class Search {
   currentWork: OpenAlexWork | undefined;
   private api = inject(OpenalexApi);
+  private formBuilder = inject(FormBuilder);
 
+
+  filtersForm = this.formBuilder.group({
+    isOa: new FormControl(true),
+    hasAbstract: new FormControl(true),
+    hasPdf: new FormControl(true),
+    hasOaAcceptedOrPublishedVersion: new FormControl(true),
+    language: new FormControl([ 'fr', 'en' ]), // Valeur par défaut en français
+  });
   public idClicked = signal<string>('');
   drawer = viewChild(MatDrawer);
 
@@ -51,7 +74,7 @@ export class Search {
   });
   language = signal<string>('fr');
   sampleWorks = signal<string | undefined>(undefined);
-filtersToApply = signal<OpenAlexFilters>({language: this.language(), is_oa: true});  
+filtersToApply = signal<OpenAlexFilters>({language: this.language(), is_oa: true, has_abstract:true, "has_content.pdf":true, has_oa_accepted_or_published_version:true});  
 
   worksResource = resource<OpenAlexResponse<OpenAlexWork>,{sampleWorks: string | undefined; filters: OpenAlexFilters}>({
     

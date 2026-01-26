@@ -11,6 +11,9 @@ export interface OpenAlexResponse<T> {
 export interface OpenAlexFilters {
   language?: string; // Filtrer par langue (ex: "en" pour anglais)
   is_oa?: boolean; // Filtrer par accès ouvert
+  has_abstract?: boolean; // Filtrer par présence de résumé
+ "has_content.pdf"?: boolean; // Filtrer par présence de PDF
+  has_oa_accepted_or_published_version?: boolean; // Filtrer par version acceptée ou publiée en libre accès
 }
 
 export interface OpenAlexMeta {

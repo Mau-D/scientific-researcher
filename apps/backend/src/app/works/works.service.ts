@@ -1,9 +1,8 @@
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { OpenAlexResponse, OpenAlexWork } from '@org/models';
 import { firstValueFrom } from 'rxjs';
-import { OpenAlexFilters, OpenAlexResponse, OpenAlexWork } from '@org/models';
-import { NotFoundException } from '@nestjs/common';
 @Injectable()
 export class WorksService {
   base = this.config.get<string>('OPENALEX_BASE_URL');

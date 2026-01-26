@@ -1,12 +1,47 @@
-@let sampleWorksResult =worksResource.value()?.results; 
-@let sampleWorksMeta=worksResource.value()?.meta; 
-@let data = workResource.value();
-<section class="">
+@let sampleWorksResult =worksResource.value()?.results; @let
+sampleWorksMeta=worksResource.value()?.meta; @let data = workResource.value();
+
+<section class="w-dvw flex flex-col justify-start items-center px-5 h-auto">
   <div>
     <button class="bg-blue-500 p-4 my-4" (click)="sampleWorks.set('10')">
       Récupérer 10 résultats
     </button>
   </div>
+  <div class="container w-1/2 mb-5">
+    <mat-expansion-panel hideToggle>
+      <mat-expansion-panel-header class="flex justify-start items-center">
+        <mat-panel-title>
+          <span
+            class="dark:text-white text-gray-light text-2xl mr-1 h-auto flex justify-center items-center hover:text-primary"
+          >
+            <mat-icon fontSet="material-symbols-outlined">
+              filter_list
+            </mat-icon>
+          </span>
+          <p>Filtres par défaut</p>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <div>
+        <form [formGroup]="filtersForm">
+          <mat-checkbox formControlName="isOa">Accès ouvert</mat-checkbox>
+          <mat-checkbox formControlName="hasAbstract">Avec résumé</mat-checkbox>
+          <mat-checkbox formControlName="hasPdf">Avec PDF</mat-checkbox>
+          <mat-checkbox formControlName="hasOaAcceptedOrPublishedVersion"
+            >Avec version acceptée ou publiée en accès ouvert</mat-checkbox
+          >
+          <br />
+          <mat-form-field>
+            <mat-label>Langues</mat-label>
+            <mat-select formControlName="language" multiple>
+              <mat-option [value]="'fr'">Français</mat-option>
+              <mat-option [value]="'en'">Anglais</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </form>
+      </div>
+    </mat-expansion-panel>
+  </div>
+
   @if (sampleWorksResult; as work) {
   <div>
     <h1 class="text-2xl mb-4">
@@ -60,7 +95,7 @@
           </div>
         </div>
         }@else if (!isLoading() && !sampleWorksResult) {
-        <p>En attente d'une recherche...</p>
+        <p class="mt-10">En attente d'une recherche...</p>
         } @if (isLoading()) {
         <mat-spinner></mat-spinner>
         } @if (error()) {
