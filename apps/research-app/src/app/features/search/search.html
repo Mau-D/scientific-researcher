@@ -3,7 +3,10 @@ sampleWorksMeta=worksResource.value()?.meta; @let data = workResource.value();
 
 <section class="w-dvw flex flex-col justify-start items-center px-5 h-auto">
   <div>
-    <button class="bg-blue-500 p-4 my-4" (click)="sampleWorks.set('10')">
+    <!-- <button class="bg-blue-500 p-4 my-4" (click)="sampleWorks.set('10')">
+      Récupérer 10 résultats
+    </button> -->
+     <button class="bg-blue-500 p-4 my-4" (click)="getResults('10')">
       Récupérer 10 résultats
     </button>
   </div>
@@ -22,7 +25,8 @@ sampleWorksMeta=worksResource.value()?.meta; @let data = workResource.value();
         </mat-panel-title>
       </mat-expansion-panel-header>
       <div>
-        <form [formGroup]="filtersForm">
+        <p>Cochez les critères obligatoires</p>
+        <form [formGroup]="filtersForm" (ngSubmit)="getResults('10')">
           <mat-checkbox formControlName="isOa">Accès ouvert</mat-checkbox>
           <mat-checkbox formControlName="hasAbstract">Avec résumé</mat-checkbox>
           <mat-checkbox formControlName="hasPdf">Avec PDF</mat-checkbox>

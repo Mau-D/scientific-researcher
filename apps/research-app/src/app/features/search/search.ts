@@ -1,5 +1,5 @@
 import { Component, inject, resource, signal, viewChild } from '@angular/core';
-import { FormBuilder, FormControl, ReactiveFormsModule, ɵInternalFormsSharedModule } from '@angular/forms';
+import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -26,9 +26,8 @@ import { WorkDetails } from '../work-details/work-details';
     MatExpansionModule,
     MatSelectModule,
     MatFormFieldModule,
-    ɵInternalFormsSharedModule,
-    ReactiveFormsModule
-],
+    ReactiveFormsModule,
+  ],
   templateUrl: './search.html',
   styleUrl: './search.scss',
 })
@@ -36,17 +35,27 @@ export class Search {
   currentWork: OpenAlexWork | undefined;
   private api = inject(OpenalexApi);
   private formBuilder = inject(FormBuilder);
-
+  drawer = viewChild(MatDrawer);
 
   filtersForm = this.formBuilder.group({
-    isOa: new FormControl(true),
-    hasAbstract: new FormControl(true),
-    hasPdf: new FormControl(true),
-    hasOaAcceptedOrPublishedVersion: new FormControl(true),
-    language: new FormControl([ 'fr', 'en' ]), // Valeur par défaut en français
+    isOa: new FormControl<boolean>(true, {
+      nonNullable: true,
+    }),
+    hasAbstract: new FormControl<boolean>(true, {
+      nonNullable: true,
+    }),
+    hasPdf: new FormControl<boolean>(true, {
+      nonNullable: true,
+    }),
+    hasOaAcceptedOrPublishedVersion: new FormControl<boolean>(true, {
+      nonNullable: true,
+    }),
+    language: new FormControl<string[]>(['fr', 'en']), // Valeur par défaut en français
   });
+
   public idClicked = signal<string>('');
-  drawer = viewChild(MatDrawer);
+  sampleWorks = signal<string | undefined>(undefined);
+  filtersToApply = signal<OpenAlexFilters>({});
 
   toggleDrawer() {
     this.drawer()?.toggle();
@@ -57,6 +66,22 @@ export class Search {
     this.toggleDrawer();
     console.log('Card clicked');
   }
+  getResults(sampleCount: string): void {
+    this.sampleWorks.set(sampleCount);
+    this.filtersToApply.set({
+      language: this.filtersForm.value.language?.join('|') || '',
+      is_oa: this.filtersForm.value.isOa,
+      has_abstract: this.filtersForm.value.hasAbstract,
+      'has_content.pdf': this.filtersForm.value.hasPdf,
+      has_oa_accepted_or_published_version:
+        this.filtersForm.value.hasOaAcceptedOrPublishedVersion,
+    });
+    console.log('Get results clicked with sample count:', sampleCount);
+    console.log('Language filter:', this.filtersForm.value.language);
+    console.log('Filters to apply:', this.filtersToApply());
+    console.log('count signal:', this.sampleWorks());
+  }
+
   toggleScroll(isOpened: boolean) {
     if (isOpened) {
       document.body.classList.add('no-scroll');
@@ -72,16 +97,29 @@ export class Search {
       return datas;
     },
   });
-  language = signal<string>('fr');
-  sampleWorks = signal<string | undefined>(undefined);
-filtersToApply = signal<OpenAlexFilters>({language: this.language(), is_oa: true, has_abstract:true, "has_content.pdf":true, has_oa_accepted_or_published_version:true});  
 
-  worksResource = resource<OpenAlexResponse<OpenAlexWork>,{sampleWorks: string | undefined; filters: OpenAlexFilters}>({
-    
-    params: () => ({ sampleWorks: this.sampleWorks(), filters: this.filtersToApply() }),
+  worksResource = resource<
+    OpenAlexResponse<OpenAlexWork>,
+    { sampleWorks: string | undefined; filters: OpenAlexFilters }
+  >({
+    params: () => ({
+      sampleWorks: this.sampleWorks(),
+      filters: this.filtersToApply(),
+    }),
     loader: async ({ params }) => {
       const filters: string = Object.keys(params.filters)
-        .map((key) => `${key}:${(params.filters as OpenAlexFilters)[key as keyof OpenAlexFilters]}`)
+        .filter((key) => {
+          const value = (params.filters as OpenAlexFilters)[
+            key as keyof OpenAlexFilters
+          ];
+          return value !== false && value !== '';
+        })
+        .map(
+          (key) =>
+            `${key}:${
+              (params.filters as OpenAlexFilters)[key as keyof OpenAlexFilters]
+            }`
+        )
         .join(',');
       // Ici, params est ton objet { sample, language }
       console.log(
