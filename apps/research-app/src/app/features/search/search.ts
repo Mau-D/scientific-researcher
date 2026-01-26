@@ -1,11 +1,18 @@
 import { Component, inject, resource, signal, viewChild } from '@angular/core';
+import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
 import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
-import { OpenAlexResponse, OpenAlexWork } from '@org/models';
+import { OpenAlexFilters, OpenAlexResponse, OpenAlexWork } from '@org/models';
 import { OpenalexApi } from '@org/research';
 import { ResearchCard } from '@org/ui-layout';
 import { firstValueFrom } from 'rxjs'; // Pour gérer le cas initial
 import { WorkDetails } from '../work-details/work-details';
+
 @Component({
   selector: 'app-search',
   imports: [
@@ -14,6 +21,12 @@ import { WorkDetails } from '../work-details/work-details';
     MatSidenavModule,
     MatDrawer,
     WorkDetails,
+    MatIconModule,
+    MatCheckboxModule,
+    MatExpansionModule,
+    MatSelectModule,
+    MatFormFieldModule,
+    ReactiveFormsModule,
   ],
   templateUrl: './search.html',
   styleUrl: './search.scss',
@@ -21,21 +34,54 @@ import { WorkDetails } from '../work-details/work-details';
 export class Search {
   currentWork: OpenAlexWork | undefined;
   private api = inject(OpenalexApi);
-  sampleWorks = signal<string | undefined>(undefined);
+  private formBuilder = inject(FormBuilder);
+  drawer = viewChild(MatDrawer);
+
+  filtersForm = this.formBuilder.group({
+    isOa: new FormControl<boolean>(true, {
+      nonNullable: true,
+    }),
+    hasAbstract: new FormControl<boolean>(true, {
+      nonNullable: true,
+    }),
+    hasPdf: new FormControl<boolean>(true, {
+      nonNullable: true,
+    }),
+    hasOaAcceptedOrPublishedVersion: new FormControl<boolean>(true, {
+      nonNullable: true,
+    }),
+    language: new FormControl<string[]>(['fr', 'en']), // Valeur par défaut en français
+  });
 
   public idClicked = signal<string>('');
-  drawer = viewChild(MatDrawer);
+  sampleWorks = signal<string | undefined>(undefined);
+  filtersToApply = signal<OpenAlexFilters>({});
 
   toggleDrawer() {
     this.drawer()?.toggle();
   }
 
   onCardClicked(id: string): void {
-
     this.idClicked.set(id);
     this.toggleDrawer();
     console.log('Card clicked');
   }
+  getResults(sampleCount: string): void {
+    this.sampleWorks.set(sampleCount);
+    this.filtersToApply.set({
+      language: this.filtersForm.value.language?.join('|') || '',
+      is_oa: this.filtersForm.value.isOa,
+      has_abstract: this.filtersForm.value.hasAbstract,
+      'has_content.pdf': this.filtersForm.value.hasPdf,
+      has_oa_accepted_or_published_version:
+        this.filtersForm.value.hasOaAcceptedOrPublishedVersion,
+    });
+    console.log('Get results clicked with sample count:', sampleCount);
+    console.log('Language filter:', this.filtersForm.value.language);
+    console.log('Filters to apply:', this.filtersToApply());
+    console.log('count signal:', this.sampleWorks());
+  }
+
   toggleScroll(isOpened: boolean) {
     if (isOpened) {
       document.body.classList.add('no-scroll');
@@ -51,21 +97,65 @@ export class Search {
       return datas;
     },
   });
-  worksResource = resource<OpenAlexResponse<OpenAlexWork>, string | undefined>({
-    params: () => this.sampleWorks(),
-    loader: async ({ params: sampleCount }) => {
-      if (!sampleCount || sampleCount === '0') {
+
+  worksResource = resource<
+    OpenAlexResponse<OpenAlexWork>,
+    { sampleWorks: string | undefined; filters: OpenAlexFilters }
+  >({
+    params: () => ({
+      sampleWorks: this.sampleWorks(),
+      filters: this.filtersToApply(),
+    }),
+    loader: async ({ params }) => {
+      const filters: string = Object.keys(params.filters)
+        .filter((key) => {
+          const value = (params.filters as OpenAlexFilters)[
+            key as keyof OpenAlexFilters
+          ];
+          return value !== false && value !== '';
+        })
+        .map(
+          (key) =>
+            `${key}:${
+              (params.filters as OpenAlexFilters)[key as keyof OpenAlexFilters]
+            }`
+        )
+        .join(',');
+      // Ici, params est ton objet { sample, language }
+      console.log(
+        'Loader worksResource triggered with params:',
+        params.sampleWorks,
+        filters
+      );
+      if (!params.sampleWorks || params.sampleWorks === '0') {
         // Note: Le retour doit correspondre au type OpenAlexResponse ou lever une erreur/null
         // Pour éviter les erreurs de type, on peut retourner un objet vide typé
         return {} as OpenAlexResponse<OpenAlexWork>;
       }
       // Appel à votre API
       // firstValueFrom transforme votre Observable en Promise (requis par le loader)
-      const list = await firstValueFrom(this.api.getWorksList(sampleCount));
-
+      const list = await firstValueFrom(
+        this.api.getWorksList(params.sampleWorks, filters)
+      );
       return list;
     },
   });
+  //  worksResource = resource<OpenAlexResponse<OpenAlexWork>, string | undefined>({
+  //   params: () => this.sampleWorks(),
+  //   loader: async ({ params: sample }) => {
+  //     console.log('Loader worksResource triggered with sample:', sample);
+  //     if (!sample || sample === '0') {
+  //       // Note: Le retour doit correspondre au type OpenAlexResponse ou lever une erreur/null
+  //       // Pour éviter les erreurs de type, on peut retourner un objet vide typé
+  //       return {} as OpenAlexResponse<OpenAlexWork>;
+  //     }
+  //     // Appel à votre API
+  //     // firstValueFrom transforme votre Observable en Promise (requis par le loader)
+  //     const list = await firstValueFrom(this.api.getWorksList(sample, this.language()));
+
+  //     return list;
+  //   },
+  // });
 
   // Getters pour simplifier l'accès dans le template
   //   .value() : La dernière valeur reçue avec succès (Signal).

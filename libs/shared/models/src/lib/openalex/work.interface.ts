@@ -8,6 +8,13 @@ export interface OpenAlexResponse<T> {
   results: T[];
   group_by?: OpenAlexGroupByResult[]; // Optionnel, si vous utilisez les agrégations
 }
+export interface OpenAlexFilters {
+  language?: string; // Filtrer par langue (ex: "en" pour anglais)
+  is_oa?: boolean | string; // Filtrer par accès ouvert
+  has_abstract?: boolean | string; // Filtrer par présence de résumé
+ "has_content.pdf"?: boolean | string; // Filtrer par présence de PDF
+  has_oa_accepted_or_published_version?: boolean | string; // Filtrer par version acceptée ou publiée en libre accès
+}
 
 export interface OpenAlexMeta {
   count: number; // Nombre total de résultats
