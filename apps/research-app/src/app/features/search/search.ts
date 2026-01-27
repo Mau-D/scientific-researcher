@@ -1,4 +1,12 @@
-import { Component, inject, resource, signal, viewChild } from '@angular/core';
+import {
+  Component,
+  inject,
+  resource,
+  signal,
+  viewChild,
+  effect,
+  computed,
+} from '@angular/core';
 import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -12,6 +20,9 @@ import { OpenalexApi } from '@org/research';
 import { ResearchCard } from '@org/ui-layout';
 import { firstValueFrom } from 'rxjs'; // Pour gérer le cas initial
 import { WorkDetails } from '../work-details/work-details';
+import { MatInputModule } from '@angular/material/input';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
+
 
 @Component({
   selector: 'app-search',
@@ -26,6 +37,8 @@ import { WorkDetails } from '../work-details/work-details';
     MatExpansionModule,
     MatSelectModule,
     MatFormFieldModule,
+    MatInputModule,
+    MatAutocompleteModule,
     ReactiveFormsModule,
   ],
   templateUrl: './search.html',
@@ -52,10 +65,32 @@ export class Search {
     }),
     language: new FormControl<string[]>(['fr', 'en']), // Valeur par défaut en français
   });
+  debouncedSearch = signal('');
+  search = signal('');
 
   public idClicked = signal<string>('');
   sampleWorks = signal<string | undefined>(undefined);
   filtersToApply = signal<OpenAlexFilters>({});
+  constructor() {
+    effect(() => {
+      const value = this.search();
+      console.log('constructor:Search input changed:', value);
+      const timeout = setTimeout(() => {
+        this.debouncedSearch.set(value);
+      }, 300);
+
+      return () => clearTimeout(timeout);
+    });
+  }
+  searchQuery = computed(() => {
+    const value = this.search().trim();
+    console.log('Computed searchQuery:', value);
+    return value.length >= 2 ? value : null;
+  });
+  keywords = computed(() => {
+    console.log('Computed keywords called:', this.keywordsResource.value());
+    return this.keywordsResource.value() ?? [];
+  });
 
   toggleDrawer() {
     this.drawer()?.toggle();
@@ -89,6 +124,15 @@ export class Search {
       document.body.classList.remove('no-scroll');
     }
   }
+  keywordsResource = resource<string[] | null, string | null>({
+    params: () => this.searchQuery(),
+    loader: async ({ params }) => {
+      if (!params) return null;
+      const response = await firstValueFrom(this.api.search(params));
+      console.log('Keywords response:', response);
+      return response;
+    },
+  });
   workResource = resource<OpenAlexWork | undefined, string | undefined>({
     params: () => this.idClicked(),
     loader: async ({ params: id }) => {

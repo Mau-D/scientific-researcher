@@ -8,7 +8,7 @@
     <mat-card-subtitle>
       <div>
         <div class="flex justify-start items-start">
-          <p class="mr-3">Réconpense(s):</p>
+          <p class="mr-3">Récompense(s):</p>
           <div class="flex flex-col justify-start items-start">
             @for (award of data()?.awards; track award.id) {
             <div class="flex justify-start items-center mb-2 text-left">
@@ -114,24 +114,6 @@
     <mat-divider></mat-divider>
     <div class="py-2.5 flex justify-center items-baseline">
       <div class="w-1/2 flex flex-col justify-start items-start">
-        <!-- <div>
-          <span
-            class="text-green-500 text-3xl mr-1 h-auto flex justify-center items-center"
-            [style.display]="data()?.open_access?.is_oa ? 'flex' : 'none'"
-          >
-            <mat-icon fontSet="material-symbols-outlined"> lock_open </mat-icon>
-            <p class="text-gray-blue text-xs text-bold">Open access</p>
-          </span>
-          <span
-            class="text-red-500 text-3xl mr-1 h-auto flex justify-center items-center"
-            [style.display]="!data()?.open_access?.is_oa ? 'flex' : 'none'"
-          >
-            <mat-icon fontSet="material-symbols-outlined"> lock </mat-icon>
-            <p class="text-gray-blue text-sm ml-2 text-bold text-left">
-              Texte non disponible
-            </p>
-          </span>
-        </div> -->
         @if (oaDetails(); as details) {
         <div class="mt-2">
           <span

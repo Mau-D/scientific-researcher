@@ -3,12 +3,26 @@ sampleWorksMeta=worksResource.value()?.meta; @let data = workResource.value();
 
 <section class="w-dvw flex flex-col justify-start items-center px-5 h-auto">
   <div>
-    <!-- <button class="bg-blue-500 p-4 my-4" (click)="sampleWorks.set('10')">
-      Récupérer 10 résultats
-    </button> -->
-     <button class="bg-blue-500 p-4 my-4" (click)="getResults('10')">
-      Récupérer 10 résultats
-    </button>
+    <mat-form-field class="w-full max-w-lg">
+      <mat-label>Rechercher par mots-clés</mat-label>
+      <input
+        matInput
+        placeholder="Rechercher un mot-clé"
+        [value]="search()"
+        (input)="search.set($any($event.target).value)"
+        [matAutocomplete]="auto"
+      />
+      <mat-autocomplete #auto="matAutocomplete">
+        @for (keyword of keywords(); track keyword) {
+        <mat-option [value]="keyword"> {{ keyword }} </mat-option>
+        }
+      </mat-autocomplete>
+      @if (keywordsResource.isLoading()) {
+      <mat-hint> Recherche en cours... </mat-hint>
+      } @else if (keywordsResource.value()?.length === 0) {<mat-hint>
+        Aucun mot-clé trouvé </mat-hint
+      >}
+    </mat-form-field>
   </div>
   <div class="container w-1/2 mb-5">
     <mat-expansion-panel hideToggle>
@@ -44,6 +58,15 @@ sampleWorksMeta=worksResource.value()?.meta; @let data = workResource.value();
         </form>
       </div>
     </mat-expansion-panel>
+  </div>
+
+  <div>
+    <!-- <button class="bg-blue-500 p-4 my-4" (click)="sampleWorks.set('10')">
+      Récupérer 10 résultats
+    </button> -->
+    <button class="bg-blue-500 p-4 my-4" (click)="getResults('10')">
+      Récupérer 10 résultats
+    </button>
   </div>
 
   @if (sampleWorksResult; as work) {
