@@ -21,8 +21,7 @@ import { ResearchCard } from '@org/ui-layout';
 import { firstValueFrom } from 'rxjs'; // Pour gérer le cas initial
 import { WorkDetails } from '../work-details/work-details';
 import { MatInputModule } from '@angular/material/input';
-import {MatAutocompleteModule} from '@angular/material/autocomplete';
-
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 @Component({
   selector: 'app-search',
@@ -128,11 +127,20 @@ export class Search {
     params: () => this.searchQuery(),
     loader: async ({ params }) => {
       if (!params) return null;
-      const response = await firstValueFrom(this.api.search(params));
+      const response = await firstValueFrom(this.api.getKeywordsList(params));
       console.log('Keywords response:', response);
       return response;
     },
   });
+  // keywordsResource = resource<string[], string >({
+  //   params: () => this.searchQuery(),
+  //   loader:  (params) => {
+  //     if (!params) return [];
+  //     const response =  this.api.getKeywordsList(params);
+  //     console.log('Keywords response:', response);
+  //     return response ;
+  //   },
+  // });
   workResource = resource<OpenAlexWork | undefined, string | undefined>({
     params: () => this.idClicked(),
     loader: async ({ params: id }) => {

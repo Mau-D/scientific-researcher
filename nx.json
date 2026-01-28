@@ -73,7 +73,10 @@
       "options": {
         "targetName": "test"
       },
-      "exclude": ["apps/backend-e2e/**/*"]
+      "exclude": [
+        "apps/backend-e2e/**/*",
+        "apps/backend/src/app/keywords-e2e/**/*"
+      ]
     },
     {
       "plugin": "@nx/docker",
