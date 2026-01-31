@@ -29,10 +29,10 @@ export class KeywordsService {
           return a.localeCompare(b); // Sinon, tri alphabétique classique
         })
 
-        .slice(0, 100);
-      console.log('Nombre de Résultats', data.results.length);
-      console.log('KeywordsService - findAll keywords:', keywords);
-      console.log('Nombre de Résultats', data.results.length);
+        // .slice(0, 100); //OpenAlex fourni 25 mots-clés par défaut
+      // console.log('Nombre de Résultats', data.results.length);
+      // console.log('KeywordsService - findAll keywords:', keywords);
+      // console.log('Nombre de Résultats', data.results.length);
 
       return keywords;
     } catch (err) {

@@ -1,5 +1,10 @@
-@let sampleWorksResult =worksResource.value()?.results; @let
-sampleWorksMeta=worksResource.value()?.meta; @let data = workResource.value();
+@let sampleWorksResult =worksResource.value()?.results; 
+<!--  -->
+@let sampleWorksMeta=worksResource.value()?.meta; 
+<!--  -->
+@let data = workResource.value();
+<!--  -->
+@let meta = worksMetaResource.value()?.meta;
 
 <section class="w-dvw flex flex-col justify-start items-center px-5 h-auto">
   <div>
@@ -12,7 +17,7 @@ sampleWorksMeta=worksResource.value()?.meta; @let data = workResource.value();
         (input)="search.set($any($event.target).value)"
         [matAutocomplete]="auto"
       />
-      <mat-autocomplete #auto="matAutocomplete">
+      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSelect($event)">
         @for (keyword of keywords(); track keyword) {
         <mat-option [value]="keyword"> {{ keyword }} </mat-option>
         }
@@ -64,16 +69,23 @@ sampleWorksMeta=worksResource.value()?.meta; @let data = workResource.value();
     <!-- <button class="bg-blue-500 p-4 my-4" (click)="sampleWorks.set('10')">
       Récupérer 10 résultats
     </button> -->
+    
     <button class="bg-blue-500 p-4 my-4" (click)="getResults('10')">
       Récupérer 10 résultats
     </button>
+     <!-- <button class="bg-blue-500 p-4 my-4" (click)="getNumberWorks()">
+      Afficher le nombre de publications
+    </button> -->
   </div>
-
+ <h1 class="text-2xl mb-4">
+      Nombre de publications correspondantes : {{meta?.count}}
+    </h1>
   @if (sampleWorksResult; as work) {
   <div>
     <h1 class="text-2xl mb-4">
       Nombre de résultats : {{sampleWorksMeta?.count}}
     </h1>
+   
   </div>
   }
   <mat-drawer-container>

@@ -15,13 +15,21 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
-import { OpenAlexFilters, OpenAlexResponse, OpenAlexWork } from '@org/models';
+import {
+  OpenAlexFilters,
+  OpenAlexResponse,
+  OpenAlexWork,
+  OpenAlexMeta,
+} from '@org/models';
 import { OpenalexApi } from '@org/research';
 import { ResearchCard } from '@org/ui-layout';
 import { firstValueFrom } from 'rxjs'; // Pour gérer le cas initial
 import { WorkDetails } from '../work-details/work-details';
 import { MatInputModule } from '@angular/material/input';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import {
+  MatAutocompleteModule,
+  MatAutocompleteSelectedEvent,
+} from '@angular/material/autocomplete';
 
 @Component({
   selector: 'app-search',
@@ -66,6 +74,7 @@ export class Search {
   });
   debouncedSearch = signal('');
   search = signal('');
+  searchSelected = signal('');
 
   public idClicked = signal<string>('');
   sampleWorks = signal<string | undefined>(undefined);
@@ -90,7 +99,12 @@ export class Search {
     console.log('Computed keywords called:', this.keywordsResource.value());
     return this.keywordsResource.value() ?? [];
   });
-
+  onSelect(event: MatAutocompleteSelectedEvent) {
+    this.getFilters();
+    const value: string = event.option.value;
+    console.log('event Value:   ', value);
+    this.searchSelected.set(value);
+  }
   toggleDrawer() {
     this.drawer()?.toggle();
   }
@@ -115,7 +129,29 @@ export class Search {
     console.log('Filters to apply:', this.filtersToApply());
     console.log('count signal:', this.sampleWorks());
   }
-
+  getFilters(): void {
+    this.filtersToApply.set({
+      language: this.filtersForm.value.language?.join('|') || '',
+      is_oa: this.filtersForm.value.isOa,
+      has_abstract: this.filtersForm.value.hasAbstract,
+      'has_content.pdf': this.filtersForm.value.hasPdf,
+      has_oa_accepted_or_published_version:
+        this.filtersForm.value.hasOaAcceptedOrPublishedVersion,
+    });
+    console.log('2Language filter:', this.filtersForm.value.language);
+    console.log('2Filters to apply:', this.filtersToApply());
+  }
+  // getNumberWorks(){
+  //   //  this.sampleWorks.set(sampleCount);
+  //     this.filtersToApply.set({
+  //       language: this.filtersForm.value.language?.join('|') || '',
+  //       is_oa: this.filtersForm.value.isOa,
+  //       has_abstract: this.filtersForm.value.hasAbstract,
+  //       'has_content.pdf': this.filtersForm.value.hasPdf,
+  //       has_oa_accepted_or_published_version:
+  //         this.filtersForm.value.hasOaAcceptedOrPublishedVersion,
+  //     });
+  // }
   toggleScroll(isOpened: boolean) {
     if (isOpened) {
       document.body.classList.add('no-scroll');
@@ -180,6 +216,7 @@ export class Search {
         filters
       );
       if (!params.sampleWorks || params.sampleWorks === '0') {
+        console.log('Retour VIDE Work resource');
         // Note: Le retour doit correspondre au type OpenAlexResponse ou lever une erreur/null
         // Pour éviter les erreurs de type, on peut retourner un objet vide typé
         return {} as OpenAlexResponse<OpenAlexWork>;
@@ -192,22 +229,54 @@ export class Search {
       return list;
     },
   });
-  //  worksResource = resource<OpenAlexResponse<OpenAlexWork>, string | undefined>({
-  //   params: () => this.sampleWorks(),
-  //   loader: async ({ params: sample }) => {
-  //     console.log('Loader worksResource triggered with sample:', sample);
-  //     if (!sample || sample === '0') {
-  //       // Note: Le retour doit correspondre au type OpenAlexResponse ou lever une erreur/null
-  //       // Pour éviter les erreurs de type, on peut retourner un objet vide typé
-  //       return {} as OpenAlexResponse<OpenAlexWork>;
-  //     }
-  //     // Appel à votre API
-  //     // firstValueFrom transforme votre Observable en Promise (requis par le loader)
-  //     const list = await firstValueFrom(this.api.getWorksList(sample, this.language()));
+  worksMetaResource = resource<
+    OpenAlexResponse<OpenAlexWork>,
+    { search: string|undefined; filters: OpenAlexFilters }
+  >({
+    params: () => ({
+      search: this.searchSelected(),
+      filters: this.filtersToApply(),
+    }),
+    loader: async ({ params }) => {
+      const filters: string = Object.keys(params.filters)
+        .filter((key) => {
+          const value = (params.filters as OpenAlexFilters)[
+            key as keyof OpenAlexFilters
+          ];
+          return value !== false && value !== '';
+        })
+        .map(
+          (key) =>
+            `${key}:${
+              (params.filters as OpenAlexFilters)[key as keyof OpenAlexFilters]
+            }`
+        )
+        .join(',');
+      // Ici, params est ton objet { sample, language }
+      console.log(
+        'Loader worksMetaResource triggered with params:',
+        params.search,
+        filters
+      );
+      if (!params.search || params.search === '') {
+        console.log('Retour VIDE Meta resource');
 
-  //     return list;
-  //   },
-  // });
+        // Note: Le retour doit correspondre au type OpenAlexResponse ou lever une erreur/null
+        // Pour éviter les erreurs de type, on peut retourner un objet vide typé
+        return {} as OpenAlexResponse<OpenAlexWork>;
+      }
+      // Appel à votre API
+      // firstValueFrom transforme votre Observable en Promise (requis par le loader)
+      // const metaDatas = await firstValueFrom(
+      //   this.api.getMetaWork(params.search.toLowerCase(), filters)
+      // );
+      const metaDatas = await firstValueFrom(
+        this.api.getMetaWork(params.search.toLocaleLowerCase(), filters)
+      );
+      console.log('Meta Datas:  ', metaDatas);
+      return metaDatas;
+    },
+  });
 
   // Getters pour simplifier l'accès dans le template
   //   .value() : La dernière valeur reçue avec succès (Signal).
