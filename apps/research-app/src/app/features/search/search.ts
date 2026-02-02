@@ -75,6 +75,7 @@ export class Search {
   debouncedSearch = signal('');
   search = signal('');
   searchSelected = signal('');
+  pageNumber = signal(0);
 
   public idClicked = signal<string>('');
   sampleWorks = signal<string | undefined>(undefined);
@@ -141,17 +142,7 @@ export class Search {
     console.log('2Language filter:', this.filtersForm.value.language);
     console.log('2Filters to apply:', this.filtersToApply());
   }
-  // getNumberWorks(){
-  //   //  this.sampleWorks.set(sampleCount);
-  //     this.filtersToApply.set({
-  //       language: this.filtersForm.value.language?.join('|') || '',
-  //       is_oa: this.filtersForm.value.isOa,
-  //       has_abstract: this.filtersForm.value.hasAbstract,
-  //       'has_content.pdf': this.filtersForm.value.hasPdf,
-  //       has_oa_accepted_or_published_version:
-  //         this.filtersForm.value.hasOaAcceptedOrPublishedVersion,
-  //     });
-  // }
+
   toggleScroll(isOpened: boolean) {
     if (isOpened) {
       document.body.classList.add('no-scroll');
@@ -168,15 +159,7 @@ export class Search {
       return response;
     },
   });
-  // keywordsResource = resource<string[], string >({
-  //   params: () => this.searchQuery(),
-  //   loader:  (params) => {
-  //     if (!params) return [];
-  //     const response =  this.api.getKeywordsList(params);
-  //     console.log('Keywords response:', response);
-  //     return response ;
-  //   },
-  // });
+
   workResource = resource<OpenAlexWork | undefined, string | undefined>({
     params: () => this.idClicked(),
     loader: async ({ params: id }) => {
@@ -231,27 +214,28 @@ export class Search {
   });
   worksMetaResource = resource<
     OpenAlexResponse<OpenAlexWork>,
-    { search: string|undefined; filters: OpenAlexFilters }
+    { search: string | undefined; filters: OpenAlexFilters }
   >({
     params: () => ({
       search: this.searchSelected(),
-      filters: this.filtersToApply()
+      filters: this.filtersToApply(),
     }),
     loader: async ({ params }) => {
-      const filters: string = Object.keys(params.filters)
-        .filter((key) => {
-          const value = (params.filters as OpenAlexFilters)[
-            key as keyof OpenAlexFilters
-          ];
-          return value !== false && value !== '';
-        })
-        .map(
-          (key) =>
-            `${key}:${
-              (params.filters as OpenAlexFilters)[key as keyof OpenAlexFilters]
-            }`
-        )
-        .join(',');
+      const filters: string = this.filtersToString(params.filters);
+      // const filters: string = Object.keys(params.filters)
+      //   .filter((key) => {
+      //     const value = (params.filters as OpenAlexFilters)[
+      //       key as keyof OpenAlexFilters
+      //     ];
+      //     return value !== false && value !== '';
+      //   })
+      //   .map(
+      //     (key) =>
+      //       `${key}:${
+      //         (params.filters as OpenAlexFilters)[key as keyof OpenAlexFilters]
+      //       }`
+      //   )
+      //   .join(',');
       // Ici, params est ton objet { sample, language }
       console.log(
         'Loader worksMetaResource triggered with params:',
@@ -265,22 +249,61 @@ export class Search {
         // Pour éviter les erreurs de type, on peut retourner un objet vide typé
         return {} as OpenAlexResponse<OpenAlexWork>;
       }
-      // Appel à votre API
-      // firstValueFrom transforme votre Observable en Promise (requis par le loader)
-      // const metaDatas = await firstValueFrom(
-      //   this.api.getMetaWork(params.search.toLowerCase(), filters)
-      // );
-      const perPage = '1';
-      const page = '1';
       const metaDatas = await firstValueFrom(
-        
-        this.api.getMetaWork(params.search.toLocaleLowerCase(), perPage, page, filters)
+        this.api.getMetaWork(
+          params.search.toLocaleLowerCase(),
+          '1',
+          '1',
+          filters
+        )
       );
       console.log('Meta Datas:  ', metaDatas);
       return metaDatas;
     },
   });
+  worksResultResource = resource<
+    OpenAlexResponse<OpenAlexWork>,
+    { page: number }
+  >({
+    params: () => ({
+      page: this.pageNumber(),
+    }),
+    loader: async ({ params }) => {
+      // Ici, params est ton objet { sample, language }
+      console.log(
+        'Loader worksResultResource triggered with params:',
+        params.page
+      );
+      const search = this.searchSelected().toLowerCase();
+      const filters = this.filtersToString(this.filtersToApply());
+      if (!params.page || params.page === 0) {
+        console.log('Retour VIDE Result resource');
 
+        // Note: Le retour doit correspondre au type OpenAlexResponse ou lever une erreur/null
+        // Pour éviter les erreurs de type, on peut retourner un objet vide typé
+        return {} as OpenAlexResponse<OpenAlexWork>;
+      }
+      const worksDatas = await firstValueFrom(
+        this.api.getResultWorks(search, '25', params.page.toString(), filters)
+      );
+      console.log('Result Datas:  ', worksDatas);
+      return worksDatas;
+    },
+  });
+  filtersToString(filters: OpenAlexFilters) {
+    return Object.keys(filters)
+      .filter((key) => {
+        const value = (filters as OpenAlexFilters)[
+          key as keyof OpenAlexFilters
+        ];
+        return value !== false && value !== '';
+      })
+      .map(
+        (key) =>
+          `${key}:${(filters as OpenAlexFilters)[key as keyof OpenAlexFilters]}`
+      )
+      .join(',');
+  }
   // Getters pour simplifier l'accès dans le template
   //   .value() : La dernière valeur reçue avec succès (Signal).
   // .isLoading() : true si une requête est en cours (Signal).

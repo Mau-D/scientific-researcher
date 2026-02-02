@@ -1,6 +1,6 @@
 @let sampleWorksResult =worksResource.value()?.results; 
+@let worksResult =worksResultResource.value()?.results; 
 <!--  -->
-@let sampleWorksMeta=worksResource.value()?.meta; 
 <!--  -->
 @let data = workResource.value();
 <!--  -->
@@ -66,9 +66,9 @@
   </div>
 
   <div>
-    <!-- <button class="bg-blue-500 p-4 my-4" (click)="sampleWorks.set('10')">
-      Récupérer 10 résultats
-    </button> -->
+    <button class="bg-blue-500 p-4 my-4" (click)="pageNumber.set(1)">
+     Afficher les résultats
+    </button>
     
     <button class="bg-blue-500 p-4 my-4" (click)="getResults('10')">
       Récupérer 10 résultats
@@ -83,7 +83,7 @@
   @if (sampleWorksResult; as work) {
   <div>
     <h1 class="text-2xl mb-4">
-      Nombre de résultats : {{sampleWorksMeta?.count}}
+      Nombre de résultats : {{meta?.count}}
     </h1>
    
   </div>
@@ -114,7 +114,7 @@
     </mat-drawer>
     <mat-drawer-content>
       <section class="flex flex-col justify-start items-center">
-        @if (sampleWorksResult; as work) {
+        @if (worksResult; as work) {
 
         <div
           class="w-full flex flex-wrap justify-start items-center mx-auto p-5"
@@ -125,7 +125,7 @@
             Résultats de la recherche
           </h2>
           <div class="grid grid-cols-1 gap-3 container">
-            @for(work of sampleWorksResult; track work.id) {
+            @for(work of worksResult; track work.id) {
             <lib-research-card
               [data]="work"
               (clickedForDetails)="onCardClicked($event)"
@@ -133,7 +133,7 @@
             }
           </div>
         </div>
-        }@else if (!isLoading() && !sampleWorksResult) {
+        }@else if (!isLoading() && !worksResult) {
         <p class="mt-10">En attente d'une recherche...</p>
         } @if (isLoading()) {
         <mat-spinner></mat-spinner>

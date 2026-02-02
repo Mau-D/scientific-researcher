@@ -32,6 +32,13 @@ export class OpenalexApi {
       `${this.baseUrl}/works?`,
       { params: { research: search, perPage, page, filters } }
     );
+  } 
+  getResultWorks(search: string, perPage:string, page:string, filters: string) {
+    console.log('Fetching works list with count:', search, filters, perPage, page);
+    return this.http.get<OpenAlexResponse<OpenAlexWork>>(
+      `${this.baseUrl}/works?`,
+      { params: { research: search, perPage, page, filters } }
+    );
   }
   
 }
