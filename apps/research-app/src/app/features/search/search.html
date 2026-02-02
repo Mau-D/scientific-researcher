@@ -45,7 +45,8 @@
       </mat-expansion-panel-header>
       <div>
         <p>Cochez les critères obligatoires</p>
-        <form [formGroup]="filtersForm" (ngSubmit)="getResults('10')">
+        <!-- <form [formGroup]="filtersForm" (ngSubmit)="getResults('10')"> -->
+        <form [formGroup]="filtersForm">
           <mat-checkbox formControlName="isOa">Accès ouvert</mat-checkbox>
           <mat-checkbox formControlName="hasAbstract">Avec résumé</mat-checkbox>
           <mat-checkbox formControlName="hasPdf">Avec PDF</mat-checkbox>
@@ -70,9 +71,9 @@
      Afficher les résultats
     </button>
     
-    <button class="bg-blue-500 p-4 my-4" (click)="getResults('10')">
+    <!-- <button class="bg-blue-500 p-4 my-4" (click)="getResults('10')">
       Récupérer 10 résultats
-    </button>
+    </button> -->
      <!-- <button class="bg-blue-500 p-4 my-4" (click)="getNumberWorks()">
       Afficher le nombre de publications
     </button> -->

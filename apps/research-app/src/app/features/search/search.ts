@@ -5,8 +5,9 @@ import {
   signal,
   viewChild,
   effect,
-  computed,
+  computed
 } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -72,6 +73,10 @@ export class Search {
     }),
     language: new FormControl<string[]>(['fr', 'en']), // Valeur par défaut en français
   });
+  formSignal = toSignal(this.filtersForm.valueChanges, {
+  initialValue: this.filtersForm.value
+  
+});
   debouncedSearch = signal('');
   search = signal('');
   searchSelected = signal('');
@@ -90,6 +95,11 @@ export class Search {
 
       return () => clearTimeout(timeout);
     });
+    effect(() => {
+  this.formSignal();
+
+  this.setFiltersApply();
+});
   }
   searchQuery = computed(() => {
     const value = this.search().trim();
@@ -101,7 +111,7 @@ export class Search {
     return this.keywordsResource.value() ?? [];
   });
   onSelect(event: MatAutocompleteSelectedEvent) {
-    this.getFilters();
+    this.setFiltersApply();
     const value: string = event.option.value;
     console.log('event Value:   ', value);
     this.searchSelected.set(value);
@@ -115,8 +125,9 @@ export class Search {
     this.toggleDrawer();
     console.log('Card clicked');
   }
-  getResults(sampleCount: string): void {
-    this.sampleWorks.set(sampleCount);
+  setFiltersApply(): void {
+    // this.sampleWorks.set(sampleCount);
+    this.pageNumber.set(0);
     this.filtersToApply.set({
       language: this.filtersForm.value.language?.join('|') || '',
       is_oa: this.filtersForm.value.isOa,
@@ -125,23 +136,23 @@ export class Search {
       has_oa_accepted_or_published_version:
         this.filtersForm.value.hasOaAcceptedOrPublishedVersion,
     });
-    console.log('Get results clicked with sample count:', sampleCount);
+    // console.log('Get results clicked with sample count:', sampleCount);
     console.log('Language filter:', this.filtersForm.value.language);
     console.log('Filters to apply:', this.filtersToApply());
     console.log('count signal:', this.sampleWorks());
   }
-  getFilters(): void {
-    this.filtersToApply.set({
-      language: this.filtersForm.value.language?.join('|') || '',
-      is_oa: this.filtersForm.value.isOa,
-      has_abstract: this.filtersForm.value.hasAbstract,
-      'has_content.pdf': this.filtersForm.value.hasPdf,
-      has_oa_accepted_or_published_version:
-        this.filtersForm.value.hasOaAcceptedOrPublishedVersion,
-    });
-    console.log('2Language filter:', this.filtersForm.value.language);
-    console.log('2Filters to apply:', this.filtersToApply());
-  }
+  // getFilters(): void {
+  //   this.filtersToApply.set({
+  //     language: this.filtersForm.value.language?.join('|') || '',
+  //     is_oa: this.filtersForm.value.isOa,
+  //     has_abstract: this.filtersForm.value.hasAbstract,
+  //     'has_content.pdf': this.filtersForm.value.hasPdf,
+  //     has_oa_accepted_or_published_version:
+  //       this.filtersForm.value.hasOaAcceptedOrPublishedVersion,
+  //   });
+  //   console.log('2Language filter:', this.filtersForm.value.language);
+  //   console.log('2Filters to apply:', this.filtersToApply());
+  // }
 
   toggleScroll(isOpened: boolean) {
     if (isOpened) {
@@ -154,6 +165,8 @@ export class Search {
     params: () => this.searchQuery(),
     loader: async ({ params }) => {
       if (!params) return null;
+      this.pageNumber.set(0);
+      this.searchSelected.set('');
       const response = await firstValueFrom(this.api.getKeywordsList(params));
       console.log('Keywords response:', response);
       return response;
@@ -249,6 +262,7 @@ export class Search {
         // Pour éviter les erreurs de type, on peut retourner un objet vide typé
         return {} as OpenAlexResponse<OpenAlexWork>;
       }
+      this.pageNumber.set(0);
       const metaDatas = await firstValueFrom(
         this.api.getMetaWork(
           params.search.toLocaleLowerCase(),
