@@ -235,7 +235,7 @@ export class Search {
   >({
     params: () => ({
       search: this.searchSelected(),
-      filters: this.filtersToApply(),
+      filters: this.filtersToApply()
     }),
     loader: async ({ params }) => {
       const filters: string = Object.keys(params.filters)
@@ -270,8 +270,10 @@ export class Search {
       // const metaDatas = await firstValueFrom(
       //   this.api.getMetaWork(params.search.toLowerCase(), filters)
       // );
+      const perPage = '1';
       const metaDatas = await firstValueFrom(
-        this.api.getMetaWork(params.search.toLocaleLowerCase(), filters)
+        
+        this.api.getMetaWork(params.search.toLocaleLowerCase(), perPage, filters)
       );
       console.log('Meta Datas:  ', metaDatas);
       return metaDatas;

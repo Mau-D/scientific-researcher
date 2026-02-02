@@ -26,11 +26,11 @@ export class OpenalexApi {
       params: { query:searchInput },
     });
   }
-  getMetaWork(search: string, filters: string) {
-    console.log('Fetching works list with count:', search, filters);
+  getMetaWork(search: string, perPage:string, filters: string) {
+    console.log('Fetching works list with count:', search, filters, perPage);
     return this.http.get<OpenAlexResponse<OpenAlexWork>>(
       `${this.baseUrl}/works?`,
-      { params: { research: search, filters } }
+      { params: { research: search, perPage, filters } }
     );
   }
   

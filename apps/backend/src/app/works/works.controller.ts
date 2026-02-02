@@ -6,24 +6,26 @@ import { WorksService } from './works.service';
 export class WorksController {
   constructor(private readonly worksService: WorksService) {}
   @Get()
-  async getMetaWorks(
+  async getWorks(
     @Query('research') research: string,
-    @Query('filters') filters?: string,
+    @Query('perPage') perPage: string,
+    @Query('filters') filters?: string
   ): Promise<OpenAlexResponse<OpenAlexWork>> {
     console.log(
       'WorksController - getSampleWorks called with query:',
       research,
-      filters
+      filters,
+      perPage
     );
-    return await this.worksService.getWorksMeta(research, filters);
-  } 
+    return await this.worksService.getWorksResult(research, perPage, filters);
+  }
   // async getSampleWorks(
   //   @Query('sample') sample: string,
   //   @Query('filters') filters: string,
   // ): Promise<OpenAlexResponse<OpenAlexWork>> {
   //   console.log(
   //     'WorksController - getSampleWorks called with query:',
-      
+
   //     filters
   //   );
   //   return await this.worksService.getWorksSample(sample, filters);

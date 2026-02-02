@@ -56,20 +56,26 @@ export class WorksService {
     }
   }
 
-  async getWorksMeta(
-   search:string,
+  async getWorksResult(
+    search: string,
+    perPage: string,
     filters: string
-    
   ): Promise<OpenAlexResponse<OpenAlexWork>> {
     // const urlbase = `${this.base}${this.works}?`;
     // const url = !filters ? `${urlbase}?filter=title.search:${search}&page=0` : `${urlbase}&filter=${filters},title.search:${search}&page=0`;
- const urlSample = `${this.base}${this.works}?`;
-    const url = !filters ? `${urlSample}&filter=title.search:${search}` : `${urlSample}&filter=${filters},title.search:${search}`;
+    const urlSample = `${this.base}${this.works}?`;
+    const url = !filters
+      ? `${urlSample}&filter=title.search:${search}&per_page=${perPage}`
+      : `${urlSample}&filter=${filters},title.search:${search}&per_page=${perPage}`;
     console.log(
       'WorksService - getWorksMeta URL:',
       url,
       ' with filters:',
-      filters,'search:', search
+      filters,
+      'search:',
+      search,
+      'per-page: ',
+      perPage
     );
     // On fait l'appel. Si Axios (httpService) reçoit une erreur 404/500,
     // il lèvera une exception automatiquement.
@@ -77,7 +83,7 @@ export class WorksService {
       const { data } = await firstValueFrom(
         this.http.get<OpenAlexResponse<OpenAlexWork>>(url)
       );
-
+      console.log('DATA:  ', data);
       return data;
     } catch (error) {
       throw new HttpException(
