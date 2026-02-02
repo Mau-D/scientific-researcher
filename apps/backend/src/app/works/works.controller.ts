@@ -9,6 +9,7 @@ export class WorksController {
   async getWorks(
     @Query('research') research: string,
     @Query('perPage') perPage: string,
+    @Query('page') page: string,
     @Query('filters') filters?: string
   ): Promise<OpenAlexResponse<OpenAlexWork>> {
     console.log(
@@ -17,7 +18,7 @@ export class WorksController {
       filters,
       perPage
     );
-    return await this.worksService.getWorksResult(research, perPage, filters);
+    return await this.worksService.getWorksResult(research, perPage,page, filters);
   }
   // async getSampleWorks(
   //   @Query('sample') sample: string,

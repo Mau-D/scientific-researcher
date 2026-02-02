@@ -59,14 +59,15 @@ export class WorksService {
   async getWorksResult(
     search: string,
     perPage: string,
+    page: string,
     filters: string
   ): Promise<OpenAlexResponse<OpenAlexWork>> {
     // const urlbase = `${this.base}${this.works}?`;
     // const url = !filters ? `${urlbase}?filter=title.search:${search}&page=0` : `${urlbase}&filter=${filters},title.search:${search}&page=0`;
     const urlSample = `${this.base}${this.works}?`;
     const url = !filters
-      ? `${urlSample}&filter=title.search:${search}&per_page=${perPage}`
-      : `${urlSample}&filter=${filters},title.search:${search}&per_page=${perPage}`;
+      ? `${urlSample}&filter=title.search:${search}&per_page=${perPage}&page=${page}`
+      : `${urlSample}&filter=${filters},title.search:${search}&per_page=${perPage}&page=${page}`;
     console.log(
       'WorksService - getWorksMeta URL:',
       url,
@@ -75,7 +76,9 @@ export class WorksService {
       'search:',
       search,
       'per-page: ',
-      perPage
+      perPage,
+      'page: ',
+      page
     );
     // On fait l'appel. Si Axios (httpService) reçoit une erreur 404/500,
     // il lèvera une exception automatiquement.

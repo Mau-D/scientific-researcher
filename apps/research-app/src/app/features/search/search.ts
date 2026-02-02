@@ -271,9 +271,10 @@ export class Search {
       //   this.api.getMetaWork(params.search.toLowerCase(), filters)
       // );
       const perPage = '1';
+      const page = '1';
       const metaDatas = await firstValueFrom(
         
-        this.api.getMetaWork(params.search.toLocaleLowerCase(), perPage, filters)
+        this.api.getMetaWork(params.search.toLocaleLowerCase(), perPage, page, filters)
       );
       console.log('Meta Datas:  ', metaDatas);
       return metaDatas;
