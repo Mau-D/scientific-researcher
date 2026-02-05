@@ -66,8 +66,8 @@ export class WorksService {
     // const url = !filters ? `${urlbase}?filter=title.search:${search}&page=0` : `${urlbase}&filter=${filters},title.search:${search}&page=0`;
     const urlSample = `${this.base}${this.works}?`;
     const url = !filters
-      ? `${urlSample}&filter=title.search:${search}&per_page=${perPage}&page=${page}`
-      : `${urlSample}&filter=${filters},title.search:${search}&per_page=${perPage}&page=${page}`;
+      ? `${urlSample}filter=title.search:${search}&per_page=${perPage}&page=${page}&group_by=primary_topic.id`
+      : `${urlSample}filter=${filters},title.search:${search}&per_page=${perPage}&page=${page}&group_by=primary_topic.id`;
     console.log(
       'WorksService - getWorksMeta URL:',
       url,
@@ -86,7 +86,7 @@ export class WorksService {
       const { data } = await firstValueFrom(
         this.http.get<OpenAlexResponse<OpenAlexWork>>(url)
       );
-      console.log('DATA:  ', data);
+      console.log('DATA group_by:  ', data.group_by.length);
       return data;
     } catch (error) {
       throw new HttpException(

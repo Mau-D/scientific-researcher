@@ -31,6 +31,7 @@ import {
   MatAutocompleteModule,
   MatAutocompleteSelectedEvent,
 } from '@angular/material/autocomplete';
+import {MatChipsModule} from '@angular/material/chips';
 
 @Component({
   selector: 'app-search',
@@ -48,6 +49,7 @@ import {
     MatInputModule,
     MatAutocompleteModule,
     ReactiveFormsModule,
+    MatChipsModule
   ],
   templateUrl: './search.html',
   styleUrl: './search.scss',
@@ -264,9 +266,9 @@ export class Search {
       }
       this.pageNumber.set(0);
       const metaDatas = await firstValueFrom(
-        this.api.getMetaWork(
+        this.api.getResultWorks(
           params.search.toLocaleLowerCase(),
-          '1',
+          '',
           '1',
           filters
         )
@@ -275,6 +277,8 @@ export class Search {
       return metaDatas;
     },
   });
+  //TODO: Vérifier la pertinence d'avoir 2 resources, Je ne peux pas restreindre le nombre per_page, car je n'ai pas tout les primary_topic
+  //TODO: Voir pour garder le paramètre, mais seulement dans la gestion des pages.
   worksResultResource = resource<
     OpenAlexResponse<OpenAlexWork>,
     { page: number }

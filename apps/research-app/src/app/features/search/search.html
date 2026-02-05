@@ -1,10 +1,11 @@
-@let sampleWorksResult =worksResource.value()?.results; 
-@let worksResult =worksResultResource.value()?.results; 
+@let sampleWorksResult =worksResource.value()?.results; @let worksResult
+=worksResultResource.value()?.results;
 <!--  -->
 <!--  -->
-@let data = workResource.value();
+@let data = workResource.value(); 
 <!--  -->
 @let meta = worksMetaResource.value()?.meta;
+@let primaryTopics = worksMetaResource.value()?.group_by;
 
 <section class="w-dvw flex flex-col justify-start items-center px-5 h-auto">
   <div>
@@ -17,7 +18,10 @@
         (input)="search.set($any($event.target).value)"
         [matAutocomplete]="auto"
       />
-      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSelect($event)">
+      <mat-autocomplete
+        #auto="matAutocomplete"
+        (optionSelected)="onSelect($event)"
+      >
         @for (keyword of keywords(); track keyword) {
         <mat-option [value]="keyword"> {{ keyword }} </mat-option>
         }
@@ -30,63 +34,71 @@
     </mat-form-field>
   </div>
   <div class="container w-1/2 mb-5">
-    <mat-expansion-panel hideToggle>
-      <mat-expansion-panel-header class="flex justify-start items-center">
-        <mat-panel-title>
-          <span
-            class="dark:text-white text-gray-light text-2xl mr-1 h-auto flex justify-center items-center hover:text-primary"
-          >
-            <mat-icon fontSet="material-symbols-outlined">
-              filter_list
-            </mat-icon>
-          </span>
-          <p>Filtres par défaut</p>
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-      <div>
-        <p>Cochez les critères obligatoires</p>
-        <!-- <form [formGroup]="filtersForm" (ngSubmit)="getResults('10')"> -->
-        <form [formGroup]="filtersForm">
-          <mat-checkbox formControlName="isOa">Accès ouvert</mat-checkbox>
-          <mat-checkbox formControlName="hasAbstract">Avec résumé</mat-checkbox>
-          <mat-checkbox formControlName="hasPdf">Avec PDF</mat-checkbox>
-          <mat-checkbox formControlName="hasOaAcceptedOrPublishedVersion"
-            >Avec version acceptée ou publiée en accès ouvert</mat-checkbox
-          >
-          <br />
-          <mat-form-field>
-            <mat-label>Langues</mat-label>
-            <mat-select formControlName="language" multiple>
-              <mat-option [value]="'fr'">Français</mat-option>
-              <mat-option [value]="'en'">Anglais</mat-option>
-            </mat-select>
-          </mat-form-field>
-        </form>
-      </div>
-    </mat-expansion-panel>
+    <div>
+      <mat-expansion-panel hideToggle class="mt-3">
+        <mat-expansion-panel-header class="flex justify-start items-center">
+          <mat-panel-title>
+            <span
+              class="dark:text-white text-gray-light text-2xl mr-1 h-auto flex justify-center items-center hover:text-primary"
+            >
+              <mat-icon fontSet="material-symbols-outlined">
+                filter_list
+              </mat-icon>
+            </span>
+            <p>Filtres par défaut</p>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div>
+          <p>Cochez les critères obligatoires</p>
+          <!-- <form [formGroup]="filtersForm" (ngSubmit)="getResults('10')"> -->
+          <form [formGroup]="filtersForm">
+            <mat-checkbox formControlName="isOa">Accès ouvert</mat-checkbox>
+            <mat-checkbox formControlName="hasAbstract"
+              >Avec résumé</mat-checkbox
+            >
+            <mat-checkbox formControlName="hasPdf">Avec PDF</mat-checkbox>
+            <mat-checkbox formControlName="hasOaAcceptedOrPublishedVersion"
+              >Avec version acceptée ou publiée en accès ouvert</mat-checkbox
+            >
+            <br />
+            <mat-form-field>
+              <mat-label>Langues</mat-label>
+              <mat-select formControlName="language" multiple>
+                <mat-option [value]="'fr'">Français</mat-option>
+                <mat-option [value]="'en'">Anglais</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </form>
+        </div>
+      </mat-expansion-panel>
+    </div>
+    <div class="flex justify-center mt-5">
+      <mat-chip-set aria-label="Fish selection">
+        @for (topic of primaryTopics; track topic.key) {
+        <mat-chip>{{topic.key_display_name}}</mat-chip>
+        }
+      </mat-chip-set>
+    </div>
   </div>
 
   <div>
     <button class="bg-blue-500 p-4 my-4" (click)="pageNumber.set(1)">
-     Afficher les résultats
+      Afficher les résultats
     </button>
-    
+
     <!-- <button class="bg-blue-500 p-4 my-4" (click)="getResults('10')">
       Récupérer 10 résultats
     </button> -->
-     <!-- <button class="bg-blue-500 p-4 my-4" (click)="getNumberWorks()">
+    <!-- <button class="bg-blue-500 p-4 my-4" (click)="getNumberWorks()">
       Afficher le nombre de publications
     </button> -->
   </div>
- <h1 class="text-2xl mb-4">
-      Nombre de publications correspondantes : {{meta?.count}}
-    </h1>
+  <h1 class="text-2xl mb-4">
+    Nombre de publications correspondantes : {{meta?.count}}
+  </h1>
   @if (sampleWorksResult; as work) {
   <div>
-    <h1 class="text-2xl mb-4">
-      Nombre de résultats : {{meta?.count}}
-    </h1>
-   
+    <h1 class="text-2xl mb-4">Nombre de résultats : {{meta?.count}}</h1>
   </div>
   }
   <mat-drawer-container>
