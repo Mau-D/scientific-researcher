@@ -293,6 +293,37 @@ export class Search {
       return metaDatas;
     },
   });
+  groupByTypeResource = resource<
+    OpenAlexGroupBy<OpenAlexGroupByResult>,
+    { search: string | undefined; filters: OpenAlexFilters }
+  >({
+    params: () => ({
+      search: this.searchSelected(),
+      filters: this.filtersToApply(),
+    }),
+    loader: async ({ params }) => {
+      const filters: string = this.filtersToString(params.filters);
+      console.log(
+        'Loader worksMetaResource triggered with params:',
+        params.search,
+        filters
+      );
+      if (!params.search || params.search === '') {
+        console.log('Retour VIDE Meta resource');
+
+        // Note: Le retour doit correspondre au type OpenAlexResponse ou lever une erreur/null
+        // Pour éviter les erreurs de type, on peut retourner un objet vide typé
+        return {} as OpenAlexGroupBy<OpenAlexGroupByResult>;
+      }
+      this.pageNumber.set(0);
+      const metaDatas = await firstValueFrom(
+        this.api.getTypesWorks(params.search.toLocaleLowerCase(), filters)
+      );
+
+      console.log('Meta Datas:  ', metaDatas);
+      return metaDatas;
+    },
+  });
 
   worksResultResource = resource<
     OpenAlexResponse<OpenAlexWork>,

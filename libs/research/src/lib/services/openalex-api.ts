@@ -55,5 +55,12 @@ export class OpenalexApi {
       { params: { research: search, filters } }
     );
   }
+  getTypesWorks(search: string, filters: string) {
+    console.log('Fetching Domains :', search, filters);
+    return this.http.get<OpenAlexGroupBy<OpenAlexGroupByResult>>(
+      `${this.baseUrl}/works/group-by-type`,
+      { params: { research: search, filters } }
+    );
+  }
 }
 //TODO: Renommer les fonctions voir stratégie avec petit échantillom per-page=1

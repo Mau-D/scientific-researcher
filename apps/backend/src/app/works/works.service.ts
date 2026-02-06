@@ -118,6 +118,36 @@ export class WorksService {
       );
     }
   }
+  async getTypesGroupByWorks(
+    search: string,
+    filters: string
+  ): Promise<OpenAlexResponse<OpenAlexWork>> {
+    const urlSample = `${this.base}${this.works}?`;
+    const url = !filters
+      ? `${urlSample}filter=title.search:${search}&group_by=type`
+      : `${urlSample}filter=${filters},title.search:${search}&group_by=type`;
+    console.log(
+      'WorksService - getWorks URL:',
+      url,
+      ' with filters:',
+      filters,
+      'search:',
+      search
+    );
+    try {
+      const { data } = await firstValueFrom(
+        this.http.get<OpenAlexResponse<OpenAlexWork>>(url)
+      );
+      console.log('DATA group_by:  ', data.group_by.length);
+      return data;
+    } catch (error) {
+      throw new HttpException(
+        'Erreur lors de l’appel à OpenAlex',
+        HttpStatus.BAD_GATEWAY,
+        error
+      );
+    }
+  }
   async getWorksResult(
     search: string,
     perPage: string,

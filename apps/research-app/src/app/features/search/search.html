@@ -1,13 +1,17 @@
-@let sampleWorksResult =worksResource.value()?.results; 
+@let sampleWorksResult =worksResource.value()?.results;
 <!--  -->
 @let worksResult=worksResultResource.value()?.results;
 <!--  -->
 @let data = workResource.value();
 <!--  -->
-@let meta = worksMetaResource.value()?.meta; 
+@let meta = worksMetaResource.value()?.meta;
 <!--  -->
 @let domains =groupByDomainResource.value()?.group_by;
+<!--  -->
+@let types =groupByTypeResource.value()?.group_by;
 
+<!--  -->
+@let research = searchSelected();
 <section class="w-dvw flex flex-col justify-start items-center px-5 h-auto">
   <div>
     <mat-form-field class="w-full max-w-lg">
@@ -34,9 +38,16 @@
       >}
     </mat-form-field>
   </div>
+  @if (research) {
+  <div>
+    <h1 class="text-2xl mb-4">
+      Nombre de publications correspondantes : {{meta?.count}}
+    </h1>
+  </div>
+  } @if(research){
   <div class="container w-1/2 mb-5">
     <div>
-      <mat-expansion-panel hideToggle class="mt-3">
+      <mat-expansion-panel class="mt-3">
         <mat-expansion-panel-header class="flex justify-start items-center">
           <mat-panel-title>
             <span
@@ -73,8 +84,8 @@
         </div>
       </mat-expansion-panel>
     </div>
-     <div>
-      <mat-expansion-panel hideToggle class="mt-3">
+    <div>
+      <mat-expansion-panel class="mt-3" expanded>
         <mat-expansion-panel-header class="flex justify-start items-center">
           <mat-panel-title>
             <span
@@ -88,72 +99,68 @@
           </mat-panel-title>
         </mat-expansion-panel-header>
         <div>
-          <p>Cochez les critères obligatoires</p>
-          <!-- <form [formGroup]="filtersForm" (ngSubmit)="getResults('10')"> -->
-          <form [formGroup]="filtersForm">
-            <mat-checkbox formControlName="isOa">Accès ouvert</mat-checkbox>
-            <mat-checkbox formControlName="hasAbstract"
-              >Avec résumé</mat-checkbox
+          <p>Cliquez pour exclure certaines catégories</p>
+          <div class="flex justify-center mt-5">
+            <mat-chip-set aria-label="Fish selection">
+              <h1>{{domains?.length}}</h1>
+              @for (domain of domains; track domain.key) {
+              <div
+                class="mr-4"
+                matBadge="{{domain.count}}"
+                matBadgeSize="large"
+              >
+                <mat-chip>{{domain.key_display_name}}</mat-chip>
+              </div>
+
+              }
+            </mat-chip-set>
+          </div>
+        </div>
+      </mat-expansion-panel>
+    </div> 
+    <div>
+      <mat-expansion-panel class="mt-3" expanded>
+        <mat-expansion-panel-header class="flex justify-start items-center">
+          <mat-panel-title>
+            <span
+              class="dark:text-white text-gray-light text-2xl mr-1 h-auto flex justify-center items-center hover:text-primary"
             >
-            <mat-checkbox formControlName="hasPdf">Avec PDF</mat-checkbox>
-            <mat-checkbox formControlName="hasOaAcceptedOrPublishedVersion"
-              >Avec version acceptée ou publiée en accès ouvert</mat-checkbox
-            >
-            <br />
-            <mat-form-field>
-              <mat-label>Langues</mat-label>
-              <mat-select formControlName="language" multiple>
-                <mat-option [value]="'fr'">Français</mat-option>
-                <mat-option [value]="'en'">Anglais</mat-option>
-              </mat-select>
-            </mat-form-field>
-          </form>
+              <mat-icon fontSet="material-symbols-outlined">
+                filter_list
+              </mat-icon>
+            </span>
+            <p>Filtrer par type</p>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div>
+          <p>Cliquez pour exclure certains types</p>
+          <div class="flex justify-center mt-5">
+            <mat-chip-set aria-label="Fish selection">
+              <h1>{{types?.length}}</h1>
+              @for (type of types; track type.key) {
+              <div
+                class="mr-4"
+                matBadge="{{type.count}}"
+                matBadgeSize="large"
+              >
+                <mat-chip>{{type.key_display_name}}</mat-chip>
+              </div>
+
+              }
+            </mat-chip-set>
+          </div>
         </div>
       </mat-expansion-panel>
     </div>
-    <div class="flex justify-center mt-5">
-      <mat-chip-set aria-label="Fish selection">
-        <h1>{{domains?.length}}</h1>
-        @for (domain of domains; track domain.key) {
-        <div class="mr-4" matBadge="{{domain.count}}" matBadgeSize="large">
-          <mat-chip>{{domain.key_display_name}}</mat-chip>
-        </div>
-
-        }
-      </mat-chip-set>
-    </div>
   </div>
+  }
 
   <div>
     <button class="bg-blue-500 p-4 my-4" (click)="pageNumber.set(1)">
       Afficher les résultats
     </button>
-
-    <!-- <button class="bg-blue-500 p-4 my-4" (click)="getResults('10')">
-      Récupérer 10 résultats
-    </button> -->
-    <!-- <button class="bg-blue-500 p-4 my-4" (click)="getNumberWorks()">
-      Afficher le nombre de publications
-    </button> -->
   </div>
-  <h1 class="text-2xl mb-4">
-    Nombre de publications correspondantes : {{meta?.count}}
-  </h1>
-  @if (sampleWorksResult; as work) {
-  <div>
-    <h1 class="text-2xl mb-4">Nombre de résultats : {{meta?.count}}</h1>
-  </div>
-  }
   <mat-drawer-container>
-    <!-- <mat-drawer
-      #drawer
-      mode="over"
-      hasBackdrop
-      (opened)="toggleScroll(true)"
-      (closed)="toggleScroll(false)"
-      position="end"
-      class="h-full min-h-dvh min-w-[80dvw] py-5 px-10 flex justify-baseline items-baseline"
-    > -->
     <mat-drawer
       #drawer
       mode="over"

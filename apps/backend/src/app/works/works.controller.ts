@@ -49,6 +49,18 @@ export class WorksController {
     );
     return await this.worksService.getDomainsGroupByWorks(research, filters);
   }
+   @Get('group-by-type')
+  async getTypesGroupBy(
+    @Query('research') research: string,
+    @Query('filters') filters?: string
+  ): Promise<OpenAlexResponse<OpenAlexWork>> {
+    console.log(
+      'WorksController - getMeta:',
+      research,
+      filters
+    );
+    return await this.worksService.getTypesGroupByWorks(research, filters);
+  }
   // async getSampleWorks(
   //   @Query('sample') sample: string,
   //   @Query('filters') filters: string,
