@@ -18,7 +18,36 @@ export class WorksController {
       filters,
       perPage
     );
-    return await this.worksService.getWorksResult(research, perPage,page, filters);
+    return await this.worksService.getWorksResult(
+      research,
+      perPage,
+      page,
+      filters
+    );
+  }
+  @Get('meta')
+  async getMeta(
+    @Query('research') research: string,
+    @Query('filters') filters?: string
+  ): Promise<OpenAlexResponse<OpenAlexWork>> {
+    console.log(
+      'WorksController - getMeta:',
+      research,
+      filters
+    );
+    return await this.worksService.getMetaWorks(research, '1', filters);
+  }
+   @Get('group-by-domain')
+  async getDomainsGroupBy(
+    @Query('research') research: string,
+    @Query('filters') filters?: string
+  ): Promise<OpenAlexResponse<OpenAlexWork>> {
+    console.log(
+      'WorksController - getMeta:',
+      research,
+      filters
+    );
+    return await this.worksService.getDomainsGroupByWorks(research, filters);
   }
   // async getSampleWorks(
   //   @Query('sample') sample: string,

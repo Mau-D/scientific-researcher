@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { environment } from '@org/config';
-import { OpenAlexResponse, OpenAlexWork, OpenAlexMeta } from '@org/models';
+import { OpenAlexResponse, OpenAlexWork, OpenAlexMeta, OpenAlexGroupBy, OpenAlexGroupByResult } from '@org/models';
 @Injectable({
   providedIn: 'root',
 })
@@ -41,6 +41,19 @@ export class OpenalexApi {
       { params: { research: search, perPage, page, filters } }
     );
   }
-  
+  getMetaWorks(search: string, filters: string) {
+    console.log('Fetching meta :', search, filters);
+    return this.http.get<OpenAlexResponse<OpenAlexWork>>(
+      `${this.baseUrl}/works/meta`,
+      { params: { research: search, filters } }
+    );
+  }
+  getDomainsWorks(search: string, filters: string) {
+    console.log('Fetching Domains :', search, filters);
+    return this.http.get<OpenAlexGroupBy<OpenAlexGroupByResult>>(
+      `${this.baseUrl}/works/group-by-domain`,
+      { params: { research: search, filters } }
+    );
+  }
 }
 //TODO: Renommer les fonctions voir stratégie avec petit échantillom per-page=1

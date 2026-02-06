@@ -8,6 +8,10 @@ export interface OpenAlexResponse<T> {
   results: T[];
   group_by?: OpenAlexGroupByResult[]; // Optionnel, si vous utilisez les agrégations
 }
+export interface OpenAlexGroupBy<OpenAlexGroupByResult> {
+  meta: OpenAlexMeta;
+  group_by: OpenAlexGroupByResult[]; // Optionnel, si vous utilisez les agrégations
+}
 export interface OpenAlexFilters {
   language?: string; // Filtrer par langue (ex: "en" pour anglais)
   is_oa?: boolean | string; // Filtrer par accès ouvert

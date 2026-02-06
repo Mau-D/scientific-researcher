@@ -5,7 +5,7 @@ import {
   signal,
   viewChild,
   effect,
-  computed
+  computed,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
@@ -20,7 +20,9 @@ import {
   OpenAlexFilters,
   OpenAlexResponse,
   OpenAlexWork,
+  OpenAlexGroupBy,
   OpenAlexMeta,
+  OpenAlexGroupByResult,
 } from '@org/models';
 import { OpenalexApi } from '@org/research';
 import { ResearchCard } from '@org/ui-layout';
@@ -31,9 +33,8 @@ import {
   MatAutocompleteModule,
   MatAutocompleteSelectedEvent,
 } from '@angular/material/autocomplete';
-import {MatChipsModule} from '@angular/material/chips';
-import {MatBadgeModule} from '@angular/material/badge';
-
+import { MatChipsModule } from '@angular/material/chips';
+import { MatBadgeModule } from '@angular/material/badge';
 
 @Component({
   selector: 'app-search',
@@ -52,7 +53,7 @@ import {MatBadgeModule} from '@angular/material/badge';
     MatAutocompleteModule,
     ReactiveFormsModule,
     MatChipsModule,
-    MatBadgeModule
+    MatBadgeModule,
   ],
   templateUrl: './search.html',
   styleUrl: './search.scss',
@@ -79,9 +80,8 @@ export class Search {
     language: new FormControl<string[]>(['fr', 'en']), // Valeur par défaut en français
   });
   formSignal = toSignal(this.filtersForm.valueChanges, {
-  initialValue: this.filtersForm.value
-  
-});
+    initialValue: this.filtersForm.value,
+  });
   debouncedSearch = signal('');
   search = signal('');
   searchSelected = signal('');
@@ -101,10 +101,10 @@ export class Search {
       return () => clearTimeout(timeout);
     });
     effect(() => {
-  this.formSignal();
+      this.formSignal();
 
-  this.setFiltersApply();
-});
+      this.setFiltersApply();
+    });
   }
   searchQuery = computed(() => {
     const value = this.search().trim();
@@ -240,21 +240,6 @@ export class Search {
     }),
     loader: async ({ params }) => {
       const filters: string = this.filtersToString(params.filters);
-      // const filters: string = Object.keys(params.filters)
-      //   .filter((key) => {
-      //     const value = (params.filters as OpenAlexFilters)[
-      //       key as keyof OpenAlexFilters
-      //     ];
-      //     return value !== false && value !== '';
-      //   })
-      //   .map(
-      //     (key) =>
-      //       `${key}:${
-      //         (params.filters as OpenAlexFilters)[key as keyof OpenAlexFilters]
-      //       }`
-      //   )
-      //   .join(',');
-      // Ici, params est ton objet { sample, language }
       console.log(
         'Loader worksMetaResource triggered with params:',
         params.search,
@@ -269,19 +254,46 @@ export class Search {
       }
       this.pageNumber.set(0);
       const metaDatas = await firstValueFrom(
-        this.api.getResultWorks(
-          params.search.toLocaleLowerCase(),
-          '',
-          '1',
-          filters
-        )
+        this.api.getMetaWorks(params.search.toLocaleLowerCase(), filters)
       );
+
       console.log('Meta Datas:  ', metaDatas);
       return metaDatas;
     },
   });
-  //TODO: Vérifier la pertinence d'avoir 2 resources, Je ne peux pas restreindre le nombre per_page, car je n'ai pas tout les primary_topic
-  //TODO: Voir pour garder le paramètre, mais seulement dans la gestion des pages.
+
+  groupByDomainResource = resource<
+    OpenAlexGroupBy<OpenAlexGroupByResult>,
+    { search: string | undefined; filters: OpenAlexFilters }
+  >({
+    params: () => ({
+      search: this.searchSelected(),
+      filters: this.filtersToApply(),
+    }),
+    loader: async ({ params }) => {
+      const filters: string = this.filtersToString(params.filters);
+      console.log(
+        'Loader worksMetaResource triggered with params:',
+        params.search,
+        filters
+      );
+      if (!params.search || params.search === '') {
+        console.log('Retour VIDE Meta resource');
+
+        // Note: Le retour doit correspondre au type OpenAlexResponse ou lever une erreur/null
+        // Pour éviter les erreurs de type, on peut retourner un objet vide typé
+        return {} as OpenAlexGroupBy<OpenAlexGroupByResult>;
+      }
+      this.pageNumber.set(0);
+      const metaDatas = await firstValueFrom(
+        this.api.getDomainsWorks(params.search.toLocaleLowerCase(), filters)
+      );
+
+      console.log('Meta Datas:  ', metaDatas);
+      return metaDatas;
+    },
+  });
+
   worksResultResource = resource<
     OpenAlexResponse<OpenAlexWork>,
     { page: number }
@@ -311,6 +323,7 @@ export class Search {
       return worksDatas;
     },
   });
+
   filtersToString(filters: OpenAlexFilters) {
     return Object.keys(filters)
       .filter((key) => {
