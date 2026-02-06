@@ -66,8 +66,8 @@ export class WorksService {
     // const url = !filters ? `${urlbase}?filter=title.search:${search}&page=0` : `${urlbase}&filter=${filters},title.search:${search}&page=0`;
     const urlSample = `${this.base}${this.works}?`;
     const url = !filters
-      ? `${urlSample}filter=title.search:${search}&per_page=${perPage}&page=${page}&group_by=primary_topic.id`
-      : `${urlSample}filter=${filters},title.search:${search}&per_page=${perPage}&page=${page}&group_by=primary_topic.id`;
+      ? `${urlSample}filter=title.search:${search}&per_page=${perPage}&page=${page}&group_by=primary_topic.domain.id`
+      : `${urlSample}filter=${filters},title.search:${search}&per_page=${perPage}&page=${page}&group_by=primary_topic.domain.id`;
     console.log(
       'WorksService - getWorksMeta URL:',
       url,

@@ -2,10 +2,11 @@
 =worksResultResource.value()?.results;
 <!--  -->
 <!--  -->
-@let data = workResource.value(); 
+@let data = workResource.value();
 <!--  -->
-@let meta = worksMetaResource.value()?.meta;
-@let primaryTopics = worksMetaResource.value()?.group_by;
+@let meta = worksMetaResource.value()?.meta; 
+<!--  -->
+@let types =worksMetaResource.value()?.group_by;
 
 <section class="w-dvw flex flex-col justify-start items-center px-5 h-auto">
   <div>
@@ -74,8 +75,12 @@
     </div>
     <div class="flex justify-center mt-5">
       <mat-chip-set aria-label="Fish selection">
-        @for (topic of primaryTopics; track topic.key) {
-        <mat-chip>{{topic.key_display_name}}</mat-chip>
+        <h1>{{types?.length}}</h1>
+        @for (type of types; track type.key) {
+        <div class="mr-4" matBadge="{{type.count}}" matBadgeSize="large">
+          <mat-chip>{{type.key_display_name}}</mat-chip>
+        </div>
+
         }
       </mat-chip-set>
     </div>

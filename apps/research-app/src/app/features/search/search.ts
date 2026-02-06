@@ -32,6 +32,8 @@ import {
   MatAutocompleteSelectedEvent,
 } from '@angular/material/autocomplete';
 import {MatChipsModule} from '@angular/material/chips';
+import {MatBadgeModule} from '@angular/material/badge';
+
 
 @Component({
   selector: 'app-search',
@@ -49,7 +51,8 @@ import {MatChipsModule} from '@angular/material/chips';
     MatInputModule,
     MatAutocompleteModule,
     ReactiveFormsModule,
-    MatChipsModule
+    MatChipsModule,
+    MatBadgeModule
   ],
   templateUrl: './search.html',
   styleUrl: './search.scss',
