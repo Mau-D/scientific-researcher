@@ -46,8 +46,8 @@
   </div>
   } @if(research){
   <div class="container w-1/2 mb-5">
-    <div>
-      <mat-expansion-panel class="mt-3">
+    <div class="mt-3">
+      <mat-expansion-panel >
         <mat-expansion-panel-header class="flex justify-start items-center">
           <mat-panel-title>
             <span
@@ -84,8 +84,8 @@
         </div>
       </mat-expansion-panel>
     </div>
-    <div>
-      <mat-expansion-panel class="mt-3" expanded>
+    <div class="mt-3">
+      <mat-expansion-panel expanded>
         <mat-expansion-panel-header class="flex justify-start items-center">
           <mat-panel-title>
             <span
@@ -99,27 +99,26 @@
           </mat-panel-title>
         </mat-expansion-panel-header>
         <div>
-          <p>Cliquez pour exclure certaines catégories</p>
+          <p>Cliquez pour exclure ou inclure une catégorie</p>
           <div class="flex justify-center mt-5">
-            <mat-chip-set aria-label="Fish selection">
-              <h1>{{domains?.length}}</h1>
+            <mat-chip-listbox aria-label="Domain selection" multiple>
               @for (domain of domains; track domain.key) {
               <div
-                class="mr-4"
+                class="mr-6 mt-2"
                 matBadge="{{domain.count}}"
                 matBadgeSize="large"
               >
-                <mat-chip>{{domain.key_display_name}}</mat-chip>
+                <mat-chip-option [disabled]="selectedDomains().includes(domain.key) && selectedDomains().length<=1" (click)="toggleDomain(domain.key)" [selected]="selectedDomains().includes(domain.key)" >{{domain.key_display_name}}</mat-chip-option>
               </div>
 
               }
-            </mat-chip-set>
+            </mat-chip-listbox>
           </div>
         </div>
       </mat-expansion-panel>
     </div> 
-    <div>
-      <mat-expansion-panel class="mt-3" expanded>
+    <div class="mt-3">
+      <mat-expansion-panel expanded>
         <mat-expansion-panel-header class="flex justify-start items-center">
           <mat-panel-title>
             <span
@@ -133,21 +132,20 @@
           </mat-panel-title>
         </mat-expansion-panel-header>
         <div>
-          <p>Cliquez pour exclure certains types</p>
+          <p>Cliquez pour exclure ou inclure une catégorie</p>
           <div class="flex justify-center mt-5">
-            <mat-chip-set aria-label="Fish selection">
-              <h1>{{types?.length}}</h1>
+            <mat-chip-listbox aria-label="Type selection" multiple>
               @for (type of types; track type.key) {
               <div
-                class="mr-4"
+                class="mr-6 mt-2"
                 matBadge="{{type.count}}"
                 matBadgeSize="large"
               >
-                <mat-chip>{{type.key_display_name}}</mat-chip>
+                <mat-chip-option selected>{{type.key_display_name}}</mat-chip-option>
               </div>
 
               }
-            </mat-chip-set>
+            </mat-chip-listbox>
           </div>
         </div>
       </mat-expansion-panel>

@@ -63,7 +63,7 @@ export class Search {
   private api = inject(OpenalexApi);
   private formBuilder = inject(FormBuilder);
   drawer = viewChild(MatDrawer);
-
+  initialsDomains: string[] = [];
   filtersForm = this.formBuilder.group({
     isOa: new FormControl<boolean>(true, {
       nonNullable: true,
@@ -86,6 +86,7 @@ export class Search {
   search = signal('');
   searchSelected = signal('');
   pageNumber = signal(0);
+  selectedDomains = signal<string[]>([]);
 
   public idClicked = signal<string>('');
   sampleWorks = signal<string | undefined>(undefined);
@@ -290,19 +291,22 @@ export class Search {
       );
 
       console.log('Meta Datas:  ', metaDatas);
+      this.initialsDomains = this.getDomainsArray(metaDatas);
+      this.selectedDomains.set(this.initialsDomains);
       return metaDatas;
     },
   });
   groupByTypeResource = resource<
     OpenAlexGroupBy<OpenAlexGroupByResult>,
-    { search: string | undefined; filters: OpenAlexFilters }
+    { search: string | undefined; filters: OpenAlexFilters; domains: string[] }
   >({
     params: () => ({
       search: this.searchSelected(),
       filters: this.filtersToApply(),
+      domains: this.selectedDomains()
     }),
     loader: async ({ params }) => {
-      const filters: string = this.filtersToString(params.filters);
+      let filters: string = this.filtersToString(params.filters);
       console.log(
         'Loader worksMetaResource triggered with params:',
         params.search,
@@ -314,6 +318,12 @@ export class Search {
         // Note: Le retour doit correspondre au type OpenAlexResponse ou lever une erreur/null
         // Pour éviter les erreurs de type, on peut retourner un objet vide typé
         return {} as OpenAlexGroupBy<OpenAlexGroupByResult>;
+      }
+      if(this.initialsDomains.length !== params.domains.length){
+        const keysDomain = this.filtersDomainsToString(params.domains);
+        console.log('Keys Domains', keysDomain)
+        filters += `,primary_topic.domain.id:${keysDomain}`
+
       }
       this.pageNumber.set(0);
       const metaDatas = await firstValueFrom(
@@ -354,7 +364,25 @@ export class Search {
       return worksDatas;
     },
   });
-
+  getDomainsArray(domains: OpenAlexGroupBy<OpenAlexGroupByResult>) {
+    const keysDomain = domains.group_by.map((g) => g.key);
+    console.log('Domains Array', keysDomain)
+    return keysDomain;
+  }
+  toggleDomain(domain: string) {
+    console.log('remove domain: ', domain, this.selectedDomains().length, this.initialsDomains);
+    this.selectedDomains.update(
+      (domains) =>
+        domains.includes(domain)
+          ? domains.filter((d) => d !== domain) // remove
+          : [...domains, domain] // add
+    );
+    console.log(
+      ' After remove domain: ',
+      domain,
+      this.selectedDomains().length, this.initialsDomains
+    );
+  }
   filtersToString(filters: OpenAlexFilters) {
     return Object.keys(filters)
       .filter((key) => {
@@ -368,6 +396,15 @@ export class Search {
           `${key}:${(filters as OpenAlexFilters)[key as keyof OpenAlexFilters]}`
       )
       .join(',');
+  }
+  filtersDomainsToString(domains:string[]) {
+    const domainsString = domains.map(
+        (key) => key.split('/').pop()
+          
+      )
+      .join('|');
+      console.log ('domains string:  ', domainsString);
+      return domainsString;
   }
   // Getters pour simplifier l'accès dans le template
   //   .value() : La dernière valeur reçue avec succès (Signal).
