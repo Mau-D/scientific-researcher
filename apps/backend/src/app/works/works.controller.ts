@@ -1,5 +1,5 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
-import { OpenAlexResponse, OpenAlexWork, OpenAlexMeta } from '@org/models';
+import { OpenAlexResponse, OpenAlexWork, OpenAlexMeta, OpenAlexGroupBy, OpenAlexGroupByResult } from '@org/models';
 import { WorksService } from './works.service';
 
 @Controller('works')
@@ -41,7 +41,7 @@ export class WorksController {
   async getDomainsGroupBy(
     @Query('research') research: string,
     @Query('filters') filters?: string
-  ): Promise<OpenAlexResponse<OpenAlexWork>> {
+  ): Promise<OpenAlexGroupBy<OpenAlexGroupByResult>> {
     console.log(
       'WorksController - getMeta:',
       research,
@@ -53,7 +53,7 @@ export class WorksController {
   async getTypesGroupBy(
     @Query('research') research: string,
     @Query('filters') filters?: string
-  ): Promise<OpenAlexResponse<OpenAlexWork>> {
+  ): Promise<OpenAlexGroupBy<OpenAlexGroupByResult>> {
     console.log(
       'WorksController - getMeta:',
       research,

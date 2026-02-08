@@ -29,6 +29,7 @@ import {
   OpenAlexGroupByResult,
   OpenAlexResponse,
   OpenAlexWork,
+  OpenAlexMeta,
 } from '@org/models';
 import { OpenalexApi } from '@org/research';
 import { ResearchCard } from '@org/ui-layout';
@@ -85,9 +86,22 @@ export class Search {
   search = signal('');
   searchSelected = signal('');
   pageNumber = signal(0);
-  allDomains = signal<string[]>([]);
+  groupByDomains = signal<OpenAlexGroupBy<OpenAlexGroupByResult>>({
+    meta: {} as OpenAlexMeta,
+    group_by: [],
+  });
+  groupByTypes = signal<OpenAlexGroupBy<OpenAlexGroupByResult>>({
+    meta: {} as OpenAlexMeta,
+    group_by: [],
+  });
+
+  allDomains = computed(() => {
+    return this.getDomainsArray(this.groupByDomains());
+  });
+  allTypes = computed(() => {
+    return this.getTypesArray(this.groupByTypes());
+  });
   selectedDomains = signal<string[]>([]);
-  allTypes: OpenAlexGroupByResult[] = [];
 
   typesArray: OpenAlexGroupByResult[] = [];
 
@@ -138,7 +152,7 @@ export class Search {
   }
   setFiltersApply(): void {
     // this.sampleWorks.set(sampleCount);
-    
+
     this.pageNumber.set(0);
     const formFilters = {
       language: this.filtersForm.value.language?.join('|') || '',
@@ -286,16 +300,17 @@ export class Search {
           params.filters
         )
       );
-
+      this.groupByDomains.set(metaDatas);
+      this.selectedDomains.set(this.getDomainsArray(metaDatas));
       console.log('Resource GROUP_BY DOMAIN Datas:  ', metaDatas);
-      const allDomainsArray = this.getDomainsArray(metaDatas);
-      this.allDomains.set(allDomainsArray);
-      console.log(' all Domains in Resource Domain :', this.allDomains());
-      this.selectedDomains.set(allDomainsArray);
-      console.log(
-        ' selected Domains in Resource Domain :',
-        this.selectedDomains()
-      );
+      // const allDomainsArray = this.getDomainsArray(metaDatas);
+      // this.allDomains.set(allDomainsArray);
+      // console.log(' all Domains in Resource Domain :', this.allDomains());
+      // this.selectedDomains.set(allDomainsArray);
+      // console.log(
+      //   ' selected Domains in Resource Domain :',
+      //   this.selectedDomains()
+      // );
 
       return metaDatas;
     },
@@ -324,8 +339,8 @@ export class Search {
           params.filters
         )
       );
-      this.allTypes = metaDatas.group_by;
-
+      // this.initialTypes = metaDatas.group_by;
+      this.groupByTypes.set(metaDatas);
       console.log('Resource GROUP_BY TYPE Datas:  ', metaDatas);
       return metaDatas;
     },
@@ -366,8 +381,10 @@ export class Search {
       const metaDatas = await firstValueFrom(
         this.api.getTypesWorks(searchValue, this.allFilters())
       );
-      this.typesArray = this.syncCounts(this.allTypes, metaDatas.group_by);
-      console.log(this.allTypes, metaDatas.group_by, this.typesArray);
+      const currentArray = this.groupByTypes().group_by;
+      console.log('currentArray in Resource: ', currentArray);
+      this.typesArray = this.syncCounts(currentArray, metaDatas.group_by);
+      // console.log(this.initialTypes, metaDatas.group_by, this.typesArray);
 
       console.log(
         'Resource GROUP_BY Types W Domain filter Datas:  ',
@@ -498,10 +515,14 @@ export class Search {
   ): OpenAlexGroupByResult[] {
     const nextMap = new Map(next.map((n) => [n.key, n.count]));
 
-    return current.map((item) => ({
+    const newArrayTypes = current.map((item) => ({
       ...item,
       count: nextMap.get(item.key) ?? 0,
     }));
+    console.log('Array:  ', current, next);
+
+    console.log('SyncCounts:  ', newArrayTypes);
+    return newArrayTypes;
   }
   // Getters pour simplifier l'accès dans le template
   //   .value() : La dernière valeur reçue avec succès (Signal).

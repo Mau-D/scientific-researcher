@@ -6,7 +6,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { OpenAlexResponse, OpenAlexWork } from '@org/models';
+import { OpenAlexResponse, OpenAlexWork, OpenAlexGroupBy, OpenAlexGroupByResult } from '@org/models';
 import { firstValueFrom } from 'rxjs';
 @Injectable()
 export class WorksService {
@@ -91,7 +91,7 @@ export class WorksService {
   async getDomainsGroupByWorks(
     search: string,
     filters: string
-  ): Promise<OpenAlexResponse<OpenAlexWork>> {
+  ): Promise<OpenAlexGroupBy<OpenAlexGroupByResult>> {
     const urlSample = `${this.base}${this.works}?`;
     const url = !filters
       ? `${urlSample}filter=title.search:${search}&group_by=primary_topic.domain.id`
@@ -106,7 +106,7 @@ export class WorksService {
     );
     try {
       const { data } = await firstValueFrom(
-        this.http.get<OpenAlexResponse<OpenAlexWork>>(url)
+        this.http.get<OpenAlexGroupBy<OpenAlexGroupByResult>>(url)
       );
       console.log('DATA group_by:  ', data.group_by.length);
       return data;
@@ -121,7 +121,7 @@ export class WorksService {
   async getTypesGroupByWorks(
     search: string,
     filters: string
-  ): Promise<OpenAlexResponse<OpenAlexWork>> {
+  ): Promise<OpenAlexGroupBy<OpenAlexGroupByResult>> {
     const urlSample = `${this.base}${this.works}?`;
     const url = !filters
       ? `${urlSample}filter=title.search:${search}&group_by=type`
@@ -136,7 +136,7 @@ export class WorksService {
     );
     try {
       const { data } = await firstValueFrom(
-        this.http.get<OpenAlexResponse<OpenAlexWork>>(url)
+        this.http.get<OpenAlexGroupBy<OpenAlexGroupByResult>>(url)
       );
       console.log('DATA group_by:  ', data.group_by.length);
       return data;
