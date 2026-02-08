@@ -87,7 +87,7 @@ export class Search {
   pageNumber = signal(0);
   allDomains = signal<string[]>([]);
   selectedDomains = signal<string[]>([]);
-  initialTypes: OpenAlexGroupByResult[] = [];
+  allTypes: OpenAlexGroupByResult[] = [];
 
   typesArray: OpenAlexGroupByResult[] = [];
 
@@ -324,7 +324,7 @@ export class Search {
           params.filters
         )
       );
-      this.initialTypes = metaDatas.group_by;
+      this.allTypes = metaDatas.group_by;
 
       console.log('Resource GROUP_BY TYPE Datas:  ', metaDatas);
       return metaDatas;
@@ -366,8 +366,8 @@ export class Search {
       const metaDatas = await firstValueFrom(
         this.api.getTypesWorks(searchValue, this.allFilters())
       );
-      this.typesArray = this.syncCounts(this.initialTypes, metaDatas.group_by);
-      console.log(this.initialTypes, metaDatas.group_by, this.typesArray);
+      this.typesArray = this.syncCounts(this.allTypes, metaDatas.group_by);
+      console.log(this.allTypes, metaDatas.group_by, this.typesArray);
 
       console.log(
         'Resource GROUP_BY Types W Domain filter Datas:  ',
