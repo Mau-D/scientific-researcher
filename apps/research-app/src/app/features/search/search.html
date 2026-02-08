@@ -8,9 +8,9 @@
 <!--  -->
 @let domains =groupByDomainResource.value()?.group_by;
 <!--  -->
-@let types =groupByTypeResource.value()?.group_by;
+<!-- @let types =groupByTypeResource.value()?.group_by; -->
 <!--  -->
-@let typesWDomainsFilter = groupByTypeFilterByDomainsResource.value()?.group_by;
+<!-- @let typesWDomainsFilter = groupByTypeFilterByDomainsResource.value()?.group_by; -->
 
 <!--  -->
 @let research = searchSelected();
@@ -112,8 +112,8 @@
               >
                 <mat-chip-option
                   [disabled]="selectedDomains().includes(domain.key) && selectedDomains().length<=1"
-                  (click)="toggleDomain(domain.key)"
-                  [selected]="selectedDomains().includes(domain.key)"
+                 [selected]="selectedDomains().includes(domain.key)"
+                 (selectionChange)="toggleDomain2(domain.key, $event.selected)"
                   >{{domain.key_display_name}}</mat-chip-option
                 >
               </div>
@@ -140,7 +140,7 @@
         </mat-expansion-panel-header>
         <div>
           <p>Cliquez pour exclure ou inclure une catégorie</p>
-          <div class="flex justify-center mt-5">
+          <!-- <div class="flex justify-center mt-5">
             <mat-chip-listbox aria-label="Type selection" multiple>
               @for (type of types; track type.key) { @if(
               selectedDomains().length === allDomains().length){
@@ -172,6 +172,22 @@
                 >
               </div>
               } }
+            </mat-chip-listbox>
+          </div> -->
+          <div class="flex justify-center mt-5">
+            <mat-chip-listbox aria-label="Type selection" multiple>
+              @for (type of typesArray; track type.key) { 
+              <div
+                class="mr-6 mt-2"
+                matBadge="{{type.count}}"
+                matBadgeSize="large"
+              >
+                <mat-chip-option selected [disabled]="type.count === 0"
+                  >{{type.key_display_name}}</mat-chip-option
+                >
+              </div>
+
+             }
             </mat-chip-listbox>
           </div>
         </div>
