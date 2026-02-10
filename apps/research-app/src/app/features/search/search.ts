@@ -85,6 +85,7 @@ export class Search {
   debouncedSearch = signal('');
   search = signal('');
   searchSelected = signal('');
+  countWorks = signal(0);
   pageNumber = signal(0);
   groupByDomains = signal<OpenAlexGroupBy<OpenAlexGroupByResult>>({
     meta: {} as OpenAlexMeta,
@@ -95,20 +96,31 @@ export class Search {
     group_by: [],
   });
 
-  allDomains = computed(() => {
-    return this.getDomainsArray(this.groupByDomains());
-  });
+  // allDomains = computed(() => {
+  //   return this.getDomainsArray(this.groupByDomains());
+  // });
   allTypes = computed(() => {
     return this.getTypesArray(this.groupByTypes());
   });
   selectedDomains = signal<string[]>([]);
-
-  typesArray: OpenAlexGroupByResult[] = [];
-
   public idClicked = signal<string>('');
   sampleWorks = signal<string | undefined>(undefined);
   filtersToApply = signal<string>('');
   allFilters = signal<string>('');
+
+  searchQuery = computed(() => {
+    const value = this.search().trim();
+    return value.length >= 2 ? value : null;
+  });
+
+  keywords = computed(() => {
+    return this.keywordsResource.value() ?? [];
+  });
+allDomains = computed(() =>
+  this.groupByDomainResource.value()?.group_by?.map(g => g.key) ?? []
+);
+  typesArray: OpenAlexGroupByResult[] = [];
+
   constructor() {
     effect(() => {
       const value = this.search();
@@ -124,17 +136,25 @@ export class Search {
       this.selectedDomains.set([]);
       this.setFiltersApply();
     });
+    effect(() => {
+      const query = this.searchQuery();
+      if (!query) return;
+      this.pageNumber.set(0);
+      this.searchSelected.set('');
+    });
+    effect(() => {
+      const query = this.searchSelected();
+      const datas = this.groupByDomainResource.value();
+      const domainsArray = datas?.group_by?.map(g => g.key) ?? [];
+      if (!query || !datas || !domainsArray) return;
+      this.pageNumber.set(0);
+      this.groupByDomains.set(datas);
+      this.countWorks.set(datas.meta.count);
+
+      this.selectedDomains.set(domainsArray);
+      console.log('Resource GROUP_BY DOMAIN in effect:  ', datas, domainsArray);
+    });
   }
-
-  searchQuery = computed(() => {
-    const value = this.search().trim();
-    return value.length >= 2 ? value : null;
-  });
-
-  keywords = computed(() => {
-    return this.keywordsResource.value() ?? [];
-  });
-  //  selectedLookup = computed(() => new Set(this.selectedDomains()));
 
   onSelect(event: MatAutocompleteSelectedEvent) {
     this.setFiltersApply();
@@ -166,20 +186,6 @@ export class Search {
     this.filtersToApply.set(this.filtersToString(formFilters));
     this.allFilters.set(this.filtersToString(formFilters));
   }
-
-  // getFilters(): void {
-  //   this.filtersToApply.set({
-  //     language: this.filtersForm.value.language?.join('|') || '',
-  //     is_oa: this.filtersForm.value.isOa,
-  //     has_abstract: this.filtersForm.value.hasAbstract,
-  //     'has_content.pdf': this.filtersForm.value.hasPdf,
-  //     has_oa_accepted_or_published_version:
-  //       this.filtersForm.value.hasOaAcceptedOrPublishedVersion,
-  //   });
-  //   console.log('2Language filter:', this.filtersForm.value.language);
-  //   console.log('2Filters to apply:', this.filtersToApply());
-  // }
-
   toggleScroll(isOpened: boolean) {
     if (isOpened) {
       document.body.classList.add('no-scroll');
@@ -187,15 +193,12 @@ export class Search {
       document.body.classList.remove('no-scroll');
     }
   }
+
   keywordsResource = resource<string[] | null, string | null>({
     params: () => this.searchQuery(),
     loader: async ({ params }) => {
       if (!params) return null;
-      this.pageNumber.set(0);
-      this.searchSelected.set('');
-      const response = await firstValueFrom(this.api.getKeywordsList(params));
-
-      return response;
+      return await firstValueFrom(this.api.getKeywordsList(params));
     },
   });
 
@@ -203,8 +206,7 @@ export class Search {
     params: () => this.idClicked(),
     loader: async ({ params: id }) => {
       if (!id) return undefined;
-      const datas = await firstValueFrom(this.api.getDatasWork(id));
-      return datas;
+      return await firstValueFrom(this.api.getDatasWork(id));
     },
   });
 
@@ -217,36 +219,40 @@ export class Search {
       filters: this.filtersToApply(),
     }),
     loader: async ({ params }) => {
-      // const filters: string = Object.keys(params.filters)
-      //   .filter((key) => {
-      //     const value = (params.filters as OpenAlexFilters)[
-      //       key as keyof OpenAlexFilters
-      //     ];
-      //     return value !== false && value !== '';
-      //   })
-      //   .map(
-      //     (key) =>
-      //       `${key}:${
-      //         (params.filters as OpenAlexFilters)[key as keyof OpenAlexFilters]
-      //       }`
-      //   )
-      // .join(',');
-      // Ici, params est ton objet { sample, language }
-
       if (!params.sampleWorks || params.sampleWorks === '0') {
-        console.log('Retour VIDE Work resource');
-        // Note: Le retour doit correspondre au type OpenAlexResponse ou lever une erreur/null
-        // Pour éviter les erreurs de type, on peut retourner un objet vide typé
         return {} as OpenAlexResponse<OpenAlexWork>;
       }
-      // Appel à votre API
-      // firstValueFrom transforme votre Observable en Promise (requis par le loader)
-      const list = await firstValueFrom(
+      return await firstValueFrom(
         this.api.getWorksList(params.sampleWorks, params.filters)
       );
-      return list;
     },
   });
+  // worksMetaResource = resource<
+  //   OpenAlexResponse<OpenAlexWork>,
+  //   { search: string | undefined; filters: string; allfilters: string }
+  // >({
+  //   params: () => ({
+  //     search: this.searchSelected(),
+  //     filters: this.filtersToApply(),
+  //     allfilters: this.allFilters(),
+  //   }),
+  //   loader: async ({ params }) => {
+  //     if (!params.search || params.search === '') {
+  //       // Note: Le retour doit correspondre au type OpenAlexResponse ou lever une erreur/null
+  //       // Pour éviter les erreurs de type, on peut retourner un objet vide typé
+  //       return {} as OpenAlexResponse<OpenAlexWork>;
+  //     }
+  //     this.pageNumber.set(0);
+  //     return await firstValueFrom(
+  //       this.api.getMetaWorks(
+  //         params.search.toLocaleLowerCase(),
+  //         params.allfilters
+  //       )
+  //     );
+
+  //   },
+  // });
+  //TODO:Effacer le Meta, puisque je peux récupérer les counts à la création des group_by
   worksMetaResource = resource<
     OpenAlexResponse<OpenAlexWork>,
     { search: string | undefined; filters: string; allfilters: string }
@@ -263,21 +269,17 @@ export class Search {
         return {} as OpenAlexResponse<OpenAlexWork>;
       }
       this.pageNumber.set(0);
-      const metaDatas = await firstValueFrom(
+      return await firstValueFrom(
         this.api.getMetaWorks(
           params.search.toLocaleLowerCase(),
           params.allfilters
         )
       );
-
-      console.log('Meta Datas:  ', metaDatas);
-      return metaDatas;
     },
   });
-
   groupByDomainResource = resource<
     OpenAlexGroupBy<OpenAlexGroupByResult>,
-    { search: string | undefined; filters: string }
+    { search: string; filters: string }
   >({
     params: () => ({
       search: this.searchSelected(),
@@ -293,26 +295,13 @@ export class Search {
         // Pour éviter les erreurs de type, on peut retourner un objet vide typé
         return {} as OpenAlexGroupBy<OpenAlexGroupByResult>;
       }
-      this.pageNumber.set(0);
-      const metaDatas = await firstValueFrom(
+
+      return await firstValueFrom(
         this.api.getDomainsWorks(
           params.search.toLocaleLowerCase(),
           params.filters
         )
       );
-      this.groupByDomains.set(metaDatas);
-      this.selectedDomains.set(this.getDomainsArray(metaDatas));
-      console.log('Resource GROUP_BY DOMAIN Datas:  ', metaDatas);
-      // const allDomainsArray = this.getDomainsArray(metaDatas);
-      // this.allDomains.set(allDomainsArray);
-      // console.log(' all Domains in Resource Domain :', this.allDomains());
-      // this.selectedDomains.set(allDomainsArray);
-      // console.log(
-      //   ' selected Domains in Resource Domain :',
-      //   this.selectedDomains()
-      // );
-
-      return metaDatas;
     },
   });
   groupByTypeResource = resource<
@@ -358,13 +347,12 @@ export class Search {
       if (!searchValue || !params.domains) {
         console.log('Retour VIDE Types WDomainsFilter resource');
 
-        // Note: Le retour doit correspondre au type OpenAlexResponse ou lever une erreur/null
-        // Pour éviter les erreurs de type, on peut retourner un objet vide typé
         return {} as OpenAlexGroupBy<OpenAlexGroupByResult>;
       }
       const allDomainsArray = this.allDomains();
       const filters = this.filtersToApply();
-      if (params.domains.length < allDomainsArray.length) {
+      // if(!allDomainsArray) return;
+      if (allDomainsArray && params.domains.length < allDomainsArray.length) {
         this.allFilters.set(
           filters.concat(
             `,primary_topic.domain.id:${this.filtersDomainsToString(
@@ -421,11 +409,9 @@ export class Search {
       return worksDatas;
     },
   });
-  getDomainsArray(domains: OpenAlexGroupBy<OpenAlexGroupByResult>) {
-    const keysDomain = domains.group_by.map((g) => g.key);
-    console.log('getDomainsArray:  ', keysDomain);
-    return keysDomain;
-  }
+  // getDomainsArray(domains: OpenAlexGroupBy<OpenAlexGroupByResult> | undefined): string[] {
+  //  return domains?.group_by?.map(g => g.key) ?? [];
+  // }
   getTypesArray(types: OpenAlexGroupBy<OpenAlexGroupByResult>) {
     const keysType = types.group_by.map((g) => g.key);
     console.log('getTypesArray', keysType);
