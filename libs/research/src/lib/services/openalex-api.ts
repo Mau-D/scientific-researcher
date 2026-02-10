@@ -52,14 +52,14 @@ export class OpenalexApi {
     console.log('Fetching Domains :', search, filters);
     return this.http.get<OpenAlexGroupBy<OpenAlexGroupByResult>>(
       `${this.baseUrl}/works/group-by-domain`,
-      { params: { research: search, filters } }
+      { params: { research: search.toLocaleLowerCase(), filters } }
     );
   }
   getTypesWorks(search: string, filters: string) {
     console.log('Fetching Domains :', search, filters);
     return this.http.get<OpenAlexGroupBy<OpenAlexGroupByResult>>(
       `${this.baseUrl}/works/group-by-type`,
-      { params: { research: search, filters } }
+      { params: { research: search.toLocaleLowerCase(), filters } }
     );
   }
 }

@@ -103,6 +103,7 @@ export class Search {
     return this.getTypesArray(this.groupByTypes());
   });
   selectedDomains = signal<string[]>([]);
+  selectedTypes = signal<string[]>([]);
   public idClicked = signal<string>('');
   sampleWorks = signal<string | undefined>(undefined);
   filtersToApply = signal<string>('');
@@ -116,9 +117,15 @@ export class Search {
   keywords = computed(() => {
     return this.keywordsResource.value() ?? [];
   });
-allDomains = computed(() =>
-  this.groupByDomainResource.value()?.group_by?.map(g => g.key) ?? []
-);
+  allDomains = computed(
+    () => this.groupByDomainResource.value()?.group_by?.map((g) => g.key) ?? []
+  );
+  unselectedDomains = computed(() => {
+    const all = this.allDomains();
+    const selected = this.selectedDomains();
+
+    return all.filter((d) => !selected.includes(d));
+  });
   typesArray: OpenAlexGroupByResult[] = [];
 
   constructor() {
@@ -144,15 +151,51 @@ allDomains = computed(() =>
     });
     effect(() => {
       const query = this.searchSelected();
-      const datas = this.groupByDomainResource.value();
-      const domainsArray = datas?.group_by?.map(g => g.key) ?? [];
-      if (!query || !datas || !domainsArray) return;
+      const datasDomains = this.groupByDomainResource.value();
+      const datasTypes = this.groupByTypeResource.value();
+      if (!query || !datasDomains || !datasTypes) return;
+      const domainsArray = datasDomains?.group_by?.map((g) => g.key) ?? [];
+      const TypesArray = datasTypes?.group_by?.map((g) => g.key) ?? [];
+
       this.pageNumber.set(0);
-      this.groupByDomains.set(datas);
-      this.countWorks.set(datas.meta.count);
+      this.groupByDomains.set(datasDomains);
+      this.groupByTypes.set(datasTypes);
+
+      this.countWorks.set(datasDomains.meta.count);
 
       this.selectedDomains.set(domainsArray);
-      console.log('Resource GROUP_BY DOMAIN in effect:  ', datas, domainsArray);
+      this.selectedTypes.set(TypesArray);
+    });
+    effect(() => {
+      const domains = this.selectedDomains();
+      const allDomainsArray = this.allDomains();
+      const filters = this.filtersToApply();
+      const datasTypesFiltered =
+        this.groupByTypeFilterByDomainsResource.value()?.group_by ?? [];
+      const currentArray = this.groupByTypes().group_by ?? [];
+      const countFiltered =
+        this.groupByTypeFilterByDomainsResource.value()?.meta?.count ??
+        this.countWorks();
+
+      if (
+        !allDomainsArray ||
+        !datasTypesFiltered ||
+        !currentArray ||
+        !countFiltered
+      )
+        return;
+      if (allDomainsArray && domains.length < allDomainsArray.length) {
+        this.allFilters.set(
+          filters.concat(
+            `,primary_topic.domain.id:!${this.filtersDomainsToString(this.unselectedDomains())}`
+          )
+        );
+      } else {
+        this.allFilters.set(filters);
+      }
+      this.countWorks.set(countFiltered);
+
+      this.typesArray = this.syncCounts(currentArray, datasTypesFiltered);
     });
   }
 
@@ -253,30 +296,30 @@ allDomains = computed(() =>
   //   },
   // });
   //TODO:Effacer le Meta, puisque je peux récupérer les counts à la création des group_by
-  worksMetaResource = resource<
-    OpenAlexResponse<OpenAlexWork>,
-    { search: string | undefined; filters: string; allfilters: string }
-  >({
-    params: () => ({
-      search: this.searchSelected(),
-      filters: this.filtersToApply(),
-      allfilters: this.allFilters(),
-    }),
-    loader: async ({ params }) => {
-      if (!params.search || params.search === '') {
-        // Note: Le retour doit correspondre au type OpenAlexResponse ou lever une erreur/null
-        // Pour éviter les erreurs de type, on peut retourner un objet vide typé
-        return {} as OpenAlexResponse<OpenAlexWork>;
-      }
-      this.pageNumber.set(0);
-      return await firstValueFrom(
-        this.api.getMetaWorks(
-          params.search.toLocaleLowerCase(),
-          params.allfilters
-        )
-      );
-    },
-  });
+  // worksMetaResource = resource<
+  //   OpenAlexResponse<OpenAlexWork>,
+  //   { search: string | undefined; filters: string; allfilters: string }
+  // >({
+  //   params: () => ({
+  //     search: this.searchSelected(),
+  //     filters: this.filtersToApply(),
+  //     allfilters: this.allFilters(),
+  //   }),
+  //   loader: async ({ params }) => {
+  //     if (!params.search || params.search === '') {
+  //       // Note: Le retour doit correspondre au type OpenAlexResponse ou lever une erreur/null
+  //       // Pour éviter les erreurs de type, on peut retourner un objet vide typé
+  //       return {} as OpenAlexResponse<OpenAlexWork>;
+  //     }
+  //     this.pageNumber.set(0);
+  //     return await firstValueFrom(
+  //       this.api.getMetaWorks(
+  //         params.search.toLocaleLowerCase(),
+  //         params.allfilters
+  //       )
+  //     );
+  //   },
+  // });
   groupByDomainResource = resource<
     OpenAlexGroupBy<OpenAlexGroupByResult>,
     { search: string; filters: string }
@@ -297,10 +340,7 @@ allDomains = computed(() =>
       }
 
       return await firstValueFrom(
-        this.api.getDomainsWorks(
-          params.search.toLocaleLowerCase(),
-          params.filters
-        )
+        this.api.getDomainsWorks(params.search, params.filters)
       );
     },
   });
@@ -315,70 +355,33 @@ allDomains = computed(() =>
     loader: async ({ params }) => {
       if (!params.search || params.search === '') {
         console.log('Retour VIDE GROUP_BY TYPE resource');
-
-        // Note: Le retour doit correspondre au type OpenAlexResponse ou lever une erreur/null
-        // Pour éviter les erreurs de type, on peut retourner un objet vide typé
         return {} as OpenAlexGroupBy<OpenAlexGroupByResult>;
       }
-
-      this.pageNumber.set(0);
-      const metaDatas = await firstValueFrom(
-        this.api.getTypesWorks(
-          params.search.toLocaleLowerCase(),
-          params.filters
-        )
+      return await firstValueFrom(
+        this.api.getTypesWorks(params.search, params.filters)
       );
-      // this.initialTypes = metaDatas.group_by;
-      this.groupByTypes.set(metaDatas);
-      console.log('Resource GROUP_BY TYPE Datas:  ', metaDatas);
-      return metaDatas;
     },
   });
   groupByTypeFilterByDomainsResource = resource<
     OpenAlexGroupBy<OpenAlexGroupByResult>,
-    { domains: string[] }
+    { domains: string[]; allFilters: string; searchValue: string }
   >({
     params: () => ({
       domains: this.selectedDomains(),
+      allFilters: this.allFilters(),
+      searchValue: this.searchSelected(),
     }),
     loader: async ({ params }) => {
       console.log('JE SUIS DANS LA RESOURCE TYPES W DOMAINS FILTER');
-      const searchValue = this.searchSelected();
-      if (!searchValue || !params.domains) {
+      if (!params.domains || params.searchValue === '') {
         console.log('Retour VIDE Types WDomainsFilter resource');
-
         return {} as OpenAlexGroupBy<OpenAlexGroupByResult>;
       }
-      const allDomainsArray = this.allDomains();
-      const filters = this.filtersToApply();
-      // if(!allDomainsArray) return;
-      if (allDomainsArray && params.domains.length < allDomainsArray.length) {
-        this.allFilters.set(
-          filters.concat(
-            `,primary_topic.domain.id:${this.filtersDomainsToString(
-              params.domains
-            )}`
-          )
-        );
-
-        console.log('AJOUT DES DOMAINS DANS LES FILTRES: ', filters);
-      } else {
-        this.allFilters.set(filters);
-      }
-      // this.pageNumber.set(0);
-      const metaDatas = await firstValueFrom(
-        this.api.getTypesWorks(searchValue, this.allFilters())
+      const datas = await firstValueFrom(
+        this.api.getTypesWorks(params.searchValue, params.allFilters)
       );
-      const currentArray = this.groupByTypes().group_by;
-      console.log('currentArray in Resource: ', currentArray);
-      this.typesArray = this.syncCounts(currentArray, metaDatas.group_by);
-      // console.log(this.initialTypes, metaDatas.group_by, this.typesArray);
-
-      console.log(
-        'Resource GROUP_BY Types W Domain filter Datas:  ',
-        metaDatas
-      );
-      return metaDatas;
+      console.log('Types filtered', datas);
+      return datas;
     },
   });
 
