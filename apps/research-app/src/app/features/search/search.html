@@ -6,7 +6,8 @@
 <!--  -->
 <!-- @let meta = worksMetaResource.value()?.meta; -->
 <!--  -->
-@let domains =groupByDomainResource.value()?.group_by;
+<!-- @let domains =groupByDomainResource.value()?.group_by;
+@let types =groupByTypeResource.value()?.group_by; -->
 <!--  -->
 <!-- @let types =groupByTypeResource.value()?.group_by; -->
 <!--  -->
@@ -104,7 +105,7 @@
           <p>Cliquez pour exclure ou inclure une catégorie</p>
           <div class="flex justify-center mt-5">
             <mat-chip-listbox aria-label="Domain selection" multiple>
-              @for (domain of domains; track domain.key) {
+              @for (domain of domainsArray(); track domain.key) {
               <div
                 class="mr-6 mt-2"
                 matBadge="{{domain.count}}"
@@ -112,8 +113,8 @@
               >
                 <mat-chip-option
                   [disabled]="selectedDomains().includes(domain.key) && selectedDomains().length<=1"
-                 [selected]="selectedDomains().includes(domain.key)"
-                 (selectionChange)="toggleDomain2(domain.key, $event.selected)"
+                  [selected]="selectedDomains().includes(domain.key)"
+                  (selectionChange)="toggleDomain(domain.key, $event.selected)"
                   >{{domain.key_display_name}}</mat-chip-option
                 >
               </div>
@@ -176,18 +177,35 @@
           </div> -->
           <div class="flex justify-center mt-5">
             <mat-chip-listbox aria-label="Type selection" multiple>
-              @for (type of typesArray; track type.key) { 
+              @for (type of typesArray(); track type.key) {
               <div
                 class="mr-6 mt-2"
                 matBadge="{{type.count}}"
                 matBadgeSize="large"
               >
-                <mat-chip-option selected [disabled]="type.count === 0"
+                <mat-chip-option
+                  selected
+                  [disabled]="selectedTypes().includes(type.key) && selectedTypes().length<=1"
+                  [selected]="selectedTypes().includes(type.key)"
+                  (selectionChange)="toggleType(type.key, $event.selected)"
                   >{{type.key_display_name}}</mat-chip-option
                 >
               </div>
 
-             }
+              }
+              <!-- @for (domain of domains; track domain.key) {
+              <div
+                class="mr-6 mt-2"
+                matBadge="{{domain.count}}"
+                matBadgeSize="large"
+              >
+                <mat-chip-option
+                  [disabled]="selectedDomains().includes(domain.key) && selectedDomains().length<=1"
+                 [selected]="selectedDomains().includes(domain.key)"
+                 (selectionChange)="toggleDomain2(domain.key, $event.selected)"
+                  >{{domain.key_display_name}}</mat-chip-option
+                >
+              </div> -->
             </mat-chip-listbox>
           </div>
         </div>
