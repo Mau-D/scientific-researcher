@@ -215,9 +215,10 @@
   }
 
   <div>
-    <button class="bg-blue-500 p-4 my-4" (click)="pageNumber.set(1)">
+    <button class="bg-blue-500 p-4 my-4 disabled:hidden" (click)="pageNumber.set(1)" [disabled]="!searchSelected()">
       Afficher les résultats
     </button>
+    <div><h1>{{worksResultResource.value()?.meta?.count}}</h1></div>
   </div>
   <mat-drawer-container>
     <mat-drawer
