@@ -82,20 +82,21 @@ export class Search {
   formSignal = toSignal(this.filtersForm.valueChanges, {
     initialValue: this.filtersForm.value,
   });
-  debouncedSearch = signal('');
+  // debouncedSearch = signal('');
   search = signal('');
   searchSelected = signal('');
   countWorks = signal(0);
   pageNumber = signal(0);
-  groupByDomains = signal<OpenAlexGroupBy<OpenAlexGroupByResult>>({
-    meta: {} as OpenAlexMeta,
-    group_by: [],
-  });
+  // groupByDomains = signal<OpenAlexGroupBy<OpenAlexGroupByResult>>({
+  //   meta: {} as OpenAlexMeta,
+  //   group_by: [],
+  // });
   groupByTypes = signal<OpenAlexGroupBy<OpenAlexGroupByResult>>({
     meta: {} as OpenAlexMeta,
     group_by: [],
   });
   selectedDomains = signal<string[]>([]);
+  unselectedDomains = signal<string>('');
   selectedTypes = signal<string[]>([]);
   public idClicked = signal<string>('');
   sampleWorks = signal<string | undefined>(undefined);
@@ -112,13 +113,28 @@ export class Search {
   keywords = computed(() => {
     return this.keywordsResource.value() ?? [];
   });
+  // allDomains = computed(
+  //   () => this.groupByDomainResource.value()?.group_by?.map((g) => g.key) ?? []
+  // );
+
+  // groupByDomains = computed(
+  //   () =>
+  //     this.groupByDomainResource.value() ??
+  //     ({} as OpenAlexGroupBy<OpenAlexGroupByResult>)
+  // );
   allDomains = computed(
     () => this.groupByDomainResource.value()?.group_by?.map((g) => g.key) ?? []
   );
+ 
   allTypes = computed(
     () => this.groupByTypeResource.value()?.group_by?.map((g) => g.key) ?? []
   );
   constructor() {
+    effect(() => {
+      const domains = this.allDomains();
+
+      this.selectedDomains.set(domains); // reset auto
+    });
     // effect(() => {
     //   const value = this.search();
     //   console.log('constructor:Search input changed:', value);
@@ -128,143 +144,143 @@ export class Search {
 
     //   return () => clearTimeout(timeout);
     // });
-    effect(() => {
-      this.formSignal();
-      this.setFiltersApply();
+    // effect(() => {
+    //   this.formSignal();
+    //   this.setFiltersApply();
 
-      // this.allFilters.set(this.filtersToApply());
-      this.selectedDomains.set([]);
-      this.selectedTypes.set([]);
-      this.pageNumber.set(0);
-    });
-    effect(() => {
-      const query = this.searchQuery();
-      if (!query) return;
-      this.pageNumber.set(0);
-      this.searchSelected.set('');
-    });
-    effect(() => {
-      const query = this.searchSelected();
-      const datasDomains = this.groupByDomainResource.value();
-      const datasTypes = this.groupByTypeResource.value();
-      if (!query || !datasDomains || !datasTypes) return;
+    //   // this.allFilters.set(this.filtersToApply());
+    //   this.selectedDomains.set([]);
+    //   this.selectedTypes.set([]);
+    //   this.pageNumber.set(0);
+    // });
+    // effect(() => {
+    //   const query = this.searchQuery();
+    //   if (!query) return;
+    //   this.pageNumber.set(0);
+    //   this.searchSelected.set('');
+    // });
+    //     effect(() => {
+    //       const query = this.searchSelected();
+    //       const datasDomains = this.groupByDomainResource.value();
+    //       const datasTypes = this.groupByTypeResource.value();
+    //       if (!query || !datasDomains || !datasTypes) return;
 
-      const domainsKeys = datasDomains.group_by?.map((g) => g.key) ?? [];
-      const typesKeys = datasTypes.group_by?.map((g) => g.key) ?? [];
+    //       const domainsKeys = datasDomains.group_by?.map((g) => g.key) ?? [];
+    //       const typesKeys = datasTypes.group_by?.map((g) => g.key) ?? [];
 
-      // -------------------------
-      // 🔹 Init state (NON TRACKÉ)
-      // -------------------------
-      untracked(() => {
-        this.countWorks.set(datasDomains.meta.count);
-        console.log('COUNT', this.countWorks());
-console.log('allDomains et allTypes', this.allDomains(), this.allTypes())
-        this.allFilters.set(this.filtersToApply());
+    //       // -------------------------
+    //       // 🔹 Init state (NON TRACKÉ)
+    //       // -------------------------
+    //       untracked(() => {
+    //         this.countWorks.set(datasDomains.meta.count);
+    //         console.log('COUNT', this.countWorks());
+    // console.log('allDomains et allTypes', this.allDomains(), this.allTypes())
+    //         this.allFilters.set(this.filtersToApply());
 
-        this.pageNumber.set(0);
-        this.groupByDomains.set(datasDomains);
-        this.groupByTypes.set(datasTypes);
+    //         this.pageNumber.set(0);
+    //         this.groupByDomains.set(datasDomains);
+    //         this.groupByTypes.set(datasTypes);
 
-        // IMPORTANT : init seulement si vide
-        // if (!this.selectedDomains().length) {
-        this.selectedDomains.set(domainsKeys);
-        // }
+    //         // IMPORTANT : init seulement si vide
+    //         // if (!this.selectedDomains().length) {
+    //         this.selectedDomains.set(domainsKeys);
+    //         // }
 
-        // if (!this.selectedTypes().length) {
-        this.selectedTypes.set(typesKeys);
-        // }
-        //initialise aussi tes arrays ici
-        this.domainsArray.set(datasDomains.group_by ?? []);
-        this.typesArray.set(datasTypes.group_by ?? []);
-      });
-    });
-    effect(() => {
-      const selectedDomains = this.selectedDomains();
-      const selectedTypes = this.selectedTypes();
-      console.log('selected Domains and Types', selectedDomains, selectedTypes);
-      const allDomains = this.allDomains();
-      const allTypes = this.allTypes();
-      console.log('all Domains and Types', allDomains, allTypes);
-      this.pageNumber.set(0);
+    //         // if (!this.selectedTypes().length) {
+    //         this.selectedTypes.set(typesKeys);
+    //         // }
+    //         //initialise aussi tes arrays ici
+    //         this.domainsArray.set(datasDomains.group_by ?? []);
+    //         this.typesArray.set(datasTypes.group_by ?? []);
+    //       });
+    //     });
+    //   effect(() => {
+    //     const selectedDomains = this.selectedDomains();
+    //     const selectedTypes = this.selectedTypes();
+    //     console.log('selected Domains and Types', selectedDomains, selectedTypes);
+    //     const allDomains = this.allDomains();
+    //     const allTypes = this.allTypes();
+    //     console.log('all Domains and Types', allDomains, allTypes);
+    //     this.pageNumber.set(0);
 
-      const baseFilters = this.filtersToApply();
+    //     const baseFilters = this.filtersToApply();
 
-      if (!allDomains?.length || !allTypes?.length) return;
+    //     if (!allDomains?.length || !allTypes?.length) return;
 
-      // -------------------------
-      // Build UNSELECTED
-      // -------------------------
+    //     // -------------------------
+    //     // Build UNSELECTED
+    //     // -------------------------
 
-      const unselectedDomains = allDomains
-        .filter((d) => !selectedDomains.includes(d))
-        .map((d) => d.split('/').pop())
-        .join('|');
-      console.log('unselected domains:  ', unselectedDomains);
-      const unselectedTypes = allTypes
-        .filter((t) => !selectedTypes.includes(t))
-        .map((d) => d.split('/').pop())
-        .join('|');
-      console.log('unselected types:  ', unselectedTypes);
+    //     const unselectedDomains = allDomains
+    //       .filter((d) => !selectedDomains.includes(d))
+    //       .map((d) => d.split('/').pop())
+    //       .join('|');
+    //     console.log('unselected domains:  ', unselectedDomains);
+    //     const unselectedTypes = allTypes
+    //       .filter((t) => !selectedTypes.includes(t))
+    //       .map((d) => d.split('/').pop())
+    //       .join('|');
+    //     console.log('unselected types:  ', unselectedTypes);
 
-      // -------------------------
-      // Build FILTER STRING
-      // -------------------------
+    //     // -------------------------
+    //     // Build FILTER STRING
+    //     // -------------------------
 
-      const nextFilters = [
-        baseFilters,
-        unselectedDomains && `primary_topic.domain.id:!${unselectedDomains}`,
-        unselectedTypes && `type:!${unselectedTypes}`,
-      ]
-        .filter(Boolean)
-        .join(',');
+    //     const nextFilters = [
+    //       baseFilters,
+    //       unselectedDomains && `primary_topic.domain.id:!${unselectedDomains}`,
+    //       unselectedTypes && `type:!${unselectedTypes}`,
+    //     ]
+    //       .filter(Boolean)
+    //       .join(',');
 
-      // 🔹 IMPORTANT : évite set inutile → évite refresh resource
-      if (this.allFilters() !== nextFilters) {
-        this.allFilters.set(nextFilters);
-      }
+    //     // 🔹 IMPORTANT : évite set inutile → évite refresh resource
+    //     if (this.allFilters() !== nextFilters) {
+    //       this.allFilters.set(nextFilters);
+    //     }
 
-      console.log('ALL FILTERS →', nextFilters);
+    //     console.log('ALL FILTERS →', nextFilters);
 
-      // -------------------------
-      // Update count
-      // -------------------------
+    //     // -------------------------
+    //     // Update count
+    //     // -------------------------
 
-      const count =
-        this.groupByTypeFilterByDomainsResource.value()?.meta?.count ??
-        this.groupByDomainFilterByTypesResource.value()?.meta?.count ??
-        this.countWorks();
+    //     const count =
+    //       this.groupByTypeFilterByDomainsResource.value()?.meta?.count ??
+    //       this.groupByDomainFilterByTypesResource.value()?.meta?.count ??
+    //       this.countWorks();
 
-      this.countWorks.set(count);
+    //     this.countWorks.set(count);
 
-      // -------------------------
-      // Sync arrays
-      // -------------------------
-      const nextTypes =
-        this.groupByTypeFilterByDomainsResource.value()?.group_by ?? [];
-      // this.typesArray.update((curr) => this.syncCounts(curr, nextTypes));
+    //     // -------------------------
+    //     // Sync arrays
+    //     // -------------------------
+    //     const nextTypes =
+    //       this.groupByTypeFilterByDomainsResource.value()?.group_by ?? [];
+    //     // this.typesArray.update((curr) => this.syncCounts(curr, nextTypes));
 
-      this.typesArray.set(
-        this.syncCounts(this.groupByTypes().group_by, nextTypes)
-      );
-      console.log(
-        'curr Types',
-        this.groupByTypes().group_by,
-        'nextTypes:  ',
-        nextTypes
-      );
+    //     this.typesArray.set(
+    //       this.syncCounts(this.groupByTypes().group_by, nextTypes)
+    //     );
+    //     console.log(
+    //       'curr Types',
+    //       this.groupByTypes().group_by,
+    //       'nextTypes:  ',
+    //       nextTypes
+    //     );
 
-      const nextDomains =
-        this.groupByDomainFilterByTypesResource.value()?.group_by ?? [];
-      console.log(
-        'curr Domains',
-        this.groupByDomains().group_by,
-        'nextDomains:  ',
-        nextDomains
-      );
-      this.domainsArray.set(
-        this.syncCounts(this.groupByDomains().group_by, nextDomains)
-      );
-    });
+    //     const nextDomains =
+    //       this.groupByDomainFilterByTypesResource.value()?.group_by ?? [];
+    //     console.log(
+    //       'curr Domains',
+    //       this.groupByDomains().group_by,
+    //       'nextDomains:  ',
+    //       nextDomains
+    //     );
+    //     this.domainsArray.set(
+    //       this.syncCounts(this.groupByDomains().group_by, nextDomains)
+    //     );
+    //   });
   }
   onSelect(event: MatAutocompleteSelectedEvent) {
     this.setFiltersApply();
@@ -309,12 +325,14 @@ console.log('allDomains et allTypes', this.allDomains(), this.allTypes())
       if (!params) return null;
       if (params.length < 3) return [];
       // --- LE DEBOUNCE ---
-    await delay(300); 
-    
-    // Si l'utilisateur a retapé une touche, l'abortSignal sera activé
-    if (abortSignal.aborted) return [];
-    // const response = await fetch(`/api/keywords?q=${params}`, { signal: abortSignal });
-      return await firstValueFrom(this.api.getKeywordsList(params).pipe(delay(300)));
+      await delay(300);
+
+      // Si l'utilisateur a retapé une touche, l'abortSignal sera activé
+      if (abortSignal.aborted) return [];
+      // const response = await fetch(`/api/keywords?q=${params}`, { signal: abortSignal });
+      return await firstValueFrom(
+        this.api.getKeywordsList(params).pipe(delay(300))
+      );
     },
   });
 
@@ -476,6 +494,7 @@ console.log('allDomains et allTypes', this.allDomains(), this.allTypes())
   });
 
   toggleDomain(domain: string, selected: boolean) {
+    console.log('TOGGLE DOMAIN');
     this.selectedDomains.update((domains) => {
       // toggle seulement si l'état actuel est différent de selected
       const isCurrentlySelected = domains.includes(domain);
@@ -486,6 +505,13 @@ console.log('allDomains et allTypes', this.allDomains(), this.allTypes())
         ? [...domains, domain]
         : domains.filter((d) => d !== domain);
     });
+    console.log('selectDomains', this.selectedDomains())
+    const unselect = this.allDomains()
+      .filter((d) => !this.selectedDomains().includes(d))
+      .map((d) => d.split('/').pop())
+      .join('|');
+    this.unselectedDomains.set(unselect)
+    console.log('unselected domains: ', this.unselectedDomains())
   }
   toggleType(type: string, selected: boolean) {
     this.selectedTypes.update((types) => {
