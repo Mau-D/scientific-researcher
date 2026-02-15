@@ -34,7 +34,7 @@ import {
 } from '@org/models';
 import { OpenalexApi } from '@org/research';
 import { ResearchCard } from '@org/ui-layout';
-import { firstValueFrom } from 'rxjs'; // Pour gérer le cas initial
+import { delay, firstValueFrom } from 'rxjs'; // Pour gérer le cas initial
 import { WorkDetails } from '../work-details/work-details';
 
 @Component({
@@ -119,15 +119,15 @@ export class Search {
     () => this.groupByTypeResource.value()?.group_by?.map((g) => g.key) ?? []
   );
   constructor() {
-    effect(() => {
-      const value = this.search();
-      console.log('constructor:Search input changed:', value);
-      const timeout = setTimeout(() => {
-        this.debouncedSearch.set(value);
-      }, 300);
+    // effect(() => {
+    //   const value = this.search();
+    //   console.log('constructor:Search input changed:', value);
+    //   const timeout = setTimeout(() => {
+    //     this.debouncedSearch.set(value);
+    //   }, 300);
 
-      return () => clearTimeout(timeout);
-    });
+    //   return () => clearTimeout(timeout);
+    // });
     effect(() => {
       this.formSignal();
       this.setFiltersApply();
@@ -305,9 +305,16 @@ console.log('allDomains et allTypes', this.allDomains(), this.allTypes())
 
   keywordsResource = resource<string[] | null, string | null>({
     params: () => this.searchQuery(),
-    loader: async ({ params }) => {
+    loader: async ({ params, abortSignal }) => {
       if (!params) return null;
-      return await firstValueFrom(this.api.getKeywordsList(params));
+      if (params.length < 3) return [];
+      // --- LE DEBOUNCE ---
+    await delay(300); 
+    
+    // Si l'utilisateur a retapé une touche, l'abortSignal sera activé
+    if (abortSignal.aborted) return [];
+    // const response = await fetch(`/api/keywords?q=${params}`, { signal: abortSignal });
+      return await firstValueFrom(this.api.getKeywordsList(params).pipe(delay(300)));
     },
   });
 
