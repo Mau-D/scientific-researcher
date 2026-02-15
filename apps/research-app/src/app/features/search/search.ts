@@ -131,12 +131,11 @@ export class Search {
     effect(() => {
       this.formSignal();
       this.setFiltersApply();
-      
+
       // this.allFilters.set(this.filtersToApply());
       this.selectedDomains.set([]);
       this.selectedTypes.set([]);
-            this.pageNumber.set(0);
-
+      this.pageNumber.set(0);
     });
     effect(() => {
       const query = this.searchQuery();
@@ -148,31 +147,31 @@ export class Search {
       const query = this.searchSelected();
       const datasDomains = this.groupByDomainResource.value();
       const datasTypes = this.groupByTypeResource.value();
-
       if (!query || !datasDomains || !datasTypes) return;
 
       const domainsKeys = datasDomains.group_by?.map((g) => g.key) ?? [];
       const typesKeys = datasTypes.group_by?.map((g) => g.key) ?? [];
-      this.allFilters.set(this.filtersToApply());
 
       // -------------------------
       // 🔹 Init state (NON TRACKÉ)
       // -------------------------
       untracked(() => {
-        this.pageNumber.set(0);
+        this.countWorks.set(datasDomains.meta.count);
+        console.log('COUNT', this.countWorks());
+console.log('allDomains et allTypes', this.allDomains(), this.allTypes())
+        this.allFilters.set(this.filtersToApply());
 
+        this.pageNumber.set(0);
         this.groupByDomains.set(datasDomains);
         this.groupByTypes.set(datasTypes);
 
-        this.countWorks.set(datasDomains.meta.count);
-
         // IMPORTANT : init seulement si vide
         // if (!this.selectedDomains().length) {
-          this.selectedDomains.set(domainsKeys);
+        this.selectedDomains.set(domainsKeys);
         // }
 
         // if (!this.selectedTypes().length) {
-          this.selectedTypes.set(typesKeys);
+        this.selectedTypes.set(typesKeys);
         // }
         //initialise aussi tes arrays ici
         this.domainsArray.set(datasDomains.group_by ?? []);
