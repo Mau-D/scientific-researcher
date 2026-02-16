@@ -85,7 +85,7 @@ export class Search {
   // debouncedSearch = signal('');
   search = signal('');
   searchSelected = signal('');
-  countWorks = signal(0);
+  // countWorks = signal(0);
   pageNumber = signal(0);
   // groupByDomains = signal<OpenAlexGroupBy<OpenAlexGroupByResult>>({
   //   meta: {} as OpenAlexMeta,
@@ -98,13 +98,22 @@ export class Search {
   selectedDomains = signal<string[]>([]);
   unselectedDomains = signal<string>('');
   selectedTypes = signal<string[]>([]);
+  unselectedTypes = signal<string>('');
   public idClicked = signal<string>('');
   sampleWorks = signal<string | undefined>(undefined);
+  filterByDomain = signal<string | undefined>(undefined);
+  filterByType = signal<string | undefined>(undefined);
   filtersToApply = signal<string>('');
   allFilters = signal<string>('');
-  typesArray = signal<OpenAlexGroupByResult[]>([]);
-  domainsArray = signal<OpenAlexGroupByResult[]>([]);
-
+  // typesArray = signal<OpenAlexGroupByResult[]>([]);
+  // domainsArray = signal<OpenAlexGroupByResult[]>([]);
+  countWorks = computed(
+    () =>
+      this.groupByTypeFilterByDomainsResource.value()?.meta?.count ??
+      this.groupByDomainFilterByTypesResource.value()?.meta?.count ??
+      this.groupByDomainResource.value()?.meta?.count ??
+      0
+  );
   searchQuery = computed(() => {
     const value = this.search().trim();
     return value.length >= 2 ? value : null;
@@ -125,15 +134,29 @@ export class Search {
   allDomains = computed(
     () => this.groupByDomainResource.value()?.group_by?.map((g) => g.key) ?? []
   );
- 
+  domainsArray = computed(() =>
+    this.syncCounts(
+      this.groupByDomainResource.value()?.group_by ?? [],
+      this.groupByDomainFilterByTypesResource.value()?.group_by ?? []
+    )
+  );
+
   allTypes = computed(
     () => this.groupByTypeResource.value()?.group_by?.map((g) => g.key) ?? []
+  );
+  typesArray = computed(() =>
+    this.syncCounts(
+      this.groupByTypeResource.value()?.group_by ?? [],
+      this.groupByTypeFilterByDomainsResource.value()?.group_by ?? []
+    )
   );
   constructor() {
     effect(() => {
       const domains = this.allDomains();
+      const types = this.allTypes();
 
-      this.selectedDomains.set(domains); // reset auto
+      this.selectedDomains.set(domains);
+      this.selectedTypes.set(types);
     });
     // effect(() => {
     //   const value = this.search();
@@ -144,15 +167,15 @@ export class Search {
 
     //   return () => clearTimeout(timeout);
     // });
-    // effect(() => {
-    //   this.formSignal();
-    //   this.setFiltersApply();
+    effect(() => {
+      this.formSignal();
+      this.setFiltersApply();
 
-    //   // this.allFilters.set(this.filtersToApply());
-    //   this.selectedDomains.set([]);
-    //   this.selectedTypes.set([]);
-    //   this.pageNumber.set(0);
-    // });
+      // this.allFilters.set(this.filtersToApply());
+      this.selectedDomains.set([]);
+      this.selectedTypes.set([]);
+      this.pageNumber.set(0);
+    });
     // effect(() => {
     //   const query = this.searchQuery();
     //   if (!query) return;
@@ -431,10 +454,10 @@ export class Search {
   });
   groupByTypeFilterByDomainsResource = resource<
     OpenAlexGroupBy<OpenAlexGroupByResult>,
-    { filters: string }
+    { filters: string | undefined}
   >({
     params: () => ({
-      filters: this.allFilters(), // 🔥 seule dépendance
+      filters: this.filterByDomain(), // 🔥 seule dépendance
     }),
 
     loader: async ({ params }) => {
@@ -449,10 +472,10 @@ export class Search {
   });
   groupByDomainFilterByTypesResource = resource<
     OpenAlexGroupBy<OpenAlexGroupByResult>,
-    { filters: string }
+    { filters: string | undefined }
   >({
     params: () => ({
-      filters: this.allFilters(), // 🔥 seule dépendance
+      filters: this.filterByType(), // 🔥 seule dépendance
     }),
 
     loader: async ({ params }) => {
@@ -505,13 +528,18 @@ export class Search {
         ? [...domains, domain]
         : domains.filter((d) => d !== domain);
     });
-    console.log('selectDomains', this.selectedDomains())
+    console.log('selectDomains', this.selectedDomains());
     const unselect = this.allDomains()
       .filter((d) => !this.selectedDomains().includes(d))
       .map((d) => d.split('/').pop())
       .join('|');
-    this.unselectedDomains.set(unselect)
-    console.log('unselected domains: ', this.unselectedDomains())
+    this.unselectedDomains.set(unselect);
+    const nextFilters = !this.unselectedDomains
+      ? this.filtersToApply()
+      : `${this.filtersToApply()},primary_topic.domain.id:!${this.unselectedDomains()}`;
+
+    this.filterByDomain.set(nextFilters);
+    console.log('unselected domains: ', this.unselectedDomains());
   }
   toggleType(type: string, selected: boolean) {
     this.selectedTypes.update((types) => {
@@ -522,6 +550,16 @@ export class Search {
       }
       return selected ? [...types, type] : types.filter((d) => d !== type);
     });
+    const unselect = this.allTypes()
+      .filter((d) => !this.selectedTypes().includes(d))
+      .map((d) => d.split('/').pop())
+      .join('|');
+    this.unselectedTypes.set(unselect);
+     const nextFilters = !this.unselectedTypes
+      ? this.filtersToApply()
+      : `${this.filtersToApply()},type:!${this.unselectedTypes()}`;
+
+    this.filterByType.set(nextFilters);
   }
   filtersToString(filters: OpenAlexFilters) {
     const filtersStringify = Object.keys(filters)
@@ -552,7 +590,7 @@ export class Search {
     console.log('Array:  ', current, next);
 
     console.log('SyncCounts:  ', newArray);
-    return newArray;
+    return !next.length ? current : newArray;
   }
   // Getters pour simplifier l'accès dans le template
   //   .value() : La dernière valeur reçue avec succès (Signal).

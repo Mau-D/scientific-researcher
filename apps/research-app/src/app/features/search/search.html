@@ -95,7 +95,7 @@
           <p>Cliquez pour exclure ou inclure une catégorie</p>
           <div class="flex justify-center mt-5">
             <mat-chip-listbox aria-label="Domain selection" multiple>
-              @for (domain of groupByDomainResource.value()?.group_by; track domain.key) {
+              @for (domain of domainsArray(); track domain.key) {
               <div
                 class="mr-6 mt-2"
                 matBadge="{{domain.count}}"
@@ -138,7 +138,7 @@
           <p>Cliquez pour exclure ou inclure une catégorie</p>
           <div class="flex justify-center mt-5">
             <mat-chip-listbox aria-label="Type selection" multiple>
-              @for (type of groupByTypeResource.value()?.group_by; track type.key) {
+              @for (type of typesArray(); track type.key) {
               <div
                 class="mr-6 mt-2"
                 matBadge="{{type.count}}"
