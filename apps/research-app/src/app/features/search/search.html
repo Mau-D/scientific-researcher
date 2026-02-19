@@ -1,11 +1,6 @@
-
 @let worksResult=worksResultResource.value()?.results;
 <!--  -->
-@let data = workResource.value();
-
-
-
-@let research = searchSelected();
+@let data = workResource.value(); @let research = searchSelected();
 <section class="w-dvw flex flex-col justify-start items-center px-5 h-auto">
   <div>
     <mat-form-field class="w-full max-w-lg">
@@ -100,18 +95,19 @@
                 class="mr-6 mt-2"
                 matBadge="{{domain.count}}"
                 matBadgeSize="large"
+                [matBadgeHidden]="domain.count === 0"
               >
                 <!-- <mat-chip-option
                   [disabled]="selectedDomains().includes(domain.key) && selectedDomains().length<=1"
                   [selected]="selectedDomains().includes(domain.key)"
                   (selectionChange)="toggleDomain(domain.key, $event.selected)"
-                  >{{domain.key_display_name}}</mat-chip-option -->
-                   <mat-chip-option
-                  [disabled]="selectedDomains().includes(domain.key) && selectedDomains().length<=1"
-                  [selected]="selectedDomains().includes(domain.key)"
-                 (selectionChange)="toggleDomain(domain.key, $event.selected)"
-                  >{{domain.key_display_name}}</mat-chip-option
-                >
+                  >{{domain.key_display_name}}</mat-chip-option> -->
+                <mat-chip-option
+                  [selected]="selectedDomainsSet().has(domain.key)"
+
+                  (selectionChange)="toggleDomain(domain.key,$event.selected)"
+                  >{{domain.key_display_name}}</mat-chip-option>
+                
               </div>
 
               }
@@ -143,18 +139,18 @@
                 class="mr-6 mt-2"
                 matBadge="{{type.count}}"
                 matBadgeSize="large"
+                [matBadgeHidden]="type.count === 0"
               >
                 <mat-chip-option
-                  selected
-                  [disabled]="selectedTypes().includes(type.key) && selectedTypes().length<=1"
-                  [selected]="selectedTypes().includes(type.key)"
-                  (selectionChange)="toggleType(type.key, $event.selected)"
-                  >{{type.key_display_name}}</mat-chip-option
+                  [selected]="selectedTypesSet().has(type.key)"
+
+                  (selectionChange)="toggleType(type.key,$event.selected)"
+                >
+                  {{type.key_display_name}}</mat-chip-option
                 >
               </div>
 
               }
-           
             </mat-chip-listbox>
           </div>
         </div>
@@ -164,7 +160,11 @@
   }
 
   <div>
-    <button class="bg-blue-500 p-4 my-4 disabled:hidden" (click)="pageNumber.set(1)" [disabled]="!searchSelected()">
+    <button
+      class="bg-blue-500 p-4 my-4 disabled:hidden"
+      (click)="pageNumber.set(1)"
+      [disabled]="!searchSelected()"
+    >
       Afficher les résultats
     </button>
     <div><h1>{{worksResultResource.value()?.meta?.count}}</h1></div>
