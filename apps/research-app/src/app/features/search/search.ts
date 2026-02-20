@@ -1,14 +1,13 @@
 import {
   Component,
   computed,
-  effect,
   inject,
+  OnInit,
   resource,
   signal,
-  viewChild,
-  untracked,
+  viewChild
 } from '@angular/core';
-import { toSignal, toObservable } from '@angular/core/rxjs-interop';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
   MatAutocompleteModule,
@@ -29,8 +28,7 @@ import {
   OpenAlexGroupBy,
   OpenAlexGroupByResult,
   OpenAlexResponse,
-  OpenAlexWork,
-  OpenAlexMeta,
+  OpenAlexWork
 } from '@org/models';
 import { OpenalexApi } from '@org/research';
 import { ResearchCard } from '@org/ui-layout';
@@ -59,7 +57,7 @@ import { WorkDetails } from '../work-details/work-details';
   templateUrl: './search.html',
   styleUrl: './search.scss',
 })
-export class Search {
+export class Search implements OnInit {
   // currentWork: OpenAlexWork | undefined;
   private api = inject(OpenalexApi);
   private formBuilder = inject(FormBuilder);
@@ -94,6 +92,14 @@ export class Search {
   sampleWorks = signal<string | undefined>(undefined);
 
   allFilters = signal<string>('');
+  ngOnInit() {
+  this.filtersForm.valueChanges.subscribe(() => {
+    this.manualSelectedDomains.set(this.domainsFromBackend()?.map((d) => d.key) ?? []);
+    console.log('changement dans le form, reset des filtres manuels');
+    this.manualSelectedTypes.set(this.typesFromBackend().map((t) => t.key));
+    this.allFilters.set('')
+  });
+}
 
   countWorks = computed(
     () =>
