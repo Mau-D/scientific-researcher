@@ -5,6 +5,7 @@ import {
   resource,
   signal,
   viewChild,
+  OnInit,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
@@ -56,11 +57,19 @@ import { WorkDetails } from '../work-details/work-details';
   templateUrl: './search.html',
   styleUrl: './search.scss',
 })
-export class Search {
+export class Search implements OnInit {
+  ngOnInit() {
+    // écoute toutes les modifications du form
+    this.filtersForm.valueChanges.subscribe(() => {
+      this.resetDomains();
+      this.resetTypes();
+    });
+  }
   // currentWork: OpenAlexWork | undefined;
   private api = inject(OpenalexApi);
   private formBuilder = inject(FormBuilder);
   drawer = viewChild(MatDrawer);
+
   filtersForm = this.formBuilder.group({
     isOa: new FormControl<boolean>(true, {
       nonNullable: true,
@@ -79,11 +88,12 @@ export class Search {
   formSignal = toSignal(this.filtersForm.valueChanges, {
     initialValue: this.filtersForm.value,
   });
+  public idClicked = signal<string>('');
   search = signal('');
   searchSelected = signal('');
   pageNumber = signal(0);
-
-  public idClicked = signal<string>('');
+  unselectedDomainsSet = signal<Set<string>>(new Set());
+  unselectedTypesSet = signal<Set<string>>(new Set());
 
   filtersToApply = computed(() => {
     const formFilters = {
@@ -97,6 +107,173 @@ export class Search {
     console.log('Filter To Apply');
     return this.filtersToString(formFilters);
   });
+  domainsDisplayed = computed(() => {
+    const unselect = this.unselectedDomainsSet();
+    const unselectTypes = this.unselectedTypesSet();
+    console.log(
+      'Calculating domainsDisplayed with unselectedDomainsSet:',
+      unselect
+    );
+    const domains =
+      unselect.size === 0 &&  unselectTypes.size === 0 ? this.domainsInitial() : this.newDomainsDisplayed();
+    console.log('Domains displayed:', domains);
+    return domains;
+  });
+  typesDisplayed = computed(() => {
+    const unselect = this.unselectedTypesSet();
+    const unselectDomains = this.unselectedDomainsSet();
+    console.log(
+      'Calculating typesDisplayed with unselectedTypesSet:',
+      unselect
+    );
+    const domains =
+      unselect.size === 0 && unselectDomains.size === 0 ? this.typesInitial() : this.newTypesDisplayed();
+    console.log('Types displayed:', domains);
+    return domains;
+  });
+  newDomainsDisplayed = computed(() => {
+    const unselectedSet = this.unselectedDomainsSet();
+    const current = this.domainsInitial();
+    const filtered = this.domainsFiltered();
+
+    if (!current || !filtered) return [];
+
+    const filteredMap = new Map(filtered.map((d) => [d.group.key, d]));
+
+    return current.map((domain) => {
+      const key = domain.group.key;
+
+      const isUnselected = unselectedSet.has(key);
+      const filteredDomain = filteredMap.get(key);
+
+      return {
+        group: {
+          ...domain.group,
+          count: isUnselected ? 0 : filteredDomain?.group.count ?? 0,
+        },
+        selected: !isUnselected,
+      };
+    });
+  }); 
+  newTypesDisplayed = computed(() => {
+    const unselectedSet = this.unselectedTypesSet();
+    const current = this.typesInitial();
+    const filtered = this.typesFiltered();
+
+    if (!current || !filtered) return [];
+
+    const filteredMap = new Map(filtered.map((t) => [t.group.key, t]));
+
+    return current.map((type) => {
+      const key = type.group.key;
+
+      const isUnselected = unselectedSet.has(key);
+      const filteredType = filteredMap.get(key);
+
+      return {
+        group: {
+          ...type.group,
+          count: isUnselected ? 0 : filteredType?.group.count ?? 0,
+        },
+        selected: !isUnselected,
+      };
+    });
+  });
+
+  domainsInitial = computed(() => {
+    const domainsInit =
+      this.groupByDomainResource
+        .value()
+        ?.group_by.map((item) => ({ group: item, selected: true })) ?? [];
+    console.log('Domains initial:', domainsInit);
+    return domainsInit;
+  }); 
+  typesInitial = computed(() => {
+    const typesInit =
+      this.groupByTypeResource
+        .value()
+        ?.group_by.map((item) => ({ group: item, selected: true })) ?? [];
+    console.log('Types initial:', typesInit);
+    return typesInit;
+  });
+  selectionDomains = computed(() => {
+    const unselect = this.unselectedDomainsSet();
+    const array = new Set<string>();
+    this.domainsDisplayed().map((d) => {
+      if (!unselect.has(d.group.key)) {
+        array.add(d.group.key);
+      }
+    });
+    return array;
+  });
+  selectionTypes = computed(() => {
+    const unselect = this.unselectedTypesSet();
+    const array = new Set<string>();
+    this.typesDisplayed().map((t) => {
+      if (!unselect.has(t.group.key)) {
+        array.add(t.group.key);
+      }
+    });
+    return array;
+  });
+  domainsFiltered = computed(() => {
+    const domainsFilt =
+      this.groupByDomainsFilteredResource.value()?.group_by.map((item) => ({
+        group: item,
+        selected: !this.unselectedDomainsSet().has(item.key),
+      })) ?? [];
+    console.log('Domains filtered:', domainsFilt);
+    return domainsFilt;
+  });
+  typesFiltered = computed(() => {
+    const typesFilt =
+      this.groupByTypeFilteredResource.value()?.group_by.map((item) => ({
+        group: item,
+        selected: !this.unselectedTypesSet().has(item.key),
+      })) ?? [];
+    console.log('Types filtered:', typesFilt);
+    return typesFilt;
+  });
+  //computed for set a new string filters with unselect domainsè
+  allFiltersToApply = computed(() => {
+    const baseFilters = this.filtersToApply();
+    const unselectedDomains = this.unselectedDomainsSet(); // 👈 UNE seule lecture
+    const unselectedTypes = this.unselectedTypesSet(); // 👈 UNE seule lecture
+    
+    console.log(
+      'Calculating allFiltersToApply with unselectedDomainsSet:',
+      unselectedDomains,
+      'and unselectedTypesSet:',
+      unselectedTypes
+    );
+    const search = this.searchSelected(); // 👈 IMPORTANT
+
+    if (!search || search === '') {
+      return '';
+    } else if (unselectedDomains.size === 0 && unselectedTypes.size === 0) {
+      return baseFilters; // Pas de domaines exclus, on garde les filtres de base
+    }
+
+    const unselectedDomainsArray = [...unselectedDomains]
+      .map((key) => key.split('/').pop())
+      .join('|');
+       const unselectedTypesArray = [...unselectedTypes]
+      .map((key) => key.split('/').pop())
+      .join('|');
+console.log('Unselected Domains Array:', unselectedDomainsArray);
+console.log('Unselected Types Array:', unselectedTypesArray);
+    const allFilters = [
+      baseFilters,
+      unselectedDomainsArray && `primary_topic.domain.id:!${unselectedDomainsArray}`,
+      unselectedTypesArray && `type:!${unselectedTypesArray}`,
+    ]
+      .filter(Boolean)
+      .join(',');
+
+    console.log('allFilters:', allFilters);
+
+    return allFilters;
+  });
   searchQuery = computed(() => {
     const value = this.search().trim();
     return value.length >= 2 ? value : null;
@@ -108,8 +285,83 @@ export class Search {
 
   onSelect(event: MatAutocompleteSelectedEvent) {
     const value: string = event.option.value;
+    this.searchSelected.set('');
+
+    // 1️⃣ d’abord reset le Set
+    this.unselectedDomainsSet.set(new Set());
+    this.unselectedTypesSet.set(new Set());
 
     this.searchSelected.set(value);
+  }
+  isDomainSelected(domainKey: string): boolean {
+    return !this.unselectedDomainsSet().has(domainKey);
+  }
+  isTypeSelected(typeKey: string): boolean {
+    return !this.unselectedTypesSet().has(typeKey);
+  }
+
+  resetDomains() {
+    this.unselectedDomainsSet.set(new Set());
+  }
+ 
+  resetTypes() {
+    this.unselectedTypesSet.set(new Set());
+  }
+
+  // getNewDomainsDisplayed() {
+  //   console.log(
+  //     'Calculating new domains displayed with unselectedDomainsSet:',
+  //     this.unselectedDomainsSet()
+  //   );
+  //   const unselectedSet = this.unselectedDomainsSet();
+  //   const current = this.domainsInitial();
+  //   const filtered = this.domainsFiltered();
+  //   //Compare current and filtered change de count and selected, if key is absent to filtered set count to 0
+  //   if(!current || !filtered) {
+  //     console.log('Current or filtered domains are undefined, returning empty array');
+  //     return [];
+  //   }
+  //   const newDomains = current.map((domain) => {
+  //     const isUnselected = unselectedSet.has(domain.group.key);
+  //     const filteredDomain = filtered.find(
+  //       (d) => d.group.key === domain.group.key
+  //     );
+  //     return {
+  //       group: {
+  //         ...domain.group,
+  //         count: isUnselected
+  //           ? 0
+  //           : filteredDomain
+  //           ? filteredDomain.group.count
+  //           : 0,
+  //       },
+  //       selected: !isUnselected,
+  //     };
+  //   });
+  //   console.log('New domains to display:', newDomains);
+  //   return newDomains;
+  // }
+  toggleDomainSelection(domain: OpenAlexGroupByResult) {
+    this.unselectedDomainsSet.update((current) => {
+      const updated = new Set(current);
+      if (updated.has(domain.key)) {
+        updated.delete(domain.key);
+      } else {
+        updated.add(domain.key);
+      }
+      return updated;
+    });
+  }
+  toggleTypeSelection(type: OpenAlexGroupByResult) {
+    this.unselectedTypesSet.update((current) => {
+      const updated = new Set(current);
+      if (updated.has(type.key)) {
+        updated.delete(type.key);
+      } else {
+        updated.add(type.key);
+      }
+      return updated;
+    });
   }
 
   toggleDrawer() {
@@ -188,42 +440,42 @@ export class Search {
       );
     },
   });
-  groupByTypeFilterByDomainsResource = resource<
+  groupByDomainsFilteredResource = resource<
     OpenAlexGroupBy<OpenAlexGroupByResult>,
     { filters: string }
   >({
     params: () => ({
-      filters: this.filtersToApply(), // 🔥 seule dépendance
+      filters: this.allFiltersToApply(), // 🔥 seule dépendance
     }),
 
     loader: async ({ params }) => {
-      console.log('groupByTypeFilters', params.filters);
-      if (!params.filters) {
-        return {} as OpenAlexGroupBy<OpenAlexGroupByResult>;
-      }
-
-      return firstValueFrom(
-        this.api.getTypesWorks(this.searchSelected(), params.filters)
-      );
-    },
-  });
-  groupByDomainFilterByTypesResource = resource<
-    OpenAlexGroupBy<OpenAlexGroupByResult>,
-    { filters: string }
-  >({
-    params: () => ({
-      filters: this.filtersToApply(), // 🔥 seule dépendance
-    }),
-
-    loader: async ({ params }) => {
-      console.log('groupByDomainFilters', params.filters);
-
+      console.log('groupByDomainsFilters', params.filters);
       if (!params.filters) {
         return {} as OpenAlexGroupBy<OpenAlexGroupByResult>;
       }
 
       return firstValueFrom(
         this.api.getDomainsWorks(this.searchSelected(), params.filters)
+      );
+    },
+  });
+  groupByTypeFilteredResource = resource<
+    OpenAlexGroupBy<OpenAlexGroupByResult>,
+    { filters: string }
+  >({
+    params: () => ({
+      filters: this.allFiltersToApply(), // 🔥 seule dépendance
+    }),
+
+    loader: async ({ params }) => {
+      console.log('groupByTypeFilters', params.filters);
+
+      if (!params.filters) {
+        return {} as OpenAlexGroupBy<OpenAlexGroupByResult>;
+      }
+
+      return firstValueFrom(
+        this.api.getTypesWorks(this.searchSelected(), params.filters)
       );
     },
   });
