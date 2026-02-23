@@ -342,6 +342,10 @@ console.log('Unselected Types Array:', unselectedTypesArray);
   //   return newDomains;
   // }
   toggleDomainSelection(domain: OpenAlexGroupByResult) {
+      if(!this.unselectedDomainsSet().has(domain.key) && domain.count === 0) {
+      console.log(`Domain ${domain.key} has count 0 and is currently selected. Toggle ignored.`);
+      return;
+    }
     this.unselectedDomainsSet.update((current) => {
       const updated = new Set(current);
       if (updated.has(domain.key)) {
@@ -353,6 +357,10 @@ console.log('Unselected Types Array:', unselectedTypesArray);
     });
   }
   toggleTypeSelection(type: OpenAlexGroupByResult) {
+    if(!this.unselectedTypesSet().has(type.key) && type.count === 0) {
+      console.log(`Type ${type.key} has count 0 and is currently selected. Toggle ignored.`);
+      return;
+    }
     this.unselectedTypesSet.update((current) => {
       const updated = new Set(current);
       if (updated.has(type.key)) {

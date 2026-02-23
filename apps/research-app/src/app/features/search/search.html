@@ -98,13 +98,13 @@
               [matBadgeHidden]="domain.group.count === 0"
             >
               <mat-chip
-              [disabled]="domainsDisplayed().length - unselectedDomainsSet().size === 1 && isDomainSelected(domain.group.key)"
+                [disabled]="domainsDisplayed().length - unselectedDomainsSet().size === 1 && isDomainSelected(domain.group.key)"
                 class="domain-chip cursor-crosshair"
                 (click)="toggleDomainSelection(domain.group)"
                 [class.selected-chip]="isDomainSelected(domain.group.key)"
+                [class.unselected-chip]="domain.group.count === 0"
                 >{{domain.group.key_display_name}}</mat-chip
               >
-            
             </div>
 
             }
@@ -129,8 +129,7 @@
         <div>
           <p>Cliquez pour exclure ou inclure une catégorie</p>
           <div class="flex justify-center mt-5">
-            <mat-chip-listbox aria-label="Type selection" multiple>
-               @for (type of typesDisplayed(); track type.group.key +
+            @for (type of typesDisplayed(); track type.group.key +
             isTypeSelected(type.group.key)){
             <div
               class="mr-6 mt-2"
@@ -139,16 +138,16 @@
               [matBadgeHidden]="type.group.count === 0"
             >
               <mat-chip
-              [disabled]="typesDisplayed().length - unselectedTypesSet().size === 1 && isTypeSelected(type.group.key)"
+                [disabled]="typesDisplayed().length - unselectedTypesSet().size === 1 && isTypeSelected(type.group.key)"
                 class="domain-chip cursor-crosshair"
                 (click)="toggleTypeSelection(type.group)"
                 [class.selected-chip]="isTypeSelected(type.group.key)"
+                [class.unselected-chip]="type.group.count === 0"
                 >{{type.group.key_display_name}}</mat-chip
               >
-              </div>
+            </div>
 
-              } 
-            </mat-chip-listbox>
+            }
           </div>
         </div>
       </mat-expansion-panel>

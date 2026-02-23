@@ -2,6 +2,7 @@
 @use 'libs/design/styles/src/index.scss' as *;
 
 @import '../../../tailwind.css';
+
 .no-scroll {
   overflow: hidden !important;
   min-height: 100%;
