@@ -115,7 +115,7 @@ export class Search implements OnInit {
       unselect
     );
     const domains =
-      unselect.size === 0 &&  unselectTypes.size === 0 ? this.domainsInitial() : this.newDomainsDisplayed();
+      unselect.size === 0 &&  unselectTypes.size === 0 ? this.domainsInitial() ?? [] : this.newDomainsDisplayed() ?? [];
     console.log('Domains displayed:', domains);
     return domains;
   });
@@ -127,7 +127,7 @@ export class Search implements OnInit {
       unselect
     );
     const domains =
-      unselect.size === 0 && unselectDomains.size === 0 ? this.typesInitial() : this.newTypesDisplayed();
+      unselect.size === 0 && unselectDomains.size === 0 ? this.typesInitial() ?? [] : this.newTypesDisplayed() ?? [];
     console.log('Types displayed:', domains);
     return domains;
   });
@@ -138,21 +138,19 @@ export class Search implements OnInit {
 
     if (!current || !filtered) return [];
 
-    const filteredMap = new Map(filtered.map((d) => [d.group.key, d]));
+    const filteredMap = new Map(filtered.map((d) => [d.key, d]));
 
     return current.map((domain) => {
-      const key = domain.group.key;
+      const key = domain.key;
 
       const isUnselected = unselectedSet.has(key);
       const filteredDomain = filteredMap.get(key);
 
       return {
-        group: {
-          ...domain.group,
-          count: isUnselected ? 0 : filteredDomain?.group.count ?? 0,
-        },
-        selected: !isUnselected,
-      };
+          ...domain,
+          count: isUnselected ? 0 : filteredDomain?.count ?? 0,
+        };
+       
     });
   }); 
   newTypesDisplayed = computed(() => {
@@ -162,20 +160,20 @@ export class Search implements OnInit {
 
     if (!current || !filtered) return [];
 
-    const filteredMap = new Map(filtered.map((t) => [t.group.key, t]));
+    const filteredMap = new Map(filtered.map((t) => [t.key, t]));
 
     return current.map((type) => {
-      const key = type.group.key;
+      const key = type.key;
 
       const isUnselected = unselectedSet.has(key);
       const filteredType = filteredMap.get(key);
 
       return {
-        group: {
-          ...type.group,
-          count: isUnselected ? 0 : filteredType?.group.count ?? 0,
-        },
-        selected: !isUnselected,
+        
+          ...type,
+          count: isUnselected ? 0 : filteredType?.count ?? 0,
+        
+       
       };
     });
   });
@@ -184,7 +182,7 @@ export class Search implements OnInit {
     const domainsInit =
       this.groupByDomainResource
         .value()
-        ?.group_by.map((item) => ({ group: item, selected: true })) ?? [];
+        ?.group_by
     console.log('Domains initial:', domainsInit);
     return domainsInit;
   }); 
@@ -192,16 +190,16 @@ export class Search implements OnInit {
     const typesInit =
       this.groupByTypeResource
         .value()
-        ?.group_by.map((item) => ({ group: item, selected: true })) ?? [];
+        ?.group_by
     console.log('Types initial:', typesInit);
     return typesInit;
   });
   selectionDomains = computed(() => {
     const unselect = this.unselectedDomainsSet();
     const array = new Set<string>();
-    this.domainsDisplayed().map((d) => {
-      if (!unselect.has(d.group.key)) {
-        array.add(d.group.key);
+    this.domainsDisplayed()?.map((d) => {
+      if (!unselect.has(d.key)) {
+        array.add(d.key);
       }
     });
     return array;
@@ -209,28 +207,22 @@ export class Search implements OnInit {
   selectionTypes = computed(() => {
     const unselect = this.unselectedTypesSet();
     const array = new Set<string>();
-    this.typesDisplayed().map((t) => {
-      if (!unselect.has(t.group.key)) {
-        array.add(t.group.key);
+    this.typesDisplayed()?.map((t) => {
+      if (!unselect.has(t.key)) {
+        array.add(t.key);
       }
     });
     return array;
   });
   domainsFiltered = computed(() => {
     const domainsFilt =
-      this.groupByDomainsFilteredResource.value()?.group_by.map((item) => ({
-        group: item,
-        selected: !this.unselectedDomainsSet().has(item.key),
-      })) ?? [];
+      this.groupByDomainsFilteredResource.value()?.group_by?? [];
     console.log('Domains filtered:', domainsFilt);
     return domainsFilt;
   });
   typesFiltered = computed(() => {
     const typesFilt =
-      this.groupByTypeFilteredResource.value()?.group_by.map((item) => ({
-        group: item,
-        selected: !this.unselectedTypesSet().has(item.key),
-      })) ?? [];
+      this.groupByTypeFilteredResource.value()?.group_by ?? [];
     console.log('Types filtered:', typesFilt);
     return typesFilt;
   });
@@ -342,10 +334,7 @@ console.log('Unselected Types Array:', unselectedTypesArray);
   //   return newDomains;
   // }
   toggleDomainSelection(domain: OpenAlexGroupByResult) {
-      if(!this.unselectedDomainsSet().has(domain.key) && domain.count === 0) {
-      console.log(`Domain ${domain.key} has count 0 and is currently selected. Toggle ignored.`);
-      return;
-    }
+     
     this.unselectedDomainsSet.update((current) => {
       const updated = new Set(current);
       if (updated.has(domain.key)) {
@@ -357,10 +346,7 @@ console.log('Unselected Types Array:', unselectedTypesArray);
     });
   }
   toggleTypeSelection(type: OpenAlexGroupByResult) {
-    if(!this.unselectedTypesSet().has(type.key) && type.count === 0) {
-      console.log(`Type ${type.key} has count 0 and is currently selected. Toggle ignored.`);
-      return;
-    }
+   
     this.unselectedTypesSet.update((current) => {
       const updated = new Set(current);
       if (updated.has(type.key)) {
