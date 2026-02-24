@@ -2,10 +2,10 @@ import {
   Component,
   computed,
   inject,
+  OnInit,
   resource,
   signal,
   viewChild,
-  OnInit,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
@@ -65,7 +65,6 @@ export class Search implements OnInit {
       this.resetTypes();
     });
   }
-  // currentWork: OpenAlexWork | undefined;
   private api = inject(OpenalexApi);
   private formBuilder = inject(FormBuilder);
   drawer = viewChild(MatDrawer);
@@ -107,6 +106,14 @@ export class Search implements OnInit {
     console.log('Filter To Apply');
     return this.filtersToString(formFilters);
   });
+  countWorks = computed(() => {
+    const count =
+      this.groupByDomainsFilteredResource.value()?.meta?.count ??
+      this.groupByDomainResource.value()?.meta?.count ??
+      0;
+    console.log('Count works:', count);
+    return count;
+  });
   domainsDisplayed = computed(() => {
     const unselect = this.unselectedDomainsSet();
     const unselectTypes = this.unselectedTypesSet();
@@ -115,7 +122,9 @@ export class Search implements OnInit {
       unselect
     );
     const domains =
-      unselect.size === 0 &&  unselectTypes.size === 0 ? this.domainsInitial() ?? [] : this.newDomainsDisplayed() ?? [];
+      unselect.size === 0 && unselectTypes.size === 0
+        ? this.domainsInitial() ?? []
+        : this.newDomainsDisplayed() ?? [];
     console.log('Domains displayed:', domains);
     return domains;
   });
@@ -127,7 +136,9 @@ export class Search implements OnInit {
       unselect
     );
     const domains =
-      unselect.size === 0 && unselectDomains.size === 0 ? this.typesInitial() ?? [] : this.newTypesDisplayed() ?? [];
+      unselect.size === 0 && unselectDomains.size === 0
+        ? this.typesInitial() ?? []
+        : this.newTypesDisplayed() ?? [];
     console.log('Types displayed:', domains);
     return domains;
   });
@@ -147,12 +158,11 @@ export class Search implements OnInit {
       const filteredDomain = filteredMap.get(key);
 
       return {
-          ...domain,
-          count: isUnselected ? 0 : filteredDomain?.count ?? 0,
-        };
-       
+        ...domain,
+        count: isUnselected ? 0 : filteredDomain?.count ?? 0,
+      };
     });
-  }); 
+  });
   newTypesDisplayed = computed(() => {
     const unselectedSet = this.unselectedTypesSet();
     const current = this.typesInitial();
@@ -169,28 +179,19 @@ export class Search implements OnInit {
       const filteredType = filteredMap.get(key);
 
       return {
-        
-          ...type,
-          count: isUnselected ? 0 : filteredType?.count ?? 0,
-        
-       
+        ...type,
+        count: isUnselected ? 0 : filteredType?.count ?? 0,
       };
     });
   });
 
   domainsInitial = computed(() => {
-    const domainsInit =
-      this.groupByDomainResource
-        .value()
-        ?.group_by
+    const domainsInit = this.groupByDomainResource.value()?.group_by;
     console.log('Domains initial:', domainsInit);
     return domainsInit;
-  }); 
+  });
   typesInitial = computed(() => {
-    const typesInit =
-      this.groupByTypeResource
-        .value()
-        ?.group_by
+    const typesInit = this.groupByTypeResource.value()?.group_by;
     console.log('Types initial:', typesInit);
     return typesInit;
   });
@@ -216,13 +217,12 @@ export class Search implements OnInit {
   });
   domainsFiltered = computed(() => {
     const domainsFilt =
-      this.groupByDomainsFilteredResource.value()?.group_by?? [];
+      this.groupByDomainsFilteredResource.value()?.group_by ?? [];
     console.log('Domains filtered:', domainsFilt);
     return domainsFilt;
   });
   typesFiltered = computed(() => {
-    const typesFilt =
-      this.groupByTypeFilteredResource.value()?.group_by ?? [];
+    const typesFilt = this.groupByTypeFilteredResource.value()?.group_by ?? [];
     console.log('Types filtered:', typesFilt);
     return typesFilt;
   });
@@ -231,7 +231,7 @@ export class Search implements OnInit {
     const baseFilters = this.filtersToApply();
     const unselectedDomains = this.unselectedDomainsSet(); // 👈 UNE seule lecture
     const unselectedTypes = this.unselectedTypesSet(); // 👈 UNE seule lecture
-    
+
     console.log(
       'Calculating allFiltersToApply with unselectedDomainsSet:',
       unselectedDomains,
@@ -249,14 +249,15 @@ export class Search implements OnInit {
     const unselectedDomainsArray = [...unselectedDomains]
       .map((key) => key.split('/').pop())
       .join('|');
-       const unselectedTypesArray = [...unselectedTypes]
+    const unselectedTypesArray = [...unselectedTypes]
       .map((key) => key.split('/').pop())
       .join('|');
-console.log('Unselected Domains Array:', unselectedDomainsArray);
-console.log('Unselected Types Array:', unselectedTypesArray);
+    console.log('Unselected Domains Array:', unselectedDomainsArray);
+    console.log('Unselected Types Array:', unselectedTypesArray);
     const allFilters = [
       baseFilters,
-      unselectedDomainsArray && `primary_topic.domain.id:!${unselectedDomainsArray}`,
+      unselectedDomainsArray &&
+        `primary_topic.domain.id:!${unselectedDomainsArray}`,
       unselectedTypesArray && `type:!${unselectedTypesArray}`,
     ]
       .filter(Boolean)
@@ -295,46 +296,35 @@ console.log('Unselected Types Array:', unselectedTypesArray);
   resetDomains() {
     this.unselectedDomainsSet.set(new Set());
   }
- 
+
   resetTypes() {
     this.unselectedTypesSet.set(new Set());
   }
-
-  // getNewDomainsDisplayed() {
-  //   console.log(
-  //     'Calculating new domains displayed with unselectedDomainsSet:',
-  //     this.unselectedDomainsSet()
-  //   );
-  //   const unselectedSet = this.unselectedDomainsSet();
-  //   const current = this.domainsInitial();
-  //   const filtered = this.domainsFiltered();
-  //   //Compare current and filtered change de count and selected, if key is absent to filtered set count to 0
-  //   if(!current || !filtered) {
-  //     console.log('Current or filtered domains are undefined, returning empty array');
-  //     return [];
-  //   }
-  //   const newDomains = current.map((domain) => {
-  //     const isUnselected = unselectedSet.has(domain.group.key);
-  //     const filteredDomain = filtered.find(
-  //       (d) => d.group.key === domain.group.key
-  //     );
-  //     return {
-  //       group: {
-  //         ...domain.group,
-  //         count: isUnselected
-  //           ? 0
-  //           : filteredDomain
-  //           ? filteredDomain.group.count
-  //           : 0,
-  //       },
-  //       selected: !isUnselected,
-  //     };
-  //   });
-  //   console.log('New domains to display:', newDomains);
-  //   return newDomains;
-  // }
+  lastTypeSelectedWithCount(typeKey: string): boolean {
+    //Vérifie que le type est le dernier du tableau ayant un count > 0
+    const unselectedSet = this.unselectedTypesSet();
+    const displayedTypes = this.typesDisplayed() ?? [];
+    const selectedTypesWithCount = displayedTypes.filter(
+      (type) => !unselectedSet.has(type.key) && type.count > 0
+    );
+    if(selectedTypesWithCount.length === 1){
+      return selectedTypesWithCount[0].key === typeKey;
+    }
+    return false;
+  }
+  lastDomainSelectedWithCount(domainKey: string): boolean {
+    //Vérifie que le domaine est le dernier du tableau ayant un count > 0
+    const unselectedSet = this.unselectedDomainsSet();
+    const displayedDomains = this.domainsDisplayed() ?? [];
+    const selectedDomainsWithCount = displayedDomains.filter(
+      (domain) => !unselectedSet.has(domain.key) && domain.count > 0
+    );
+    if(selectedDomainsWithCount.length === 1){
+      return selectedDomainsWithCount[0].key === domainKey;
+    }
+    return false;
+  }
   toggleDomainSelection(domain: OpenAlexGroupByResult) {
-     
     this.unselectedDomainsSet.update((current) => {
       const updated = new Set(current);
       if (updated.has(domain.key)) {
@@ -346,7 +336,6 @@ console.log('Unselected Types Array:', unselectedTypesArray);
     });
   }
   toggleTypeSelection(type: OpenAlexGroupByResult) {
-   
     this.unselectedTypesSet.update((current) => {
       const updated = new Set(current);
       if (updated.has(type.key)) {
