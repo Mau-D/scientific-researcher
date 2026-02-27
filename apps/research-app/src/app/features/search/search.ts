@@ -366,6 +366,9 @@ export class Search implements OnInit {
       this.pageNumber.set(1);
     }
   }
+   closeDrawer() {
+    this.drawer()?.close();
+  }
   keywordsResource = resource<string[] | null, string | null>({
     params: () => this.searchQuery(),
     loader: async ({ params, abortSignal }) => {

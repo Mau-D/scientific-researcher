@@ -1,6 +1,12 @@
 @let pdfUrl = data()?.open_access?.oa_url;
 <mat-card class="p-2.5" appearance="outlined">
-  <mat-card-header class="flex flex-col justify-center items-start p-2.5 my-2">
+  <mat-card-header class="flex justify-between items-start p-2.5 my-2">
+    
+    <!-- <mat-icon
+      class="absolute top-2 right-2 text-2xl cursor-pointer text-gray-light hover:text-red-400"
+      fontSet="material-symbols-outlined"
+      (click)="closeRequested.emit()"
+      >close</mat-icon> -->
     <mat-card-title class="text-dark text-left"
       >{{data()?.display_name}}</mat-card-title
     >

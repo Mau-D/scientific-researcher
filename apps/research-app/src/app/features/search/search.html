@@ -175,8 +175,21 @@
         position="end"
         class="h-full min-h-dvh min-w-[80dvw] py-5 px-10 flex justify-baseline items-baseline"
       >
-        <div class="text-left text-2xl py-2">
+        <div
+          class="text-left text-2xl py-2 flex justify-between items-baseline"
+        >
           <h2>Détails de la publication #{{idClicked()}}</h2>
+          <!-- close button -->
+          <span
+            class="dark:text-white text-gray-light cursor-pointer text-2xl mr-1 h-auto flex justify-center items-center hover:text-primary"
+          >
+            <mat-icon
+              fontSet="material-symbols-outlined"
+              (click)="closeDrawer()"
+            >
+              close
+            </mat-icon>
+          </span>
         </div>
         <div>
           <app-work-details [data]="data"></app-work-details>
@@ -185,19 +198,20 @@
       <mat-drawer-content>
         <section class="flex justify-center">
           <div
-            class="w-full flex flex-col  flex-wrap justify-center items-center p-5"
+            class="w-full flex flex-col flex-wrap justify-center items-center p-5"
           >
-            <h2
-              class="w-full text-3xl text-center px-5 mb-5 underline text-gray-blue"
-            >
-              Résultats de la recherche
-            </h2>
             @if (isLoading()) {
             <mat-spinner />
             } @if (error()) {
             <p class="error">Erreur : {{ error() }}</p>
             } @if (!isLoading() && !worksResult) {
             <p class="mt-10 text-center">En attente d'une recherche...</p>
+            } @if(!isLoading() && worksResult?.length === 0) {
+            <h2
+              class="w-full text-3xl text-center px-5 mb-5 underline text-gray-blue"
+            >
+              Résultats de la recherche
+            </h2>
             }
             <div class="container">
               @for(work of worksResult; track work.id) {

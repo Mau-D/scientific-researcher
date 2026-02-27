@@ -1,18 +1,18 @@
 import { DatePipe, PercentPipe } from '@angular/common';
 import { Component, computed, input } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Button } from '@org/buttons';
 import {
+  Concept,
   OA_STATUS_DETAILS,
   OaStatus,
   OpenAlexWork,
-  Concept,
 } from '@org/models';
-import { MatChipsModule } from '@angular/material/chips';
 
 @Component({
   selector: 'app-work-details',
@@ -31,6 +31,7 @@ import { MatChipsModule } from '@angular/material/chips';
   styleUrl: './work-details.scss',
 })
 export class WorkDetails {
+
   readonly data = input.required<OpenAlexWork | undefined>();
   readonly sortedConcepts = computed(() => {
                 console.log('lenght awards', this.data()?.awards)
