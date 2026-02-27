@@ -1,5 +1,5 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
-import { OpenAlexResponse, OpenAlexWork, OpenAlexMeta, OpenAlexGroupBy, OpenAlexGroupByResult } from '@org/models';
+import { OpenAlexGroupBy, OpenAlexGroupByResult, OpenAlexResponse, OpenAlexWork } from '@org/models';
 import { WorksService } from './works.service';
 
 @Controller('works')

@@ -5,7 +5,7 @@ import {
   OnInit,
   resource,
   signal,
-  viewChild,
+  viewChild
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
@@ -63,12 +63,13 @@ export class Search implements OnInit {
     this.filtersForm.valueChanges.subscribe(() => {
       this.resetDomains();
       this.resetTypes();
+      this.pageNumber.set(0);
     });
   }
+  //TODO: ajouter un scroll top à chaque nouvelle recherche ou changement des résultats
   private api = inject(OpenalexApi);
   private formBuilder = inject(FormBuilder);
   drawer = viewChild(MatDrawer);
-
   filtersForm = this.formBuilder.group({
     isOa: new FormControl<boolean>(true, {
       nonNullable: true,
@@ -108,9 +109,10 @@ export class Search implements OnInit {
   });
   countWorks = computed(() => {
     const count =
-      this.groupByDomainsFilteredResource.value()?.meta?.count ??
-      this.groupByDomainResource.value()?.meta?.count ??
-      0;
+    this.unselectedDomainsSet().size > 0 || this.unselectedTypesSet().size > 0 ?
+      this.groupByDomainsFilteredResource.value()?.meta?.count :
+      this.groupByDomainResource.value()?.meta?.count 
+    
     console.log('Count works:', count);
     return count;
   });
@@ -283,8 +285,9 @@ export class Search implements OnInit {
     // 1️⃣ d’abord reset le Set
     this.unselectedDomainsSet.set(new Set());
     this.unselectedTypesSet.set(new Set());
-
-    this.searchSelected.set(value);
+    this.pageNumber.set(0);
+    this.search.set(value);
+    this.searchSelected.set(value.toLowerCase());
   }
   isDomainSelected(domainKey: string): boolean {
     return !this.unselectedDomainsSet().has(domainKey);
@@ -307,7 +310,7 @@ export class Search implements OnInit {
     const selectedTypesWithCount = displayedTypes.filter(
       (type) => !unselectedSet.has(type.key) && type.count > 0
     );
-    if(selectedTypesWithCount.length === 1){
+    if (selectedTypesWithCount.length === 1) {
       return selectedTypesWithCount[0].key === typeKey;
     }
     return false;
@@ -319,12 +322,13 @@ export class Search implements OnInit {
     const selectedDomainsWithCount = displayedDomains.filter(
       (domain) => !unselectedSet.has(domain.key) && domain.count > 0
     );
-    if(selectedDomainsWithCount.length === 1){
+    if (selectedDomainsWithCount.length === 1) {
       return selectedDomainsWithCount[0].key === domainKey;
     }
     return false;
   }
   toggleDomainSelection(domain: OpenAlexGroupByResult) {
+    this.pageNumber.set(0);
     this.unselectedDomainsSet.update((current) => {
       const updated = new Set(current);
       if (updated.has(domain.key)) {
@@ -336,6 +340,7 @@ export class Search implements OnInit {
     });
   }
   toggleTypeSelection(type: OpenAlexGroupByResult) {
+    this.pageNumber.set(0);
     this.unselectedTypesSet.update((current) => {
       const updated = new Set(current);
       if (updated.has(type.key)) {
@@ -355,7 +360,12 @@ export class Search implements OnInit {
     this.idClicked.set(id);
     this.toggleDrawer();
   }
-
+  displayWorks(): void {
+ 
+    if (this.searchSelected()) {
+      this.pageNumber.set(1);
+    }
+  }
   keywordsResource = resource<string[] | null, string | null>({
     params: () => this.searchQuery(),
     loader: async ({ params, abortSignal }) => {
@@ -472,19 +482,17 @@ export class Search implements OnInit {
     loader: async ({ params }) => {
       // Ici, params est ton objet { sample, language }
 
-      const search = this.searchSelected().toLowerCase();
+      const search = this.searchSelected();
+      const filters = this.allFiltersToApply();
+      const perPage = '25';
+      const page = params.page.toString();
       if (!params.page || params.page === 0) {
         // Note: Le retour doit correspondre au type OpenAlexResponse ou lever une erreur/null
         // Pour éviter les erreurs de type, on peut retourner un objet vide typé
         return {} as OpenAlexResponse<OpenAlexWork>;
       }
       const worksDatas = await firstValueFrom(
-        this.api.getResultWorks(
-          search,
-          '25',
-          params.page.toString(),
-          this.filtersToApply()
-        )
+        this.api.getResultWorks(search, perPage, page, filters)
       );
       return worksDatas;
     },
