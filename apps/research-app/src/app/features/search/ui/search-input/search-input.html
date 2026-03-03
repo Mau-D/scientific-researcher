@@ -1,0 +1,24 @@
+ <mat-form-field class="w-full max-w-lg">
+      <mat-label>Rechercher par mots-clés</mat-label>
+
+      <input
+        matInput
+        placeholder="Rechercher un mot-clé"
+        [value]="search()"
+        (input)="queryChange.emit($any($event.target).value)"
+        [matAutocomplete]="auto"
+      />
+      <mat-autocomplete
+        #auto="matAutocomplete"
+        (optionSelected)="selectChange.emit($event)"
+      >
+        @for (keyword of suggestions(); track keyword) {
+        <mat-option [value]="keyword"> {{ keyword }} </mat-option>
+        }
+      </mat-autocomplete>
+      @if (loading()) {
+      <mat-hint> Recherche en cours... </mat-hint>
+      } @else if (suggestions().length === 0) {<mat-hint>
+        Aucun mot-clé trouvé </mat-hint
+      >}
+    </mat-form-field>

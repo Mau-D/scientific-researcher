@@ -6,6 +6,8 @@ export class ResearchFacade {
   private store = inject(ResearchStore);
   readonly keywordsApi = this.store.keywordsResource;
   readonly keywords = this.store.keywords;
+readonly keywordsLoading =  this.store.keywordsResource.isLoading;
+
   readonly search = this.store.search;
   readonly searchSelected = this.store.searchSelected;
 readonly searchQuery = this.store.searchQuery;  

@@ -35,11 +35,13 @@ import { ResearchCard } from '@org/ui-layout';
 import { delay, firstValueFrom } from 'rxjs'; // Pour gérer le cas initial
 import { WorkDetails } from '../work-details/work-details';
 import { ResearchFacade } from '@org/research';
+import { SearchInput } from './ui/search-input/search-input';
 
 @Component({
   selector: 'app-search',
   imports: [
     ResearchCard,
+    SearchInput,
     MatProgressSpinnerModule,
     MatSidenavModule,
     MatDrawer,

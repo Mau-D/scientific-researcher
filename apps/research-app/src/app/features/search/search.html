@@ -6,15 +6,9 @@
 <!--  -->
 <section class="flex flex-col justify-start items-center px-5 h-auto w-full">
   <div>
-    <mat-form-field class="w-full max-w-lg">
+    <!-- <mat-form-field class="w-full max-w-lg">
       <mat-label>Rechercher par mots-clés</mat-label>
-      <!-- <input
-        matInput
-        placeholder="Rechercher un mot-clé"
-        [value]="search()"
-        (input)="search.set($any($event.target).value)"
-        [matAutocomplete]="auto"
-      />  -->
+
       <input
         matInput
         placeholder="Rechercher un mot-clé"
@@ -35,7 +29,8 @@
       } @else if (facade.keywordsApi.value()?.length === 0) {<mat-hint>
         Aucun mot-clé trouvé </mat-hint
       >}
-    </mat-form-field>
+    </mat-form-field> -->
+  <app-search-input (queryChange)="researchKeywords($event)" (selectChange)="onSelect($event)" [loading]="facade.keywordsLoading()" [search]="facade.search()" [suggestions]="facade.keywords()"></app-search-input>
   </div>
   @if (facade.searchSelected()) {
   <div>
