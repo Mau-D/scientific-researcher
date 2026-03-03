@@ -5,7 +5,7 @@ import {
   OnInit,
   resource,
   signal,
-  viewChild
+  viewChild,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
@@ -34,7 +34,7 @@ import { OpenalexApi } from '@org/research';
 import { ResearchCard } from '@org/ui-layout';
 import { delay, firstValueFrom } from 'rxjs'; // Pour gérer le cas initial
 import { WorkDetails } from '../work-details/work-details';
-import { ResearchStore } from '@org/research'
+import { ResearchFacade } from '@org/research';
 
 @Component({
   selector: 'app-search',
@@ -70,12 +70,10 @@ export class Search implements OnInit {
   //TODO: ajouter un scroll top à chaque nouvelle recherche ou changement des résultats
   private api = inject(OpenalexApi);
   private formBuilder = inject(FormBuilder);
-   store = inject(ResearchStore);
+  facade = inject(ResearchFacade);
   drawer = viewChild(MatDrawer);
-  //Variables
-  readonly searchValue = this.store.search();
-  readonly searchSelected = this.store.searchSelected();
-  // readonly keywordsList = this.store.keywords();
+  
+
   filtersForm = this.formBuilder.group({
     isOa: new FormControl<boolean>(true, {
       nonNullable: true,
@@ -115,10 +113,10 @@ export class Search implements OnInit {
   });
   countWorks = computed(() => {
     const count =
-    this.unselectedDomainsSet().size > 0 || this.unselectedTypesSet().size > 0 ?
-      this.groupByDomainsFilteredResource.value()?.meta?.count :
-      this.groupByDomainResource.value()?.meta?.count 
-    
+      this.unselectedDomainsSet().size > 0 || this.unselectedTypesSet().size > 0
+        ? this.groupByDomainsFilteredResource.value()?.meta?.count
+        : this.groupByDomainResource.value()?.meta?.count;
+
     console.log('Count works:', count);
     return count;
   });
@@ -246,7 +244,7 @@ export class Search implements OnInit {
       'and unselectedTypesSet:',
       unselectedTypes
     );
-    const search = this.store.searchSelected(); // 👈 IMPORTANT
+    const search = this.facade.searchSelected(); // 👈 IMPORTANT
 
     if (!search || search === '') {
       return '';
@@ -294,11 +292,11 @@ export class Search implements OnInit {
     this.pageNumber.set(0);
     // this.search.set(value);
     // this.searchSelected.set(value.toLowerCase());
-    this.store.keywordSelect(value);
+    this.facade.keywordSelection(value);
   }
   researchKeywords(value: string) {
-    // this.search.set(value);
-this.store.searchKeyword(value);  }
+    this.facade.searchKeywords(value);
+  }
   isDomainSelected(domainKey: string): boolean {
     return !this.unselectedDomainsSet().has(domainKey);
   }
@@ -371,30 +369,29 @@ this.store.searchKeyword(value);  }
     this.toggleDrawer();
   }
   displayWorks(): void {
- 
-    if (this.store.searchSelected()) {
+    if (this.facade.searchSelected()) {
       this.pageNumber.set(1);
     }
   }
-   closeDrawer() {
+  closeDrawer() {
     this.drawer()?.close();
   }
-  keywordsResource = resource<string[] | null, string | null>({
-    params: () => this.store.searchQuery(),
-    loader: async ({ params, abortSignal }) => {
-      if (!params) return null;
-      if (params.length < 3) return [];
-      // --- LE DEBOUNCE ---
-      await delay(300);
+  // keywordsResource = resource<string[] | null, string | null>({
+  //   params: () => this.facade.searchQuery(),
+  //   loader: async ({ params, abortSignal }) => {
+  //     if (!params) return null;
+  //     if (params.length < 3) return [];
+  //     // --- LE DEBOUNCE ---
+  //     await delay(300);
 
-      // Si l'utilisateur a retapé une touche, l'abortSignal sera activé
-      if (abortSignal.aborted) return [];
-      // const response = await fetch(`/api/keywords?q=${params}`, { signal: abortSignal });
-      return await firstValueFrom(
-        this.api.getKeywordsList(params).pipe(delay(300))
-      );
-    },
-  });
+  //     // Si l'utilisateur a retapé une touche, l'abortSignal sera activé
+  //     if (abortSignal.aborted) return [];
+  //     // const response = await fetch(`/api/keywords?q=${params}`, { signal: abortSignal });
+  //     return await firstValueFrom(
+  //       this.api.getKeywordsList(params).pipe(delay(300))
+  //     );
+  //   },
+  // });
 
   workResource = resource<OpenAlexWork | undefined, string | undefined>({
     params: () => this.idClicked(),
@@ -409,7 +406,7 @@ this.store.searchKeyword(value);  }
     { search: string; filters: string }
   >({
     params: () => ({
-      search: this.store.searchSelected(),
+      search: this.facade.searchSelected(),
       filters: this.filtersToApply(),
     }),
     loader: async ({ params }) => {
@@ -433,7 +430,7 @@ this.store.searchKeyword(value);  }
     { search: string | undefined; filters: string }
   >({
     params: () => ({
-      search: this.store.searchSelected(),
+      search: this.facade.searchSelected(),
       filters: this.filtersToApply(),
     }),
     loader: async ({ params }) => {
@@ -461,7 +458,7 @@ this.store.searchKeyword(value);  }
       }
 
       return firstValueFrom(
-        this.api.getDomainsWorks(this.store.searchSelected(), params.filters)
+        this.api.getDomainsWorks(this.facade.searchSelected(), params.filters)
       );
     },
   });
@@ -481,7 +478,7 @@ this.store.searchKeyword(value);  }
       }
 
       return firstValueFrom(
-        this.api.getTypesWorks(this.store.searchSelected(), params.filters)
+        this.api.getTypesWorks(this.facade.searchSelected(), params.filters)
       );
     },
   });
@@ -495,7 +492,7 @@ this.store.searchKeyword(value);  }
     loader: async ({ params }) => {
       // Ici, params est ton objet { sample, language }
 
-      const search = this.store.searchSelected();
+      const search = this.facade.searchSelected();
       const filters = this.allFiltersToApply();
       const perPage = '25';
       const page = params.page.toString();

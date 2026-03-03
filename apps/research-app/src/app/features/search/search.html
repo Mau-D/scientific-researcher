@@ -18,27 +18,26 @@
       <input
         matInput
         placeholder="Rechercher un mot-clé"
-        [value]="searchValue"
-                (input)="researchKeywords($any($event.target).value)"
-
+        [value]="facade.search()"
+        (input)="researchKeywords($any($event.target).value)"
         [matAutocomplete]="auto"
       />
       <mat-autocomplete
         #auto="matAutocomplete"
         (optionSelected)="onSelect($event)"
       >
-        @for (keyword of store.keywords(); track keyword) {
+        @for (keyword of facade.keywords(); track keyword) {
         <mat-option [value]="keyword"> {{ keyword }} </mat-option>
         }
       </mat-autocomplete>
-      @if (keywordsResource.isLoading()) {
+      @if (facade.keywordsApi.isLoading()) {
       <mat-hint> Recherche en cours... </mat-hint>
-      } @else if (keywordsResource.value()?.length === 0) {<mat-hint>
+      } @else if (facade.keywordsApi.value()?.length === 0) {<mat-hint>
         Aucun mot-clé trouvé </mat-hint
       >}
     </mat-form-field>
   </div>
-  @if (searchSelected) {
+  @if (facade.searchSelected()) {
   <div>
     <h1 class="text-2xl mb-4">
       Nombre de publications correspondantes : {{countWorks()}}
@@ -168,7 +167,7 @@
     <button
       class="bg-blue-500 p-4 my-4 disabled:hidden"
       (click)="displayWorks()"
-      [disabled]="!searchSelected"
+      [disabled]="!facade.searchSelected()"
     >
       Afficher les résultats
     </button>
