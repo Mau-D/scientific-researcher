@@ -34,6 +34,7 @@ import { OpenalexApi } from '@org/research';
 import { ResearchCard } from '@org/ui-layout';
 import { delay, firstValueFrom } from 'rxjs'; // Pour gérer le cas initial
 import { WorkDetails } from '../work-details/work-details';
+import { ResearchStore } from '@org/research'
 
 @Component({
   selector: 'app-search',
@@ -69,7 +70,12 @@ export class Search implements OnInit {
   //TODO: ajouter un scroll top à chaque nouvelle recherche ou changement des résultats
   private api = inject(OpenalexApi);
   private formBuilder = inject(FormBuilder);
+   store = inject(ResearchStore);
   drawer = viewChild(MatDrawer);
+  //Variables
+  readonly searchValue = this.store.search();
+  readonly searchSelected = this.store.searchSelected();
+  // readonly keywordsList = this.store.keywords();
   filtersForm = this.formBuilder.group({
     isOa: new FormControl<boolean>(true, {
       nonNullable: true,
@@ -89,8 +95,8 @@ export class Search implements OnInit {
     initialValue: this.filtersForm.value,
   });
   public idClicked = signal<string>('');
-  search = signal('');
-  searchSelected = signal('');
+  // search = signal('');
+  // searchSelected = signal('');
   pageNumber = signal(0);
   unselectedDomainsSet = signal<Set<string>>(new Set());
   unselectedTypesSet = signal<Set<string>>(new Set());
@@ -240,7 +246,7 @@ export class Search implements OnInit {
       'and unselectedTypesSet:',
       unselectedTypes
     );
-    const search = this.searchSelected(); // 👈 IMPORTANT
+    const search = this.store.searchSelected(); // 👈 IMPORTANT
 
     if (!search || search === '') {
       return '';
@@ -269,26 +275,30 @@ export class Search implements OnInit {
 
     return allFilters;
   });
-  searchQuery = computed(() => {
-    const value = this.search().trim();
-    return value.length >= 2 ? value : null;
-  });
+  // searchQuery = computed(() => {
+  //   const value = this.search().trim();
+  //   return value.length >= 2 ? value : null;
+  // });
 
-  keywords = computed(() => {
-    return this.keywordsResource.value() ?? [];
-  });
+  // keywords = computed(() => {
+  //   return this.keywordsResource.value() ?? [];
+  // });
 
   onSelect(event: MatAutocompleteSelectedEvent) {
     const value: string = event.option.value;
-    this.searchSelected.set('');
+    // this.searchSelected.set('');
 
     // 1️⃣ d’abord reset le Set
     this.unselectedDomainsSet.set(new Set());
     this.unselectedTypesSet.set(new Set());
     this.pageNumber.set(0);
-    this.search.set(value);
-    this.searchSelected.set(value.toLowerCase());
+    // this.search.set(value);
+    // this.searchSelected.set(value.toLowerCase());
+    this.store.keywordSelect(value);
   }
+  researchKeywords(value: string) {
+    // this.search.set(value);
+this.store.searchKeyword(value);  }
   isDomainSelected(domainKey: string): boolean {
     return !this.unselectedDomainsSet().has(domainKey);
   }
@@ -362,7 +372,7 @@ export class Search implements OnInit {
   }
   displayWorks(): void {
  
-    if (this.searchSelected()) {
+    if (this.store.searchSelected()) {
       this.pageNumber.set(1);
     }
   }
@@ -370,7 +380,7 @@ export class Search implements OnInit {
     this.drawer()?.close();
   }
   keywordsResource = resource<string[] | null, string | null>({
-    params: () => this.searchQuery(),
+    params: () => this.store.searchQuery(),
     loader: async ({ params, abortSignal }) => {
       if (!params) return null;
       if (params.length < 3) return [];
@@ -399,7 +409,7 @@ export class Search implements OnInit {
     { search: string; filters: string }
   >({
     params: () => ({
-      search: this.searchSelected(),
+      search: this.store.searchSelected(),
       filters: this.filtersToApply(),
     }),
     loader: async ({ params }) => {
@@ -423,7 +433,7 @@ export class Search implements OnInit {
     { search: string | undefined; filters: string }
   >({
     params: () => ({
-      search: this.searchSelected(),
+      search: this.store.searchSelected(),
       filters: this.filtersToApply(),
     }),
     loader: async ({ params }) => {
@@ -451,7 +461,7 @@ export class Search implements OnInit {
       }
 
       return firstValueFrom(
-        this.api.getDomainsWorks(this.searchSelected(), params.filters)
+        this.api.getDomainsWorks(this.store.searchSelected(), params.filters)
       );
     },
   });
@@ -471,7 +481,7 @@ export class Search implements OnInit {
       }
 
       return firstValueFrom(
-        this.api.getTypesWorks(this.searchSelected(), params.filters)
+        this.api.getTypesWorks(this.store.searchSelected(), params.filters)
       );
     },
   });
@@ -485,7 +495,7 @@ export class Search implements OnInit {
     loader: async ({ params }) => {
       // Ici, params est ton objet { sample, language }
 
-      const search = this.searchSelected();
+      const search = this.store.searchSelected();
       const filters = this.allFiltersToApply();
       const perPage = '25';
       const page = params.page.toString();

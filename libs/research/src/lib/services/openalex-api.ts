@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { environment } from '@org/config';
-import { OpenAlexResponse, OpenAlexWork, OpenAlexMeta, OpenAlexGroupBy, OpenAlexGroupByResult } from '@org/models';
+import { OpenAlexGroupBy, OpenAlexGroupByResult, OpenAlexResponse, OpenAlexWork } from '@org/models';
 @Injectable({
   providedIn: 'root',
 })

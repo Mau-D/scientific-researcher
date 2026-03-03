@@ -2,24 +2,32 @@
 <!--  -->
 @let data = workResource.value();
 <!--  -->
-@let research = searchSelected();
+<!-- @let research = searchSelected(); -->
 <!--  -->
 <section class="flex flex-col justify-start items-center px-5 h-auto w-full">
   <div>
     <mat-form-field class="w-full max-w-lg">
       <mat-label>Rechercher par mots-clés</mat-label>
-      <input
+      <!-- <input
         matInput
         placeholder="Rechercher un mot-clé"
         [value]="search()"
         (input)="search.set($any($event.target).value)"
+        [matAutocomplete]="auto"
+      />  -->
+      <input
+        matInput
+        placeholder="Rechercher un mot-clé"
+        [value]="searchValue"
+                (input)="researchKeywords($any($event.target).value)"
+
         [matAutocomplete]="auto"
       />
       <mat-autocomplete
         #auto="matAutocomplete"
         (optionSelected)="onSelect($event)"
       >
-        @for (keyword of keywords(); track keyword) {
+        @for (keyword of store.keywords(); track keyword) {
         <mat-option [value]="keyword"> {{ keyword }} </mat-option>
         }
       </mat-autocomplete>
@@ -30,7 +38,7 @@
       >}
     </mat-form-field>
   </div>
-  @if (research) {
+  @if (searchSelected) {
   <div>
     <h1 class="text-2xl mb-4">
       Nombre de publications correspondantes : {{countWorks()}}
@@ -160,7 +168,7 @@
     <button
       class="bg-blue-500 p-4 my-4 disabled:hidden"
       (click)="displayWorks()"
-      [disabled]="!searchSelected()"
+      [disabled]="!searchSelected"
     >
       Afficher les résultats
     </button>
