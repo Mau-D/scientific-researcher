@@ -2,35 +2,16 @@
 <!--  -->
 @let data = workResource.value();
 <!--  -->
-<!-- @let research = searchSelected(); -->
-<!--  -->
+
 <section class="flex flex-col justify-start items-center px-5 h-auto w-full">
   <div>
-    <!-- <mat-form-field class="w-full max-w-lg">
-      <mat-label>Rechercher par mots-clés</mat-label>
-
-      <input
-        matInput
-        placeholder="Rechercher un mot-clé"
-        [value]="facade.search()"
-        (input)="researchKeywords($any($event.target).value)"
-        [matAutocomplete]="auto"
-      />
-      <mat-autocomplete
-        #auto="matAutocomplete"
-        (optionSelected)="onSelect($event)"
-      >
-        @for (keyword of facade.keywords(); track keyword) {
-        <mat-option [value]="keyword"> {{ keyword }} </mat-option>
-        }
-      </mat-autocomplete>
-      @if (facade.keywordsApi.isLoading()) {
-      <mat-hint> Recherche en cours... </mat-hint>
-      } @else if (facade.keywordsApi.value()?.length === 0) {<mat-hint>
-        Aucun mot-clé trouvé </mat-hint
-      >}
-    </mat-form-field> -->
-  <app-search-input (queryChange)="researchKeywords($event)" (selectChange)="onSelect($event)" [loading]="facade.keywordsLoading()" [search]="facade.search()" [suggestions]="facade.keywords()"></app-search-input>
+    <app-search-input
+      (queryChange)="researchKeywords($event)"
+      (selectChange)="onSelect($event)"
+      [loading]="facade.keywordsLoading()"
+      [search]="facade.search()"
+      [suggestions]="facade.keywords()"
+    ></app-search-input>
   </div>
   @if (facade.searchSelected()) {
   <div>
@@ -54,7 +35,8 @@
             <p>Filtres par défaut</p>
           </mat-panel-title>
         </mat-expansion-panel-header>
-        <div>
+        <app-filters></app-filters>
+        <!-- <div>
           <p>Cochez les critères obligatoires</p>
           <form [formGroup]="filtersForm">
             <mat-checkbox formControlName="isOa">Accès ouvert</mat-checkbox>
@@ -74,7 +56,7 @@
               </mat-select>
             </mat-form-field>
           </form>
-        </div>
+        </div> -->
       </mat-expansion-panel>
     </div>
     <div class="mt-3">

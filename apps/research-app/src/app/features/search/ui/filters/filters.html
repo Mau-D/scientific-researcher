@@ -1,0 +1,21 @@
+ <div>
+          <p>Cochez les critères obligatoires</p>
+          <form [formGroup]="filtersForm">
+            <mat-checkbox formControlName="isOa">Accès ouvert</mat-checkbox>
+            <mat-checkbox formControlName="hasAbstract"
+              >Avec résumé</mat-checkbox
+            >
+            <mat-checkbox formControlName="hasPdf">Avec PDF</mat-checkbox>
+            <mat-checkbox formControlName="hasOaAcceptedOrPublishedVersion"
+              >Avec version acceptée ou publiée en accès ouvert</mat-checkbox
+            >
+            <br />
+            <mat-form-field>
+              <mat-label>Langues</mat-label>
+              <mat-select formControlName="language" multiple>
+                <mat-option [value]="'fr'">Français</mat-option>
+                <mat-option [value]="'en'">Anglais</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </form>
+        </div>

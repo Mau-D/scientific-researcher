@@ -30,12 +30,12 @@ import {
   OpenAlexResponse,
   OpenAlexWork,
 } from '@org/models';
-import { OpenalexApi } from '@org/research';
+import { OpenalexApi, ResearchFacade } from '@org/research';
 import { ResearchCard } from '@org/ui-layout';
-import { delay, firstValueFrom } from 'rxjs'; // Pour gérer le cas initial
+import { firstValueFrom } from 'rxjs'; // Pour gérer le cas initial
 import { WorkDetails } from '../work-details/work-details';
-import { ResearchFacade } from '@org/research';
 import { SearchInput } from './ui/search-input/search-input';
+import { Filters } from "./ui/filters/filters";
 
 @Component({
   selector: 'app-search',
@@ -56,44 +56,45 @@ import { SearchInput } from './ui/search-input/search-input';
     ReactiveFormsModule,
     MatChipsModule,
     MatBadgeModule,
-  ],
+    Filters
+],
   templateUrl: './search.html',
   styleUrl: './search.scss',
 })
-export class Search implements OnInit {
-  ngOnInit() {
-    // écoute toutes les modifications du form
-    this.filtersForm.valueChanges.subscribe(() => {
-      this.resetDomains();
-      this.resetTypes();
-      this.pageNumber.set(0);
-    });
-  }
+export class Search  {
+  // ngOnInit() {
+  //   // écoute toutes les modifications du form
+  //   this.filtersForm.valueChanges.subscribe(() => {
+  //     this.resetDomains();
+  //     this.resetTypes();
+  //     this.pageNumber.set(0);
+  //   });
+  // }
   //TODO: ajouter un scroll top à chaque nouvelle recherche ou changement des résultats
   private api = inject(OpenalexApi);
-  private formBuilder = inject(FormBuilder);
+  // private formBuilder = inject(FormBuilder);
   facade = inject(ResearchFacade);
   drawer = viewChild(MatDrawer);
   
 
-  filtersForm = this.formBuilder.group({
-    isOa: new FormControl<boolean>(true, {
-      nonNullable: true,
-    }),
-    hasAbstract: new FormControl<boolean>(true, {
-      nonNullable: true,
-    }),
-    hasPdf: new FormControl<boolean>(true, {
-      nonNullable: true,
-    }),
-    hasOaAcceptedOrPublishedVersion: new FormControl<boolean>(true, {
-      nonNullable: true,
-    }),
-    language: new FormControl<string[]>(['fr', 'en']), // Valeur par défaut en français
-  });
-  formSignal = toSignal(this.filtersForm.valueChanges, {
-    initialValue: this.filtersForm.value,
-  });
+  // filtersForm = this.formBuilder.group({
+  //   isOa: new FormControl<boolean>(true, {
+  //     nonNullable: true,
+  //   }),
+  //   hasAbstract: new FormControl<boolean>(true, {
+  //     nonNullable: true,
+  //   }),
+  //   hasPdf: new FormControl<boolean>(true, {
+  //     nonNullable: true,
+  //   }),
+  //   hasOaAcceptedOrPublishedVersion: new FormControl<boolean>(true, {
+  //     nonNullable: true,
+  //   }),
+  //   language: new FormControl<string[]>(['fr', 'en']), // Valeur par défaut en français
+  // });
+  // formSignal = toSignal(this.filtersForm.valueChanges, {
+  //   initialValue: this.filtersForm.value,
+  // });
   public idClicked = signal<string>('');
   // search = signal('');
   // searchSelected = signal('');
@@ -101,18 +102,18 @@ export class Search implements OnInit {
   unselectedDomainsSet = signal<Set<string>>(new Set());
   unselectedTypesSet = signal<Set<string>>(new Set());
 
-  filtersToApply = computed(() => {
-    const formFilters = {
-      language: this.formSignal().language?.join('|') || '',
-      is_oa: this.formSignal().isOa,
-      has_abstract: this.formSignal().hasAbstract,
-      'has_content.pdf': this.formSignal().hasPdf,
-      has_oa_accepted_or_published_version:
-        this.formSignal().hasOaAcceptedOrPublishedVersion,
-    };
-    console.log('Filter To Apply');
-    return this.filtersToString(formFilters);
-  });
+  // filtersToApply = computed(() => {
+  //   const formFilters = {
+  //     language: this.formSignal().language?.join('|') || '',
+  //     is_oa: this.formSignal().isOa,
+  //     has_abstract: this.formSignal().hasAbstract,
+  //     'has_content.pdf': this.formSignal().hasPdf,
+  //     has_oa_accepted_or_published_version:
+  //       this.formSignal().hasOaAcceptedOrPublishedVersion,
+  //   };
+  //   console.log('Filter To Apply');
+  //   return this.filtersToString(formFilters);
+  // });
   countWorks = computed(() => {
     const count =
       this.unselectedDomainsSet().size > 0 || this.unselectedTypesSet().size > 0
@@ -236,7 +237,7 @@ export class Search implements OnInit {
   });
   //computed for set a new string filters with unselect domainsè
   allFiltersToApply = computed(() => {
-    const baseFilters = this.filtersToApply();
+    const baseFilters = this.facade.filtersString(); // 🔥 Seule dépendance aux filtres de base, pas de recalcul inutile des autres computed
     const unselectedDomains = this.unselectedDomainsSet(); // 👈 UNE seule lecture
     const unselectedTypes = this.unselectedTypesSet(); // 👈 UNE seule lecture
 
@@ -409,7 +410,7 @@ export class Search implements OnInit {
   >({
     params: () => ({
       search: this.facade.searchSelected(),
-      filters: this.filtersToApply(),
+      filters: this.facade.filtersString(),
     }),
     loader: async ({ params }) => {
       // const filters: string = this.filtersToString(params.filters);
@@ -433,7 +434,7 @@ export class Search implements OnInit {
   >({
     params: () => ({
       search: this.facade.searchSelected(),
-      filters: this.filtersToApply(),
+      filters: this.facade.filtersString(),
     }),
     loader: async ({ params }) => {
       if (!params.search || params.search === '') {

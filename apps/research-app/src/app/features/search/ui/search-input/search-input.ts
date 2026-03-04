@@ -1,9 +1,9 @@
-import { Component, EventEmitter, input, output } from '@angular/core';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInput } from '@angular/material/input';
+import { Component, input, output } from '@angular/core';
 import {
   MatAutocompleteModule, MatAutocompleteSelectedEvent
 } from '@angular/material/autocomplete';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
 
 @Component({
   selector: 'app-search-input',
