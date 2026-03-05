@@ -22,8 +22,8 @@ export class ResearchStore {
   //   public idClicked = signal<string>('');
   search = signal('');
   searchSelected = signal('');
-  //   pageNumber = signal(0);
-  //   unselectedDomainsSet = signal<Set<string>>(new Set());
+    pageNumber = signal(0);
+    unselectedDomainsSet = signal<Set<string>>(new Set());
   //   unselectedTypesSet = signal<Set<string>>(new Set());
   private filters = signal<SearchFilters>({
     isOa: true,
@@ -134,11 +134,11 @@ export class ResearchStore {
   //     });
   //   });
 
-  //   domainsInitial = computed(() => {
-  //     const domainsInit = this.groupByDomainResource.value()?.group_by;
-  //     console.log('Domains initial:', domainsInit);
-  //     return domainsInit;
-  //   });
+    domainsInitial = computed(() => {
+      const domainsInit = this.groupByDomainResource.value()?.group_by ?? [];
+      console.log('Domains initial:', domainsInit);
+      return domainsInit;
+    });
   //   typesInitial = computed(() => {
   //     const typesInit = this.groupByTypeResource.value()?.group_by;
   //     console.log('Types initial:', typesInit);
@@ -248,30 +248,30 @@ export class ResearchStore {
   //     },
   //   });
 
-  //   groupByDomainResource = resource<
-  //     OpenAlexGroupBy<OpenAlexGroupByResult>,
-  //     { search: string; filters: string }
-  //   >({
-  //     params: () => ({
-  //       search: this.searchSelected(),
-  //       filters: this.filtersString(),
-  //     }),
-  //     loader: async ({ params }) => {
-  //       // const filters: string = this.filtersToString(params.filters);
-  //       console.log('Resource GROUP_BY DOMAIN:', params.search, params.filters);
-  //       if (!params.search || params.search === '') {
-  //         console.log('Retour VIDE  GROUP_BY DOMAIN resource');
+    groupByDomainResource = resource<
+      OpenAlexGroupBy<OpenAlexGroupByResult>,
+      { search: string; filters: string }
+    >({
+      params: () => ({
+        search: this.searchSelected(),
+        filters: this.filtersString(),
+      }),
+      loader: async ({ params }) => {
+        // const filters: string = this.filtersToString(params.filters);
+        console.log('Resource GROUP_BY DOMAIN:', params.search, params.filters);
+        if (!params.search || params.search === '') {
+          console.log('Retour VIDE  GROUP_BY DOMAIN resource');
 
-  //         // Note: Le retour doit correspondre au type OpenAlexResponse ou lever une erreur/null
-  //         // Pour éviter les erreurs de type, on peut retourner un objet vide typé
-  //         return {} as OpenAlexGroupBy<OpenAlexGroupByResult>;
-  //       }
+          // Note: Le retour doit correspondre au type OpenAlexResponse ou lever une erreur/null
+          // Pour éviter les erreurs de type, on peut retourner un objet vide typé
+          return {} as OpenAlexGroupBy<OpenAlexGroupByResult>;
+        }
 
-  //       return await firstValueFrom(
-  //         this.api.getDomainsWorks(params.search, params.filters)
-  //       );
-  //     },
-  //   });
+        return await firstValueFrom(
+          this.api.getDomainsWorks(params.search, params.filters)
+        );
+      },
+    });
   //   groupByTypeResource = resource<
   //     OpenAlexGroupBy<OpenAlexGroupByResult>,
   //     { search: string | undefined; filters: string }
@@ -401,9 +401,9 @@ export class ResearchStore {
     });
     console.log('Filters reset to default', this.filters());
   }
-  //   isDomainSelected(domainKey: string): boolean {
-  //     return !this.unselectedDomainsSet().has(domainKey);
-  //   }
+    isDomainSelected(domainKey: string): boolean {
+      return !this.unselectedDomainsSet().has(domainKey);
+    }
   //   isTypeSelected(typeKey: string): boolean {
   //     return !this.unselectedTypesSet().has(typeKey);
   //   }
@@ -439,18 +439,18 @@ export class ResearchStore {
   //     }
   //     return false;
   //   }
-  //   toggleDomainSelection(domain: OpenAlexGroupByResult) {
-  //     this.pageNumber.set(0);
-  //     this.unselectedDomainsSet.update((current) => {
-  //       const updated = new Set(current);
-  //       if (updated.has(domain.key)) {
-  //         updated.delete(domain.key);
-  //       } else {
-  //         updated.add(domain.key);
-  //       }
-  //       return updated;
-  //     });
-  //   }
+    toggleDomainSelection(domain: OpenAlexGroupByResult) {
+      this.pageNumber.set(0);
+      this.unselectedDomainsSet.update((current) => {
+        const updated = new Set(current);
+        if (updated.has(domain.key)) {
+          updated.delete(domain.key);
+        } else {
+          updated.add(domain.key);
+        }
+        return updated;
+      });
+    }
   //   toggleTypeSelection(type: OpenAlexGroupByResult) {
   //     this.pageNumber.set(0);
   //     this.unselectedTypesSet.update((current) => {

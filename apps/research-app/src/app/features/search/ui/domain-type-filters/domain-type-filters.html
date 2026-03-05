@@ -1,0 +1,30 @@
+<div>
+  <p>Cliquez pour exclure ou inclure une catégorie</p>
+  <div class="flex justify-center mt-5">
+    @for (domain of data(); track domain.key ){
+    <div
+      class="mr-6 mt-2"
+      matBadge="{{domain.count}}"
+      matBadgeSize="large"
+      [matBadgeHidden]="domain.count === 0"
+    >
+      <mat-chip
+        class="domain-chip cursor-crosshair"
+        (click)="toggleDomainSelection(domain)"
+        [class.selected-chip]="isDomainSelected(domain.key)"
+        [class.unselected-chip]="domain.count === 0 && !isDomainSelected(domain.key)"
+        >{{domain.key_display_name}}</mat-chip
+      >
+      <!-- <mat-chip
+                [disabled]="(domainsDisplayed().length - unselectedDomainsSet().size === 1 && isDomainSelected(domain.key))||(isDomainSelected(domain.key) && domain.count === 0) || lastDomainSelectedWithCount(domain.key)"
+                class="domain-chip cursor-crosshair"
+                (click)="toggleDomainSelection(domain)"
+                [class.selected-chip]="isDomainSelected(domain.key)"
+                [class.unselected-chip]="domain.count === 0 && !isDomainSelected(domain.key)"
+                >{{domain.key_display_name}}</mat-chip
+              > -->
+    </div>
+
+    }
+  </div>
+</div>

@@ -73,7 +73,8 @@
             <p>Filtrer par domaine</p>
           </mat-panel-title>
         </mat-expansion-panel-header>
-        <div>
+        <app-domain-type-filters [data]="domains()" [unselected]="unselectedDomains()"></app-domain-type-filters>
+        <!-- <div>
           <p>Cliquez pour exclure ou inclure une catégorie</p>
           <div class="flex justify-center mt-5">
             @for (domain of domainsDisplayed(); track domain.key ){
@@ -95,7 +96,7 @@
 
             }
           </div>
-        </div>
+        </div> -->
       </mat-expansion-panel>
     </div>
     <div class="mt-3">

@@ -36,6 +36,7 @@ import { firstValueFrom } from 'rxjs'; // Pour gérer le cas initial
 import { WorkDetails } from '../work-details/work-details';
 import { SearchInput } from './ui/search-input/search-input';
 import { Filters } from "./ui/filters/filters";
+import { DomainTypeFilters } from "./ui/domain-type-filters/domain-type-filters";
 
 @Component({
   selector: 'app-search',
@@ -56,7 +57,8 @@ import { Filters } from "./ui/filters/filters";
     ReactiveFormsModule,
     MatChipsModule,
     MatBadgeModule,
-    Filters
+    Filters,
+    DomainTypeFilters
 ],
   templateUrl: './search.html',
   styleUrl: './search.scss',
@@ -76,6 +78,8 @@ export class Search  {
   facade = inject(ResearchFacade);
   drawer = viewChild(MatDrawer);
   
+  readonly domains = this.facade.domainsInitial;
+  readonly unselectedDomains = this.facade.unselectedDomains;
 
   // filtersForm = this.formBuilder.group({
   //   isOa: new FormControl<boolean>(true, {
@@ -300,9 +304,9 @@ export class Search  {
   researchKeywords(value: string) {
     this.facade.searchKeywords(value);
   }
-  isDomainSelected(domainKey: string): boolean {
-    return !this.unselectedDomainsSet().has(domainKey);
-  }
+  // isDomainSelected(domainKey: string): boolean {
+  //   return !this.unselectedDomainsSet().has(domainKey);
+  // }
   isTypeSelected(typeKey: string): boolean {
     return !this.unselectedTypesSet().has(typeKey);
   }
