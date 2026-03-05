@@ -17,7 +17,9 @@ export class ResearchFacade {
 
   readonly filtersString = this.store.filtersString;
   readonly domainsInitial = this.store.domainsInitial;
+  readonly typesInitial = this.store.typesInitial;
   readonly unselectedDomains = this.store.unselectedDomainsSet;
+  readonly unselectedTypes = this.store.unselectedTypesSet;
 
   keywordSelection(keyword: string) {
     this.store.keywordSelect(keyword);
@@ -33,9 +35,19 @@ export class ResearchFacade {
   filtersChanged(filters: Partial<SearchFilters>) {
     this.store.filtersChanged({ ...filters, language: filters.language ?? [] });
   }
-  toggleDomainSelection(domain: OpenAlexGroupByResult) {
+  toggleDomain(domain: OpenAlexGroupByResult) {
     this.store.toggleDomainSelection(domain);
   }
-  isDomainSelected(domainKey: string): boolean {
-    return this.store.isDomainSelected(domainKey);}
+  isDomainSelected = (key: string): boolean => {
+    return this.store.isDomainSelected(key);
+  };
+
+  isTypeSelected = (key: string): boolean => {
+    return this.store.isTypeSelected(key);
+  };
+
+  toggleType(type: OpenAlexGroupByResult) {
+    this.store.toggleTypeSelection(type);
+  }
+ 
 }

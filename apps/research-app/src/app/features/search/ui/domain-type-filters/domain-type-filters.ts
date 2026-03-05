@@ -1,4 +1,4 @@
-import { Component, inject, input } from '@angular/core';
+import { Component, inject, input, output } from '@angular/core';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatBadgeModule } from '@angular/material/badge';
 import { ResearchFacade } from '@org/research';
@@ -13,12 +13,20 @@ import { OpenAlexGroupByResult } from '@org/models';
 export class DomainTypeFilters {
   private facade = inject(ResearchFacade);
   data = input<OpenAlexGroupByResult[]>([]);
-  unselected = input<Set<string>>(new Set());
+  unselectedList = input<Set<string>>(new Set());
 
-  toggleDomainSelection(domain: OpenAlexGroupByResult) {
-    this.facade.toggleDomainSelection(domain);
+  toggleChip = output<OpenAlexGroupByResult>();
+  selectedState = input.required<(key: string) => boolean>();
+
+  onToggle(item: OpenAlexGroupByResult) {
+    this.toggleChip.emit(item);
   }
-  isDomainSelected(domainKey: string): boolean {
-    return this.facade.isDomainSelected(domainKey);
-  }
+ 
+  // isDomainSelected(domainKey: string): boolean {
+  //   return this.facade.isDomainSelected(domainKey);
+  // }
+
+  // isTypeSelected(domainKey: string): boolean {
+  //   return this.facade.isTypeSelected(domainKey);
+  // }
 }

@@ -78,8 +78,10 @@ export class Search  {
   facade = inject(ResearchFacade);
   drawer = viewChild(MatDrawer);
   
-  readonly domains = this.facade.domainsInitial;
+  readonly domainsInitial = this.facade.domainsInitial;
+  readonly typesInitial = this.facade.typesInitial;
   readonly unselectedDomains = this.facade.unselectedDomains;
+  readonly unselectedTypes = this.facade.unselectedTypes;
 
   // filtersForm = this.formBuilder.group({
   //   isOa: new FormControl<boolean>(true, {
@@ -103,8 +105,8 @@ export class Search  {
   // search = signal('');
   // searchSelected = signal('');
   pageNumber = signal(0);
-  unselectedDomainsSet = signal<Set<string>>(new Set());
-  unselectedTypesSet = signal<Set<string>>(new Set());
+  // unselectedDomainsSet = signal<Set<string>>(new Set());
+  // unselectedTypesSet = signal<Set<string>>(new Set());
 
   // filtersToApply = computed(() => {
   //   const formFilters = {
@@ -120,7 +122,7 @@ export class Search  {
   // });
   countWorks = computed(() => {
     const count =
-      this.unselectedDomainsSet().size > 0 || this.unselectedTypesSet().size > 0
+      this.unselectedDomains().size > 0 || this.unselectedTypes().size > 0
         ? this.groupByDomainsFilteredResource.value()?.meta?.count
         : this.groupByDomainResource.value()?.meta?.count;
 
@@ -128,8 +130,8 @@ export class Search  {
     return count;
   });
   domainsDisplayed = computed(() => {
-    const unselect = this.unselectedDomainsSet();
-    const unselectTypes = this.unselectedTypesSet();
+    const unselect = this.unselectedDomains();
+    const unselectTypes = this.unselectedTypes();
     console.log(
       'Calculating domainsDisplayed with unselectedDomainsSet:',
       unselect
@@ -142,8 +144,8 @@ export class Search  {
     return domains;
   });
   typesDisplayed = computed(() => {
-    const unselect = this.unselectedTypesSet();
-    const unselectDomains = this.unselectedDomainsSet();
+    const unselect = this.unselectedTypes();
+    const unselectDomains = this.unselectedDomains();
     console.log(
       'Calculating typesDisplayed with unselectedTypesSet:',
       unselect
@@ -156,7 +158,7 @@ export class Search  {
     return domains;
   });
   newDomainsDisplayed = computed(() => {
-    const unselectedSet = this.unselectedDomainsSet();
+    const unselectedSet = this.facade.unselectedDomains();
     const current = this.domainsInitial();
     const filtered = this.domainsFiltered();
 
@@ -177,7 +179,7 @@ export class Search  {
     });
   });
   newTypesDisplayed = computed(() => {
-    const unselectedSet = this.unselectedTypesSet();
+    const unselectedSet = this.facade.unselectedTypes();
     const current = this.typesInitial();
     const filtered = this.typesFiltered();
 
@@ -198,18 +200,18 @@ export class Search  {
     });
   });
 
-  domainsInitial = computed(() => {
-    const domainsInit = this.groupByDomainResource.value()?.group_by;
-    console.log('Domains initial:', domainsInit);
-    return domainsInit;
-  });
-  typesInitial = computed(() => {
-    const typesInit = this.groupByTypeResource.value()?.group_by;
-    console.log('Types initial:', typesInit);
-    return typesInit;
-  });
+  // domainsInitial = computed(() => {
+  //   const domainsInit = this.groupByDomainResource.value()?.group_by;
+  //   console.log('Domains initial:', domainsInit);
+  //   return domainsInit;
+  // });
+  // typesInitial = computed(() => {
+  //   const typesInit = this.groupByTypeResource.value()?.group_by;
+  //   console.log('Types initial:', typesInit);
+  //   return typesInit;
+  // });
   selectionDomains = computed(() => {
-    const unselect = this.unselectedDomainsSet();
+    const unselect = this.facade.unselectedDomains();
     const array = new Set<string>();
     this.domainsDisplayed()?.map((d) => {
       if (!unselect.has(d.key)) {
@@ -219,7 +221,7 @@ export class Search  {
     return array;
   });
   selectionTypes = computed(() => {
-    const unselect = this.unselectedTypesSet();
+    const unselect = this.facade.unselectedTypes();
     const array = new Set<string>();
     this.typesDisplayed()?.map((t) => {
       if (!unselect.has(t.key)) {
@@ -242,8 +244,8 @@ export class Search  {
   //computed for set a new string filters with unselect domainsè
   allFiltersToApply = computed(() => {
     const baseFilters = this.facade.filtersString(); // 🔥 Seule dépendance aux filtres de base, pas de recalcul inutile des autres computed
-    const unselectedDomains = this.unselectedDomainsSet(); // 👈 UNE seule lecture
-    const unselectedTypes = this.unselectedTypesSet(); // 👈 UNE seule lecture
+    const unselectedDomains = this.facade.unselectedDomains(); // 👈 UNE seule lecture
+    const unselectedTypes = this.facade.unselectedTypes(); // 👈 UNE seule lecture
 
     console.log(
       'Calculating allFiltersToApply with unselectedDomainsSet:',
@@ -294,8 +296,8 @@ export class Search  {
     // this.searchSelected.set('');
 
     // 1️⃣ d’abord reset le Set
-    this.unselectedDomainsSet.set(new Set());
-    this.unselectedTypesSet.set(new Set());
+    this.unselectedDomains.set(new Set());
+    this.unselectedTypes.set(new Set());
     this.pageNumber.set(0);
     // this.search.set(value);
     // this.searchSelected.set(value.toLowerCase());
@@ -307,20 +309,20 @@ export class Search  {
   // isDomainSelected(domainKey: string): boolean {
   //   return !this.unselectedDomainsSet().has(domainKey);
   // }
-  isTypeSelected(typeKey: string): boolean {
-    return !this.unselectedTypesSet().has(typeKey);
-  }
+  // isTypeSelected(typeKey: string): boolean {
+  //   return !this.unselectedTypesSet().has(typeKey);
+  // }
 
   resetDomains() {
-    this.unselectedDomainsSet.set(new Set());
+    this.unselectedDomains.set(new Set());
   }
 
   resetTypes() {
-    this.unselectedTypesSet.set(new Set());
+    this.unselectedTypes.set(new Set());
   }
   lastTypeSelectedWithCount(typeKey: string): boolean {
     //Vérifie que le type est le dernier du tableau ayant un count > 0
-    const unselectedSet = this.unselectedTypesSet();
+    const unselectedSet = this.unselectedTypes();
     const displayedTypes = this.typesDisplayed() ?? [];
     const selectedTypesWithCount = displayedTypes.filter(
       (type) => !unselectedSet.has(type.key) && type.count > 0
@@ -332,7 +334,7 @@ export class Search  {
   }
   lastDomainSelectedWithCount(domainKey: string): boolean {
     //Vérifie que le domaine est le dernier du tableau ayant un count > 0
-    const unselectedSet = this.unselectedDomainsSet();
+    const unselectedSet = this.unselectedDomains();
     const displayedDomains = this.domainsDisplayed() ?? [];
     const selectedDomainsWithCount = displayedDomains.filter(
       (domain) => !unselectedSet.has(domain.key) && domain.count > 0
@@ -344,7 +346,7 @@ export class Search  {
   }
   toggleDomainSelection(domain: OpenAlexGroupByResult) {
     this.pageNumber.set(0);
-    this.unselectedDomainsSet.update((current) => {
+    this.unselectedDomains.update((current) => {
       const updated = new Set(current);
       if (updated.has(domain.key)) {
         updated.delete(domain.key);
@@ -356,7 +358,7 @@ export class Search  {
   }
   toggleTypeSelection(type: OpenAlexGroupByResult) {
     this.pageNumber.set(0);
-    this.unselectedTypesSet.update((current) => {
+    this.unselectedTypes.update((current) => {
       const updated = new Set(current);
       if (updated.has(type.key)) {
         updated.delete(type.key);
@@ -432,24 +434,24 @@ export class Search  {
       );
     },
   });
-  groupByTypeResource = resource<
-    OpenAlexGroupBy<OpenAlexGroupByResult>,
-    { search: string | undefined; filters: string }
-  >({
-    params: () => ({
-      search: this.facade.searchSelected(),
-      filters: this.facade.filtersString(),
-    }),
-    loader: async ({ params }) => {
-      if (!params.search || params.search === '') {
-        console.log('Retour VIDE GROUP_BY TYPE resource');
-        return {} as OpenAlexGroupBy<OpenAlexGroupByResult>;
-      }
-      return await firstValueFrom(
-        this.api.getTypesWorks(params.search, params.filters)
-      );
-    },
-  });
+  // groupByTypeResource = resource<
+  //   OpenAlexGroupBy<OpenAlexGroupByResult>,
+  //   { search: string | undefined; filters: string }
+  // >({
+  //   params: () => ({
+  //     search: this.facade.searchSelected(),
+  //     filters: this.facade.filtersString(),
+  //   }),
+  //   loader: async ({ params }) => {
+  //     if (!params.search || params.search === '') {
+  //       console.log('Retour VIDE GROUP_BY TYPE resource');
+  //       return {} as OpenAlexGroupBy<OpenAlexGroupByResult>;
+  //     }
+  //     return await firstValueFrom(
+  //       this.api.getTypesWorks(params.search, params.filters)
+  //     );
+  //   },
+  // });
   groupByDomainsFilteredResource = resource<
     OpenAlexGroupBy<OpenAlexGroupByResult>,
     { filters: string }
