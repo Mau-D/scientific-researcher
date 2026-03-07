@@ -1,8 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import {
-  FormBuilder,
-  ReactiveFormsModule
-} from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
@@ -34,18 +31,18 @@ export class Filters implements OnInit {
   // formSignal = toSignal(this.filtersForm.valueChanges, {
   //   initialValue: this.filtersForm.value,
   // });
- ngOnInit() {
-  this.facade.filtersReset.subscribe(() => {
+  ngOnInit() {
+    this.facade.filtersReset.subscribe(() => {
+      const filters = this.facade.getCurrentFilters();
+      this.filtersForm.setValue(filters, { emitEvent: false });
+    });
+
+    this.filtersForm.valueChanges.subscribe((value) => {
+      this.facade.filtersChanged(value);
+    });
+  }
+  public resetFormToStore() {
     const filters = this.facade.getCurrentFilters();
     this.filtersForm.setValue(filters, { emitEvent: false });
-  });
-
-  this.filtersForm.valueChanges.subscribe(value => {
-    this.facade.filtersChanged(value);
-  });
-}
-  public resetFormToStore() {
-  const filters = this.facade.getCurrentFilters();
-  this.filtersForm.setValue(filters, { emitEvent: false });
-}
+  }
 }

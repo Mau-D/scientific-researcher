@@ -1,4 +1,4 @@
-import { Injectable, computed, inject, resource, signal } from '@angular/core';
+import { Injectable, OnInit, computed, inject, resource, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { delay, firstValueFrom } from 'rxjs';
@@ -18,7 +18,7 @@ import { Keyword } from '../../../../../apps/backend/src/app/keywords/entities/k
 @Injectable({ providedIn: 'root' })
 export class ResearchStore {
   private api = inject(OpenalexApi);
-
+ 
   //   public idClicked = signal<string>('');
   search = signal('');
   searchSelected = signal('');
@@ -54,85 +54,85 @@ export class ResearchStore {
   });
   filtersString = computed(() => filtersToString(this.filtersToApply()));
 
-  //   countWorks = computed(() => {
-  //     const count =
-  //       this.unselectedDomainsSet().size > 0 || this.unselectedTypesSet().size > 0
-  //         ? this.groupByDomainsFilteredResource.value()?.meta?.count
-  //         : this.groupByDomainResource.value()?.meta?.count;
+    countWorks = computed(() => {
+      const count =
+        this.unselectedDomainsSet().size > 0 || this.unselectedTypesSet().size > 0
+          ? this.groupByDomainsFilteredResource.value()?.meta?.count
+          : this.groupByDomainResource.value()?.meta?.count;
 
-  //     console.log('Count works:', count);
-  //     return count;
-  //   });
-  //   domainsDisplayed = computed(() => {
-  //     const unselect = this.unselectedDomainsSet();
-  //     const unselectTypes = this.unselectedTypesSet();
-  //     console.log(
-  //       'Calculating domainsDisplayed with unselectedDomainsSet:',
-  //       unselect
-  //     );
-  //     const domains =
-  //       unselect.size === 0 && unselectTypes.size === 0
-  //         ? this.domainsInitial() ?? []
-  //         : this.newDomainsDisplayed() ?? [];
-  //     console.log('Domains displayed:', domains);
-  //     return domains;
-  //   });
-  //   typesDisplayed = computed(() => {
-  //     const unselect = this.unselectedTypesSet();
-  //     const unselectDomains = this.unselectedDomainsSet();
-  //     console.log(
-  //       'Calculating typesDisplayed with unselectedTypesSet:',
-  //       unselect
-  //     );
-  //     const domains =
-  //       unselect.size === 0 && unselectDomains.size === 0
-  //         ? this.typesInitial() ?? []
-  //         : this.newTypesDisplayed() ?? [];
-  //     console.log('Types displayed:', domains);
-  //     return domains;
-  //   });
-  //   newDomainsDisplayed = computed(() => {
-  //     const unselectedSet = this.unselectedDomainsSet();
-  //     const current = this.domainsInitial();
-  //     const filtered = this.domainsFiltered();
+      console.log('Count works:', count);
+      return count;
+    });
+    domainsDisplayed = computed(() => {
+      const unselect = this.unselectedDomainsSet();
+      const unselectTypes = this.unselectedTypesSet();
+      console.log(
+        'Calculating domainsDisplayed with unselectedDomainsSet:',
+        unselect
+      );
+      const domains =
+        unselect.size === 0 && unselectTypes.size === 0
+          ? this.domainsInitial() ?? []
+          : this.newDomainsDisplayed() ?? [];
+      console.log('Domains displayed:', domains);
+      return domains;
+    });
+    typesDisplayed = computed(() => {
+      const unselect = this.unselectedTypesSet();
+      const unselectDomains = this.unselectedDomainsSet();
+      console.log(
+        'Calculating typesDisplayed with unselectedTypesSet:',
+        unselect
+      );
+      const domains =
+        unselect.size === 0 && unselectDomains.size === 0
+          ? this.typesInitial() ?? []
+          : this.newTypesDisplayed() ?? [];
+      console.log('Types displayed:', domains);
+      return domains;
+    });
+    newDomainsDisplayed = computed(() => {
+      const unselectedSet = this.unselectedDomainsSet();
+      const current = this.domainsInitial();
+      const filtered = this.domainsFiltered();
 
-  //     if (!current || !filtered) return [];
+      if (!current || !filtered) return [];
 
-  //     const filteredMap = new Map(filtered.map((d) => [d.key, d]));
+      const filteredMap = new Map(filtered.map((d) => [d.key, d]));
 
-  //     return current.map((domain) => {
-  //       const key = domain.key;
+      return current.map((domain) => {
+        const key = domain.key;
 
-  //       const isUnselected = unselectedSet.has(key);
-  //       const filteredDomain = filteredMap.get(key);
+        const isUnselected = unselectedSet.has(key);
+        const filteredDomain = filteredMap.get(key);
 
-  //       return {
-  //         ...domain,
-  //         count: isUnselected ? 0 : filteredDomain?.count ?? 0,
-  //       };
-  //     });
-  //   });
-  //   newTypesDisplayed = computed(() => {
-  //     const unselectedSet = this.unselectedTypesSet();
-  //     const current = this.typesInitial();
-  //     const filtered = this.typesFiltered();
+        return {
+          ...domain,
+          count: isUnselected ? 0 : filteredDomain?.count ?? 0,
+        };
+      });
+    });
+    newTypesDisplayed = computed(() => {
+      const unselectedSet = this.unselectedTypesSet();
+      const current = this.typesInitial();
+      const filtered = this.typesFiltered();
 
-  //     if (!current || !filtered) return [];
+      if (!current || !filtered) return [];
 
-  //     const filteredMap = new Map(filtered.map((t) => [t.key, t]));
+      const filteredMap = new Map(filtered.map((t) => [t.key, t]));
 
-  //     return current.map((type) => {
-  //       const key = type.key;
+      return current.map((type) => {
+        const key = type.key;
 
-  //       const isUnselected = unselectedSet.has(key);
-  //       const filteredType = filteredMap.get(key);
+        const isUnselected = unselectedSet.has(key);
+        const filteredType = filteredMap.get(key);
 
-  //       return {
-  //         ...type,
-  //         count: isUnselected ? 0 : filteredType?.count ?? 0,
-  //       };
-  //     });
-  //   });
+        return {
+          ...type,
+          count: isUnselected ? 0 : filteredType?.count ?? 0,
+        };
+      });
+    });
 
     domainsInitial = computed(() => {
       const domainsInit = this.groupByDomainResource.value()?.group_by ?? [];
@@ -144,78 +144,78 @@ export class ResearchStore {
       console.log('Types initial:', typesInit);
       return typesInit;
     });
-  //   selectionDomains = computed(() => {
-  //     const unselect = this.unselectedDomainsSet();
-  //     const array = new Set<string>();
-  //     this.domainsDisplayed()?.map((d) => {
-  //       if (!unselect.has(d.key)) {
-  //         array.add(d.key);
-  //       }
-  //     });
-  //     return array;
-  //   });
-  //   selectionTypes = computed(() => {
-  //     const unselect = this.unselectedTypesSet();
-  //     const array = new Set<string>();
-  //     this.typesDisplayed()?.map((t) => {
-  //       if (!unselect.has(t.key)) {
-  //         array.add(t.key);
-  //       }
-  //     });
-  //     return array;
-  //   });
-  //   domainsFiltered = computed(() => {
-  //     const domainsFilt =
-  //       this.groupByDomainsFilteredResource.value()?.group_by ?? [];
-  //     console.log('Domains filtered:', domainsFilt);
-  //     return domainsFilt;
-  //   });
-  //   typesFiltered = computed(() => {
-  //     const typesFilt = this.groupByTypeFilteredResource.value()?.group_by ?? [];
-  //     console.log('Types filtered:', typesFilt);
-  //     return typesFilt;
-  //   });
+    selectionDomains = computed(() => {
+      const unselect = this.unselectedDomainsSet();
+      const array = new Set<string>();
+      this.domainsDisplayed()?.map((d) => {
+        if (!unselect.has(d.key)) {
+          array.add(d.key);
+        }
+      });
+      return array;
+    });
+    selectionTypes = computed(() => {
+      const unselect = this.unselectedTypesSet();
+      const array = new Set<string>();
+      this.typesDisplayed()?.map((t) => {
+        if (!unselect.has(t.key)) {
+          array.add(t.key);
+        }
+      });
+      return array;
+    });
+    domainsFiltered = computed(() => {
+      const domainsFilt =
+        this.groupByDomainsFilteredResource.value()?.group_by ?? [];
+      console.log('Domains filtered:', domainsFilt);
+      return domainsFilt;
+    });
+    typesFiltered = computed(() => {
+      const typesFilt = this.groupByTypeFilteredResource.value()?.group_by ?? [];
+      console.log('Types filtered:', typesFilt);
+      return typesFilt;
+    });
   //   //computed for set a new string filters with unselect domainsè
-  //   allFiltersToApply = computed(() => {
-  //     const baseFilters = this.filtersString();
-  //     const unselectedDomains = this.unselectedDomainsSet(); // 👈 UNE seule lecture
-  //     const unselectedTypes = this.unselectedTypesSet(); // 👈 UNE seule lecture
+    allFiltersToApply = computed(() => {
+      const baseFilters = this.filtersString();
+      const unselectedDomains = this.unselectedDomainsSet(); // 👈 UNE seule lecture
+      const unselectedTypes = this.unselectedTypesSet(); // 👈 UNE seule lecture
 
-  //     console.log(
-  //       'Calculating allFiltersToApply with unselectedDomainsSet:',
-  //       unselectedDomains,
-  //       'and unselectedTypesSet:',
-  //       unselectedTypes
-  //     );
-  //     const search = this.searchSelected(); // 👈 IMPORTANT
+      console.log(
+        'Calculating allFiltersToApply with unselectedDomainsSet:',
+        unselectedDomains,
+        'and unselectedTypesSet:',
+        unselectedTypes
+      );
+      const search = this.searchSelected(); // 👈 IMPORTANT
 
-  //     if (!search || search === '') {
-  //       return '';
-  //     } else if (unselectedDomains.size === 0 && unselectedTypes.size === 0) {
-  //       return baseFilters; // Pas de domaines exclus, on garde les filtres de base
-  //     }
+      if (!search || search === '') {
+        return '';
+      } else if (unselectedDomains.size === 0 && unselectedTypes.size === 0) {
+        return baseFilters; // Pas de domaines exclus, on garde les filtres de base
+      }
 
-  //     const unselectedDomainsArray = [...unselectedDomains]
-  //       .map((key) => key.split('/').pop())
-  //       .join('|');
-  //     const unselectedTypesArray = [...unselectedTypes]
-  //       .map((key) => key.split('/').pop())
-  //       .join('|');
-  //     console.log('Unselected Domains Array:', unselectedDomainsArray);
-  //     console.log('Unselected Types Array:', unselectedTypesArray);
-  //     const allFilters = [
-  //       baseFilters,
-  //       unselectedDomainsArray &&
-  //         `primary_topic.domain.id:!${unselectedDomainsArray}`,
-  //       unselectedTypesArray && `type:!${unselectedTypesArray}`,
-  //     ]
-  //       .filter(Boolean)
-  //       .join(',');
+      const unselectedDomainsArray = [...unselectedDomains]
+        .map((key) => key.split('/').pop())
+        .join('|');
+      const unselectedTypesArray = [...unselectedTypes]
+        .map((key) => key.split('/').pop())
+        .join('|');
+      console.log('Unselected Domains Array:', unselectedDomainsArray);
+      console.log('Unselected Types Array:', unselectedTypesArray);
+      const allFilters = [
+        baseFilters,
+        unselectedDomainsArray &&
+          `primary_topic.domain.id:!${unselectedDomainsArray}`,
+        unselectedTypesArray && `type:!${unselectedTypesArray}`,
+      ]
+        .filter(Boolean)
+        .join(',');
 
-  //     console.log('allFilters:', allFilters);
+      console.log('allFilters:', allFilters);
 
-  //     return allFilters;
-  //   });
+      return allFilters;
+    });
 
   keywords = computed(() => {
     return this.keywordsResource.value() ?? [];
@@ -290,45 +290,45 @@ export class ResearchStore {
         );
       },
     });
-  //   groupByDomainsFilteredResource = resource<
-  //     OpenAlexGroupBy<OpenAlexGroupByResult>,
-  //     { filters: string }
-  //   >({
-  //     params: () => ({
-  //       filters: this.allFiltersToApply(), // 🔥 seule dépendance
-  //     }),
+    groupByDomainsFilteredResource = resource<
+      OpenAlexGroupBy<OpenAlexGroupByResult>,
+      { filters: string }
+    >({
+      params: () => ({
+        filters: this.allFiltersToApply(), // 🔥 seule dépendance
+      }),
 
-  //     loader: async ({ params }) => {
-  //       console.log('groupByDomainsFilters', params.filters);
-  //       if (!params.filters) {
-  //         return {} as OpenAlexGroupBy<OpenAlexGroupByResult>;
-  //       }
+      loader: async ({ params }) => {
+        console.log('groupByDomainsFilters', params.filters);
+        if (!params.filters) {
+          return {} as OpenAlexGroupBy<OpenAlexGroupByResult>;
+        }
 
-  //       return firstValueFrom(
-  //         this.api.getDomainsWorks(this.searchSelected(), params.filters)
-  //       );
-  //     },
-  //   });
-  //   groupByTypeFilteredResource = resource<
-  //     OpenAlexGroupBy<OpenAlexGroupByResult>,
-  //     { filters: string }
-  //   >({
-  //     params: () => ({
-  //       filters: this.allFiltersToApply(), // 🔥 seule dépendance
-  //     }),
+        return firstValueFrom(
+          this.api.getDomainsWorks(this.searchSelected(), params.filters)
+        );
+      },
+    });
+    groupByTypeFilteredResource = resource<
+      OpenAlexGroupBy<OpenAlexGroupByResult>,
+      { filters: string }
+    >({
+      params: () => ({
+        filters: this.allFiltersToApply(), // 🔥 seule dépendance
+      }),
 
-  //     loader: async ({ params }) => {
-  //       console.log('groupByTypeFilters', params.filters);
+      loader: async ({ params }) => {
+        console.log('groupByTypeFilters', params.filters);
 
-  //       if (!params.filters) {
-  //         return {} as OpenAlexGroupBy<OpenAlexGroupByResult>;
-  //       }
+        if (!params.filters) {
+          return {} as OpenAlexGroupBy<OpenAlexGroupByResult>;
+        }
 
-  //       return firstValueFrom(
-  //         this.api.getTypesWorks(this.searchSelected(), params.filters)
-  //       );
-  //     },
-  //   });
+        return firstValueFrom(
+          this.api.getTypesWorks(this.searchSelected(), params.filters)
+        );
+      },
+    });
   //   worksResultResource = resource<
   //     OpenAlexResponse<OpenAlexWork>,
   //     { page: number }
@@ -381,11 +381,11 @@ export class ResearchStore {
     this.filters.update((f) => ({ ...f, ...partial }));
 
     // 2. reset states liés
-    //   this.unselectedDomainsSet.set(new Set());
-    //   this.unselectedTypesSet.set(new Set());
+      this.unselectedDomainsSet.set(new Set());
+      this.unselectedTypesSet.set(new Set());
 
     // 3. reset pagination
-    //   this.pageNumber.set(0);
+      this.pageNumber.set(0);
   }
   //  updateFilters(partial: Partial<SearchFilters>) {
   //     this.filters.update((f) => ({ ...f, ...partial }));
@@ -407,38 +407,37 @@ export class ResearchStore {
     isTypeSelected(typeKey: string): boolean {
       return !this.unselectedTypesSet().has(typeKey);
     }
-
-  //   resetDomains() {
-  //     this.unselectedDomainsSet.set(new Set());
-  //   }
-
-  //   resetTypes() {
-  //     this.unselectedTypesSet.set(new Set());
-  //   }
-  //   lastTypeSelectedWithCount(typeKey: string): boolean {
-  //     //Vérifie que le type est le dernier du tableau ayant un count > 0
-  //     const unselectedSet = this.unselectedTypesSet();
-  //     const displayedTypes = this.typesDisplayed() ?? [];
-  //     const selectedTypesWithCount = displayedTypes.filter(
-  //       (type) => !unselectedSet.has(type.key) && type.count > 0
-  //     );
-  //     if (selectedTypesWithCount.length === 1) {
-  //       return selectedTypesWithCount[0].key === typeKey;
-  //     }
-  //     return false;
-  //   }
-  //   lastDomainSelectedWithCount(domainKey: string): boolean {
-  //     //Vérifie que le domaine est le dernier du tableau ayant un count > 0
-  //     const unselectedSet = this.unselectedDomainsSet();
-  //     const displayedDomains = this.domainsDisplayed() ?? [];
-  //     const selectedDomainsWithCount = displayedDomains.filter(
-  //       (domain) => !unselectedSet.has(domain.key) && domain.count > 0
-  //     );
-  //     if (selectedDomainsWithCount.length === 1) {
-  //       return selectedDomainsWithCount[0].key === domainKey;
-  //     }
-  //     return false;
-  //   }
+isDomainDisabled(domain:OpenAlexGroupByResult): boolean{
+    return  (this.domainsDisplayed().length - this.unselectedDomainsSet().size === 1 && this.isDomainSelected(domain.key))||(this.isDomainSelected(domain.key) && domain.count === 0) || this.lastDomainSelectedWithCount(domain.key)
+}
+isTypeDisabled(type:OpenAlexGroupByResult): boolean{
+    return  (this.typesDisplayed().length - this.unselectedTypesSet().size === 1 && this.isTypeSelected(type.key))||(this.isTypeSelected(type.key) && type.count === 0) || this.lastTypeSelectedWithCount(type.key)
+}
+   
+    lastTypeSelectedWithCount(typeKey: string): boolean {
+      //Vérifie que le type est le dernier du tableau ayant un count > 0
+      const unselectedSet = this.unselectedTypesSet();
+      const displayedTypes = this.typesDisplayed() ?? [];
+      const selectedTypesWithCount = displayedTypes.filter(
+        (type) => !unselectedSet.has(type.key) && type.count > 0
+      );
+      if (selectedTypesWithCount.length === 1) {
+        return selectedTypesWithCount[0].key === typeKey;
+      }
+      return false;
+    }
+    lastDomainSelectedWithCount(domainKey: string): boolean {
+      //Vérifie que le domaine est le dernier du tableau ayant un count > 0
+      const unselectedSet = this.unselectedDomainsSet();
+      const displayedDomains = this.domainsDisplayed() ?? [];
+      const selectedDomainsWithCount = displayedDomains.filter(
+        (domain) => !unselectedSet.has(domain.key) && domain.count > 0
+      );
+      if (selectedDomainsWithCount.length === 1) {
+        return selectedDomainsWithCount[0].key === domainKey;
+      }
+      return false;
+    }
     toggleDomainSelection(domain: OpenAlexGroupByResult) {
       this.pageNumber.set(0);
       this.unselectedDomainsSet.update((current) => {

@@ -10,21 +10,13 @@
     >
       <mat-chip
         class="domain-chip cursor-crosshair"
+        [disabled]="disabledState()(result)"
         (click)="onToggle(result)"
         [class.selected-chip]="selectedState()(result.key)"
         [class.unselected-chip]="result.count === 0 && !selectedState()(result.key)"
         >{{result.key_display_name}}</mat-chip
       >
-      <!-- <mat-chip
-                [disabled]="(domainsDisplayed().length - unselectedDomainsSet().size === 1 && isDomainSelected(domain.key))||(isDomainSelected(domain.key) && domain.count === 0) || lastDomainSelectedWithCount(domain.key)"
-                class="domain-chip cursor-crosshair"
-                (click)="toggleDomainSelection(domain)"
-                [class.selected-chip]="isDomainSelected(domain.key)"
-                [class.unselected-chip]="domain.count === 0 && !isDomainSelected(domain.key)"
-                >{{domain.key_display_name}}</mat-chip
-              > -->
     </div>
-
     }
   </div>
 </div>
