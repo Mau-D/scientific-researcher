@@ -1,10 +1,4 @@
-import {
-  Component,
-  inject,
-  resource,
-  signal,
-  viewChild
-} from '@angular/core';
+import { Component, inject, resource, signal, viewChild } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import {
   MatAutocompleteModule,
@@ -22,20 +16,21 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
 import {
   OpenAlexResponse,
-  OpenAlexWork
+  OpenAlexWork,
+  OpenAlexGroupByResult,
 } from '@org/models';
 import { OpenalexApi, ResearchFacade } from '@org/research';
-import { ResearchCard } from '@org/ui-layout';
 import { firstValueFrom } from 'rxjs'; // Pour gérer le cas initial
 import { WorkDetails } from '../work-details/work-details';
-import { DomainTypeFilters } from "./ui/domain-type-filters/domain-type-filters";
-import { Filters } from "./ui/filters/filters";
+import { DomainTypeFilters } from './ui/domain-type-filters/domain-type-filters';
+import { Filters } from './ui/filters/filters';
+import { Results } from './ui/results/results';
 import { SearchInput } from './ui/search-input/search-input';
+import { ResearchCard } from '@org/ui-layout';
 
 @Component({
   selector: 'app-search',
   imports: [
-    ResearchCard,
     SearchInput,
     MatProgressSpinnerModule,
     MatSidenavModule,
@@ -52,20 +47,55 @@ import { SearchInput } from './ui/search-input/search-input';
     MatChipsModule,
     MatBadgeModule,
     Filters,
-    DomainTypeFilters
-],
+    DomainTypeFilters,
+    Results,
+  ],
   templateUrl: './search.html',
   styleUrl: './search.scss',
 })
-export class Search  {
- 
+export class Search {
   //TODO: ajouter un scroll top à chaque nouvelle recherche ou changement des résultats
   private api = inject(OpenalexApi);
   facade = inject(ResearchFacade);
   drawer = viewChild(MatDrawer);
-  
- 
-readonly countWorks = this.facade.countWorks;
+  readonly searchLoading = this.facade.keywordsLoading;
+  readonly search = this.facade.search;
+  readonly keywords = this.facade.keywords;
+  readonly searchSelected = this.facade.searchSelected;
+
+  readonly countWorks = this.facade.countWorks;
+  readonly worksResult = this.facade.worksApi;
+  readonly worksLoading = this.facade.worksLoading;
+  readonly worksError = this.facade.worksError;
+
+  readonly domainsDisplayed = this.facade.domainsDisplayed;
+  readonly unselectedDomains = this.facade.unselectedDomains;
+  readonly typesDisplayed = this.facade.typesDisplayed;
+  readonly unselectedTypes = this.facade.unselectedTypes;
+
+  toggleDomain = (domainKey: OpenAlexGroupByResult) => {
+    this.facade.toggleDomain(domainKey);
+  };
+  isDomainSelected() {
+    return this.facade.isDomainSelected;
+  }
+  isDomainDisabled() {
+    return this.facade.isDomainDisabled;
+  }
+  toggleType = (typeKey: OpenAlexGroupByResult) => {
+    this.facade.toggleType(typeKey);
+  };
+  isTypeSelected() {
+    return this.facade.isTypeSelected;
+  }
+  isTypeDisabled() {
+    return this.facade.isTypeDisabled;
+  }
+   public idClicked = signal<string>('');
+  // displayWorks(page:number){
+  //   return this.facade.displayWorks(page)
+  // }
+
   // filtersForm = this.formBuilder.group({
   //   isOa: new FormControl<boolean>(true, {
   //     nonNullable: true,
@@ -84,10 +114,10 @@ readonly countWorks = this.facade.countWorks;
   // formSignal = toSignal(this.filtersForm.valueChanges, {
   //   initialValue: this.filtersForm.value,
   // });
-  public idClicked = signal<string>('');
+ 
   // search = signal('');
   // searchSelected = signal('');
-  pageNumber = signal(0);
+  // pageNumber = signal(0);
   // unselectedDomainsSet = signal<Set<string>>(new Set());
   // unselectedTypesSet = signal<Set<string>>(new Set());
 
@@ -360,9 +390,9 @@ readonly countWorks = this.facade.countWorks;
     this.idClicked.set(id);
     this.toggleDrawer();
   }
-  displayWorks(): void {
+  displayWorks(page: number): void {
     if (this.facade.searchSelected()) {
-      this.pageNumber.set(1);
+      this.facade.pageNumber.set(page);
     }
   }
   closeDrawer() {
@@ -474,31 +504,31 @@ readonly countWorks = this.facade.countWorks;
   //     );
   //   },
   // });
-  worksResultResource = resource<
-    OpenAlexResponse<OpenAlexWork>,
-    { page: number }
-  >({
-    params: () => ({
-      page: this.pageNumber(),
-    }),
-    loader: async ({ params }) => {
-      // Ici, params est ton objet { sample, language }
+  // worksResultResource = resource<
+  //   OpenAlexResponse<OpenAlexWork>,
+  //   { page: number }
+  // >({
+  //   params: () => ({
+  //     page: this.pageNumber(),
+  //   }),
+  //   loader: async ({ params }) => {
+  //     // Ici, params est ton objet { sample, language }
 
-      const search = this.facade.searchSelected();
-      const filters = this.facade.allFiltersToApply();
-      const perPage = '25';
-      const page = params.page.toString();
-      if (!params.page || params.page === 0) {
-        // Note: Le retour doit correspondre au type OpenAlexResponse ou lever une erreur/null
-        // Pour éviter les erreurs de type, on peut retourner un objet vide typé
-        return {} as OpenAlexResponse<OpenAlexWork>;
-      }
-      const worksDatas = await firstValueFrom(
-        this.api.getResultWorks(search, perPage, page, filters)
-      );
-      return worksDatas;
-    },
-  });
+  //     const search = this.facade.searchSelected();
+  //     const filters = this.facade.allFiltersToApply();
+  //     const perPage = '25';
+  //     const page = params.page.toString();
+  //     if (!params.page || params.page === 0) {
+  //       // Note: Le retour doit correspondre au type OpenAlexResponse ou lever une erreur/null
+  //       // Pour éviter les erreurs de type, on peut retourner un objet vide typé
+  //       return {} as OpenAlexResponse<OpenAlexWork>;
+  //     }
+  //     const worksDatas = await firstValueFrom(
+  //       this.api.getResultWorks(search, perPage, page, filters)
+  //     );
+  //     return worksDatas;
+  //   },
+  // });
   // filtersToString(filters: OpenAlexFilters) {
   //   const filtersStringify = Object.keys(filters)
   //     .filter((key) => {
@@ -524,7 +554,7 @@ readonly countWorks = this.facade.countWorks;
   // .reload() : Une méthode pour forcer manuellement le rafraîchissement.
 
   // Alias pour le template
-  workData = this.worksResultResource.value;
-  isLoading = this.worksResultResource.isLoading;
-  error = this.worksResultResource.error;
+  // workData = this.worksResultResource.value;
+  // isLoading = this.worksResultResource.isLoading;
+  // error = this.worksResultResource.error;
 }

@@ -27,6 +27,10 @@ export class ResearchFacade {
   readonly unselectedDomains = this.store.unselectedDomainsSet;
   readonly unselectedTypes = this.store.unselectedTypesSet;
 
+  readonly worksApi = this.store.worksResultResource;
+  readonly worksLoading = this.worksApi.isLoading;
+  readonly worksError = this.worksApi.error;
+
   keywordSelection(keyword: string) {
     this.store.keywordSelect(keyword);
     this.filtersReset.emit();
@@ -34,7 +38,9 @@ export class ResearchFacade {
   searchKeywords(value: string) {
     this.store.searchKeyword(value);
   }
-
+  displayWorks(page: number) {
+    this.store.displayWorks(page);
+  }
   getCurrentFilters(): SearchFilters {
     return this.store.filtersState(); // appelle le signal pour récupérer la valeur actuelle
   }

@@ -1,4 +1,3 @@
-@let worksResult=worksResultResource.value()?.results;
 <!--  -->
 @let data = workResource.value();
 <!--  -->
@@ -8,12 +7,12 @@
     <app-search-input
       (queryChange)="researchKeywords($event)"
       (selectChange)="onSelect($event)"
-      [loading]="facade.keywordsLoading()"
-      [search]="facade.search()"
-      [suggestions]="facade.keywords()"
+      [loading]="searchLoading()"
+      [search]="search()"
+      [suggestions]="keywords()"
     ></app-search-input>
   </div>
-  @if (facade.searchSelected()) {
+  @if (searchSelected()) {
   <div>
     <h1 class="text-2xl mb-4">
       Nombre de publications correspondantes : {{countWorks()}}
@@ -53,11 +52,11 @@
           </mat-panel-title>
         </mat-expansion-panel-header>
         <app-domain-type-filters
-          [data]="facade.domainsDisplayed()"
-          [unselectedList]="facade.unselectedDomains()"
-          (toggleChip)="facade.toggleDomain($event)"
-          [selectedState]="facade.isDomainSelected"
-          [disabledState]="facade.isDomainDisabled"
+          [data]="domainsDisplayed()"
+          [unselectedList]="unselectedDomains()"
+          (toggleChip)="toggleDomain($event)"
+          [selectedState]="isDomainSelected()"
+          [disabledState]="isDomainDisabled()"
         ></app-domain-type-filters>
       </mat-expansion-panel>
     </div>
@@ -76,11 +75,11 @@
           </mat-panel-title>
         </mat-expansion-panel-header>
         <app-domain-type-filters
-          [data]="facade.typesDisplayed()"
-          [unselectedList]="facade.unselectedTypes()"
-          (toggleChip)="facade.toggleType($event)"
-          [selectedState]="facade.isTypeSelected"
-          [disabledState]="facade.isTypeDisabled"
+          [data]="typesDisplayed()"
+          [unselectedList]="unselectedTypes()"
+          (toggleChip)="toggleType($event)"
+          [selectedState]="isTypeSelected()"
+          [disabledState]="isTypeDisabled()"
         ></app-domain-type-filters>
       </mat-expansion-panel>
     </div>
@@ -90,12 +89,12 @@
   <div>
     <button
       class="bg-blue-500 p-4 my-4 disabled:hidden"
-      (click)="displayWorks()"
-      [disabled]="!facade.searchSelected()"
+      (click)="displayWorks(1)"
+      [disabled]="!searchSelected()"
     >
       Afficher les résultats
     </button>
-    <div><h1>{{worksResultResource.value()?.meta?.count}}</h1></div>
+    <div><h1>{{worksResult.value()?.meta?.count}}</h1></div>
   </div>
   <div class="w-full">
     <mat-drawer-container>
@@ -127,7 +126,7 @@
         </div>
       </mat-drawer>
       <mat-drawer-content>
-        <section class="flex justify-center">
+        <!-- <section class="flex justify-center">
           <div
             class="w-full flex flex-col flex-wrap justify-center items-center p-5"
           >
@@ -153,7 +152,14 @@
               }
             </div>
           </div>
-        </section>
+        </section> -->
+        @if(worksResult){
+        <app-results
+          [worksResult]="worksResult.value()?.results ?? []"
+          [isLoading]="worksLoading()"
+          [error]="worksError()"
+        ></app-results>
+        }
       </mat-drawer-content>
     </mat-drawer-container>
   </div>
