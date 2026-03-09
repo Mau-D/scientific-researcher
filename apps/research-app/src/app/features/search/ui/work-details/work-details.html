@@ -1,11 +1,6 @@
 @let pdfUrl = data()?.open_access?.oa_url;
 <mat-card class="p-2.5" appearance="outlined">
   <mat-card-header class="flex justify-between items-start p-2.5 my-2">
-    <!-- <mat-icon
-      class="absolute top-2 right-2 text-2xl cursor-pointer text-gray-light hover:text-red-400"
-      fontSet="material-symbols-outlined"
-      (click)="closeRequested.emit()"
-      >close</mat-icon> -->
     <mat-card-title class="text-dark text-left"
       >{{data()?.display_name}}</mat-card-title
     >
@@ -42,8 +37,6 @@
     }
   </mat-card-header>
   <mat-divider></mat-divider>
-
-  <!-- <img mat-card-image src="https://material.angular.dev/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu"> -->
   <mat-card-content>
     <div class="flex justify-between flex-wrap py-2.5">
       <div class="flex justify-start items-center w-1/3">
@@ -147,7 +140,6 @@
             </span>
           </span>
         </div>
-
         }
         <div class="mt-5">
           @if(pdfUrl){
@@ -195,22 +187,13 @@
       <h3 class="text-lg font-medium text-gray-blue mb-2">
         Concepts & Disciplines
       </h3>
-
       <mat-chip-set aria-label="Concepts du travail" disabled-outline-color>
         @for (concept of sortedConcepts(); track concept.id) {
         <mat-chip
           [style.background-color]="getLevelColor(concept.level)"
           [title]="'Score de confiance : ' + (concept.score | percent)"
         >
-          <!-- <div matChipAvatar  class="level-indicator">
-          {{ concept.level }}
-        </div> -->
-
           <span class="concept-name">{{ concept.display_name }}</span>
-
-          <!-- <span class="concept-score" matChipTrailingIcon>
-          {{ (concept.score * 100).toFixed(0) }}%
-        </span> -->
         </mat-chip>
         }
       </mat-chip-set>

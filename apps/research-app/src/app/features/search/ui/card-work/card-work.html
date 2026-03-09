@@ -1,14 +1,11 @@
 <mat-card class="p-2.5 mb-5" appearance="outlined">
   <mat-card-header class="flex flex-col justify-center items-start p-2.5 my-2">
-    <!-- <mat-card-subtitle class="text-gray-blue text-xxs">#{{dataId()}}</mat-card-subtitle> -->
     <p class="text-gray-blue text-[9px]">#{{dataId()}}</p>
     <mat-card-title class="text-dark text-left"
       >{{data()?.display_name}}</mat-card-title
     >
   </mat-card-header>
   <mat-divider></mat-divider>
-
-  <!-- <img mat-card-image src="https://material.angular.dev/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu"> -->
   <mat-card-content>
     <div class="flex justify-between flex-wrap py-2.5">
       <div class="flex justify-start items-center w-1/3">
@@ -135,11 +132,6 @@
           [label]="'Détails'"
           (click)="onClickForDetails()"
         ></lib-button>
-        <!-- <lib-button
-          [routerLink]="`/publication/${dataId()}`"
-          [variant]="'primary-button'"
-          [label]="'Détails'"
-        ></lib-button> -->
       </div>
     </div>
   </mat-card-actions>

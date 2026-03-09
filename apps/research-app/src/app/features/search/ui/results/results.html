@@ -12,14 +12,10 @@
     </h2>
     <div class="container">
       @for(work of worksResult(); track work.id) {
-
-      <!-- <lib-research-card
-                [data]="work"
-                (clickedForDetails)="onCardClicked($event)"
-              ></lib-research-card>
-               -->
-      <app-card-work [data]="work"  (clickedForDetails)="onCardClicked($event)"></app-card-work>
-
+      <app-card-work
+        [data]="work"
+        (clickedForDetails)="onCardClicked($event)"
+      ></app-card-work>
       }
     </div>
 

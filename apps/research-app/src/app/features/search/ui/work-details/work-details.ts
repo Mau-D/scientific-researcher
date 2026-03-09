@@ -31,14 +31,10 @@ import {
   styleUrl: './work-details.scss',
 })
 export class WorkDetails {
-
   readonly data = input<OpenAlexWork | undefined>();
   readonly sortedConcepts = computed(() => {
-                console.log('lenght awards', this.data()?.awards)
-
     const concepts: Concept[] = this.data()?.concepts || [];
-
-    return [...concepts.filter((concept) => concept.score >= 0.3)]    //On retire les éléments avec une confiance < 30%
+    return [...concepts.filter((concept) => concept.score >= 0.3)] //On retire les éléments avec une confiance < 30%
       .sort((a, b) => {
         // 1. Priorité au niveau le plus élevé (ex: Level 3 avant Level 0)
         if (b.level !== a.level) {
@@ -47,12 +43,10 @@ export class WorkDetails {
         // 2. Si même niveau, on prend le score le plus haut
         return b.score - a.score;
       })
-      .slice(0, 10)
-      
+      .slice(0, 10);
     // On limite aux 10 plus pertinents
   });
   dataId = computed(() => {
-
     const fullId = this.data()?.id; // ex: "https://openalex.org/W2741809807"
     if (!fullId) return undefined;
 

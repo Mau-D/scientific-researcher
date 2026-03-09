@@ -2,7 +2,6 @@ import { Component, input, output, inject } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { OpenAlexWork } from '@org/models';
 import { ResearchFacade } from '@org/research';
-import { DrawerService } from '../../services/drawer.service';
 import { CardWork } from '../card-work/card-work';
 
 @Component({
@@ -13,14 +12,14 @@ import { CardWork } from '../card-work/card-work';
 })
 export class Results {
   facade = inject(ResearchFacade);
-  drawer = inject(DrawerService);
+
   worksResult = input<OpenAlexWork[]>([]);
   isLoading = input<boolean>(false);
   error = input<Error>();
 
   clickedForDetails = output<string>();
+
   onCardClicked(id: string) {
     this.clickedForDetails.emit(id);
-    console.log('result', id);
   }
 }
