@@ -1,4 +1,4 @@
-import { Component, inject, resource, signal, viewChild } from '@angular/core';
+import { Component, inject, viewChild } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import {
   MatAutocompleteModule,
@@ -15,18 +15,14 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
 import {
-  OpenAlexResponse,
-  OpenAlexWork,
-  OpenAlexGroupByResult,
+  OpenAlexGroupByResult
 } from '@org/models';
 import { OpenalexApi, ResearchFacade } from '@org/research';
-import { firstValueFrom } from 'rxjs'; // Pour gérer le cas initial
-import { WorkDetails } from '../work-details/work-details';
 import { DomainTypeFilters } from './ui/domain-type-filters/domain-type-filters';
 import { Filters } from './ui/filters/filters';
 import { Results } from './ui/results/results';
 import { SearchInput } from './ui/search-input/search-input';
-import { ResearchCard } from '@org/ui-layout';
+import { WorkDetails } from '../work-details/work-details';
 
 @Component({
   selector: 'app-search',
@@ -35,7 +31,6 @@ import { ResearchCard } from '@org/ui-layout';
     MatProgressSpinnerModule,
     MatSidenavModule,
     MatDrawer,
-    WorkDetails,
     MatIconModule,
     MatCheckboxModule,
     MatExpansionModule,
@@ -49,6 +44,7 @@ import { ResearchCard } from '@org/ui-layout';
     Filters,
     DomainTypeFilters,
     Results,
+    WorkDetails
   ],
   templateUrl: './search.html',
   styleUrl: './search.scss',
@@ -73,6 +69,9 @@ export class Search {
   readonly typesDisplayed = this.facade.typesDisplayed;
   readonly unselectedTypes = this.facade.unselectedTypes;
 
+  readonly idClicked = this.facade.idClicked;
+  readonly data = this.facade.workDetails;
+
   toggleDomain = (domainKey: OpenAlexGroupByResult) => {
     this.facade.toggleDomain(domainKey);
   };
@@ -91,7 +90,13 @@ export class Search {
   isTypeDisabled() {
     return this.facade.isTypeDisabled;
   }
-   public idClicked = signal<string>('');
+  onOpenDetails(id: string) {
+
+    this.facade.onClickCard(id);
+    this.toggleDrawer();
+    console.log('search', id)
+  }
+  //  public idClicked = signal<string>('');
   // displayWorks(page:number){
   //   return this.facade.displayWorks(page)
   // }
@@ -114,7 +119,7 @@ export class Search {
   // formSignal = toSignal(this.filtersForm.valueChanges, {
   //   initialValue: this.filtersForm.value,
   // });
- 
+
   // search = signal('');
   // searchSelected = signal('');
   // pageNumber = signal(0);
@@ -386,10 +391,10 @@ export class Search {
     this.drawer()?.toggle();
   }
 
-  onCardClicked(id: string): void {
-    this.idClicked.set(id);
-    this.toggleDrawer();
-  }
+  // onCardClicked(id: string): void {
+  //   this.facade.onClickCard(id);
+  //   this.toggleDrawer();
+  // }
   displayWorks(page: number): void {
     if (this.facade.searchSelected()) {
       this.facade.pageNumber.set(page);
@@ -415,13 +420,13 @@ export class Search {
   //   },
   // });
 
-  workResource = resource<OpenAlexWork | undefined, string | undefined>({
-    params: () => this.idClicked(),
-    loader: async ({ params: id }) => {
-      if (!id) return undefined;
-      return await firstValueFrom(this.api.getDatasWork(id));
-    },
-  });
+  // workResource = resource<OpenAlexWork | undefined, string | undefined>({
+  //   params: () => this.idClicked(),
+  //   loader: async ({ params: id }) => {
+  //     if (!id) return undefined;
+  //     return await firstValueFrom(this.api.getDatasWork(id));
+  //   },
+  // });
 
   // groupByDomainResource = resource<
   //   OpenAlexGroupBy<OpenAlexGroupByResult>,

@@ -23,6 +23,7 @@ import { OpenAlexWork } from '@org/models';
 export class ResearchCard {
   readonly clickedForDetails = output<string>();
   readonly data = input.required<OpenAlexWork | undefined>();
+  
   // dataResult = computed(() => {
   //   console.log('Data in ResearchCard:', this.data());
   //   return this.data();
@@ -37,5 +38,7 @@ export class ResearchCard {
   onClickForDetails() {
     const id: string | undefined = this.dataId();
     this.clickedForDetails.emit(id || '');
+    console.log('research-card', id)
   }
 }
+//TODO: Effacer si Pas utilisé

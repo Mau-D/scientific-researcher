@@ -1,17 +1,26 @@
-import { Component, input } from '@angular/core';
+import { Component, input, output, inject } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { OpenAlexWork } from '@org/models';
-import { ResearchCard } from '@org/ui-layout';
+import { ResearchFacade } from '@org/research';
+import { DrawerService } from '../../services/drawer.service';
+import { CardWork } from '../card-work/card-work';
 
 @Component({
   selector: 'app-results',
-  imports: [ResearchCard, MatProgressSpinnerModule],
+  imports: [MatProgressSpinnerModule, CardWork],
   templateUrl: './results.html',
   styleUrl: './results.scss',
 })
 export class Results {
+  facade = inject(ResearchFacade);
+  drawer = inject(DrawerService);
   worksResult = input<OpenAlexWork[]>([]);
   isLoading = input<boolean>(false);
   error = input<Error>();
-  
+
+  clickedForDetails = output<string>();
+  onCardClicked(id: string) {
+    this.clickedForDetails.emit(id);
+    console.log('result', id);
+  }
 }

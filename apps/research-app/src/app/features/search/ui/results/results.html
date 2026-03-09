@@ -10,20 +10,19 @@
     <h2 class="w-full text-3xl text-center px-5 mb-5 underline text-gray-blue">
       Résultats de la recherche
     </h2>
-     <div class="container">
+    <div class="container">
       @for(work of worksResult(); track work.id) {
-      
-      <lib-research-card [data]="work"></lib-research-card>
+
       <!-- <lib-research-card
                 [data]="work"
                 (clickedForDetails)="onCardClicked($event)"
               ></lib-research-card>
                -->
+      <app-card-work [data]="work"  (clickedForDetails)="onCardClicked($event)"></app-card-work>
+
       }
     </div>
 
     }
-   
-    
   </div>
 </section>

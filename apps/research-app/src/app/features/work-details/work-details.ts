@@ -32,7 +32,7 @@ import {
 })
 export class WorkDetails {
 
-  readonly data = input.required<OpenAlexWork | undefined>();
+  readonly data = input<OpenAlexWork | undefined>();
   readonly sortedConcepts = computed(() => {
                 console.log('lenght awards', this.data()?.awards)
 

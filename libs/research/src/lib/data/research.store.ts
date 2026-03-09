@@ -26,7 +26,7 @@ import { Keyword } from '../../../../../apps/backend/src/app/keywords/entities/k
 export class ResearchStore {
   private api = inject(OpenalexApi);
 
-  //   public idClicked = signal<string>('');
+    public idClicked = signal<string>('');
   search = signal('');
   searchSelected = signal('');
   pageNumber = signal(0);
@@ -247,13 +247,14 @@ export class ResearchStore {
     },
   });
 
-  //   workResource = resource<OpenAlexWork | undefined, string | undefined>({
-  //     params: () => this.idClicked(),
-  //     loader: async ({ params: id }) => {
-  //       if (!id) return undefined;
-  //       return await firstValueFrom(this.api.getDatasWork(id));
-  //     },
-  //   });
+    workResource = resource<OpenAlexWork | undefined, string | undefined>({
+      params: () => this.idClicked(),
+      loader: async ({ params: id }) => {
+        console.log('resource:', id)
+        if (!id) return undefined;
+        return await firstValueFrom(this.api.getDatasWork(id));
+      },
+    });
 
   groupByDomainResource = resource<
     OpenAlexGroupBy<OpenAlexGroupByResult>,
@@ -487,5 +488,9 @@ export class ResearchStore {
     if (this.searchSelected()) {
       this.pageNumber.set(page);
     }
+  }
+  onClickCard(id:string){
+    this.idClicked.set(id);
+    console.log('store', id, 'idClicked:', this.idClicked())
   }
 }

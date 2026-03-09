@@ -10,6 +10,7 @@ export class OpenalexApi {
   private baseUrl = `${environment.apiUrl}`;
 
   getDatasWork(id: string) {
+    console.log('getDatasWork,', id);
     return this.http.get<OpenAlexWork>(`${this.baseUrl}/works/${id}`);
   }
   getWorksList(count: string, filters: string) {
