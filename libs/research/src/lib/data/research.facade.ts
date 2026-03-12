@@ -30,12 +30,11 @@ export class ResearchFacade {
   readonly worksApi = this.store.worksResultResource;
   readonly worksLoading = this.worksApi.isLoading;
   readonly worksError = this.worksApi.error;
-readonly idClicked = this.store.idClicked;
-readonly workDetails = this.store.workResource;
-onClickCard(id:string){
-  this.store.onClickCard(id);
-  console.log('facade:', id)
-}
+  readonly idClicked = this.store.idClicked;
+  readonly workDetails = this.store.workResource;
+  onClickCard(id: string) {
+    this.store.onClickCard(id);
+  }
   keywordSelection(keyword: string) {
     this.store.keywordSelect(keyword);
     this.filtersReset.emit();

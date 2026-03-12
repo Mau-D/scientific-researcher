@@ -1,4 +1,4 @@
-<section class="flex flex-col justify-start items-center px-5 h-auto w-full">
+<section class="flex flex-col justify-start items-center h-auto w-full">
   <div>
     <app-search-input
       (queryChange)="researchKeywords($event)"
@@ -91,13 +91,13 @@
     <div><h1>{{worksResult.value()?.meta?.count}}</h1></div>
   </div>
   <div class="w-full">
-    <mat-drawer-container>
+    <mat-drawer-container class="w-full h-dvh">
       <mat-drawer
         #drawer
         mode="over"
         autoFocus="first-heading"
         position="end"
-        class="h-full min-h-dvh min-w-[80dvw] py-5 px-10 flex justify-baseline items-baseline"
+        class="h-full min-h-dvh min-w-[80dvw] py-5 px-10 flex flex-col justify-baseline items-baseline"
       >
         <div
           class="text-left text-2xl py-2 flex justify-between items-baseline"
@@ -119,7 +119,7 @@
           <app-work-details [data]="data.value()"></app-work-details>
         </div>
       </mat-drawer>
-      <mat-drawer-content>
+      <mat-drawer-content class="h-full overflow-auto">
         @if(worksResult){
         <app-results
           [worksResult]="worksResult.value()?.results ?? []"

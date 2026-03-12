@@ -12,12 +12,6 @@ export class WorksController {
     @Query('page') page: string,
     @Query('filters') filters?: string
   ): Promise<OpenAlexResponse<OpenAlexWork>> {
-    console.log(
-      'WorksController - getSampleWorks called with query:',
-      research,
-      filters,
-      perPage
-    );
     return await this.worksService.getWorksResult(
       research,
       perPage,
@@ -30,11 +24,6 @@ export class WorksController {
     @Query('research') research: string,
     @Query('filters') filters?: string
   ): Promise<OpenAlexResponse<OpenAlexWork>> {
-    console.log(
-      'WorksController - getMeta:',
-      research,
-      filters
-    );
     return await this.worksService.getMetaWorks(research, '1', filters);
   }
    @Get('group-by-domain')
@@ -42,11 +31,6 @@ export class WorksController {
     @Query('research') research: string,
     @Query('filters') filters?: string
   ): Promise<OpenAlexGroupBy<OpenAlexGroupByResult>> {
-    console.log(
-      'WorksController - getMeta:',
-      research,
-      filters
-    );
     return await this.worksService.getDomainsGroupByWorks(research, filters);
   }
    @Get('group-by-type')
@@ -54,50 +38,11 @@ export class WorksController {
     @Query('research') research: string,
     @Query('filters') filters?: string
   ): Promise<OpenAlexGroupBy<OpenAlexGroupByResult>> {
-    console.log(
-      'WorksController - getMeta:',
-      research,
-      filters
-    );
     return await this.worksService.getTypesGroupByWorks(research, filters);
   }
-  // async getSampleWorks(
-  //   @Query('sample') sample: string,
-  //   @Query('filters') filters: string,
-  // ): Promise<OpenAlexResponse<OpenAlexWork>> {
-  //   console.log(
-  //     'WorksController - getSampleWorks called with query:',
-
-  //     filters
-  //   );
-  //   return await this.worksService.getWorksSample(sample, filters);
-  // }
+  
   @Get(':id')
   async getWork(@Param('id') id: string): Promise<OpenAlexWork> {
     return await this.worksService.getWorkById(id);
   }
-  //  @Get('search')
-  //  async getMetaWorks(@Query('query') query: {filters: string, search:string }): Promise<OpenAlexResponse<OpenAlexWork>> {
-  //     console.log('WorksController - getMetaWorks called with query:', query, query.filters);
-  //   return await this.worksService.getMetaWorks(query.filters, query.search);
-  //   }
-  // @Get('search')
-  // async getMetaWorks(
-  //  @Query() query: { search: string; filters: string }
-  // ): Promise<OpenAlexResponse<OpenAlexWork>> {
-  //   console.log(query.search, query.filters);
-
-  //   return this.worksService.getMetaWorks(query.search, query.filters);
-  // }
-  // @Get('search')
-  // async getMetaWorks(
-  //   @Query('sample') sample: string,
-  //   @Query('filters') filters: string,
-  // ): Promise<OpenAlexResponse<OpenAlexWork>> {
-  //   console.log(
-  //     'WorksController - getSampleWorks called with query:',
-  //     sample, filters
-  //   );
-  //   return await this.worksService.getWorksSample(sample, filters);
-  // }
 }

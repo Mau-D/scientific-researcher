@@ -1,16 +1,5 @@
-import {
-  Injectable,
-  OnInit,
-  computed,
-  inject,
-  resource,
-  signal,
-} from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { FormBuilder, FormControl } from '@angular/forms';
+import { Injectable, computed, inject, resource, signal } from '@angular/core';
 import { delay, firstValueFrom } from 'rxjs';
-
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 
 import {
   OpenAlexGroupBy,
@@ -21,12 +10,11 @@ import {
 } from '@org/models';
 import { OpenalexApi } from '@org/research';
 import { filtersToString } from './research.utils';
-import { Keyword } from '../../../../../apps/backend/src/app/keywords/entities/keyword.entity';
 @Injectable({ providedIn: 'root' })
 export class ResearchStore {
   private api = inject(OpenalexApi);
 
-    public idClicked = signal<string>('');
+  public idClicked = signal<string>('');
   search = signal('');
   searchSelected = signal('');
   pageNumber = signal(0);
@@ -56,7 +44,6 @@ export class ResearchStore {
       'has_content.pdf': f.hasPdf,
       has_oa_accepted_or_published_version: f.hasOaAcceptedOrPublishedVersion,
     };
-    console.log('Filter To Apply');
     return formFilters;
   });
   filtersString = computed(() => filtersToString(this.filtersToApply()));
@@ -66,36 +53,24 @@ export class ResearchStore {
       this.unselectedDomainsSet().size > 0 || this.unselectedTypesSet().size > 0
         ? this.groupByDomainsFilteredResource.value()?.meta?.count
         : this.groupByDomainResource.value()?.meta?.count;
-
-    console.log('Count works:', count);
     return count;
   });
   domainsDisplayed = computed(() => {
     const unselect = this.unselectedDomainsSet();
     const unselectTypes = this.unselectedTypesSet();
-    console.log(
-      'Calculating domainsDisplayed with unselectedDomainsSet:',
-      unselect
-    );
     const domains =
       unselect.size === 0 && unselectTypes.size === 0
         ? this.domainsInitial() ?? []
         : this.newDomainsDisplayed() ?? [];
-    console.log('Domains displayed:', domains);
     return domains;
   });
   typesDisplayed = computed(() => {
     const unselect = this.unselectedTypesSet();
     const unselectDomains = this.unselectedDomainsSet();
-    console.log(
-      'Calculating typesDisplayed with unselectedTypesSet:',
-      unselect
-    );
     const domains =
       unselect.size === 0 && unselectDomains.size === 0
         ? this.typesInitial() ?? []
         : this.newTypesDisplayed() ?? [];
-    console.log('Types displayed:', domains);
     return domains;
   });
   newDomainsDisplayed = computed(() => {
@@ -143,12 +118,10 @@ export class ResearchStore {
 
   domainsInitial = computed(() => {
     const domainsInit = this.groupByDomainResource.value()?.group_by ?? [];
-    console.log('Domains initial:', domainsInit);
     return domainsInit;
   });
   typesInitial = computed(() => {
     const typesInit = this.groupByTypeResource.value()?.group_by ?? [];
-    console.log('Types initial:', typesInit);
     return typesInit;
   });
   selectionDomains = computed(() => {
@@ -174,12 +147,10 @@ export class ResearchStore {
   domainsFiltered = computed(() => {
     const domainsFilt =
       this.groupByDomainsFilteredResource.value()?.group_by ?? [];
-    console.log('Domains filtered:', domainsFilt);
     return domainsFilt;
   });
   typesFiltered = computed(() => {
     const typesFilt = this.groupByTypeFilteredResource.value()?.group_by ?? [];
-    console.log('Types filtered:', typesFilt);
     return typesFilt;
   });
   //   //computed for set a new string filters with unselect domainsè
@@ -187,13 +158,6 @@ export class ResearchStore {
     const baseFilters = this.filtersString();
     const unselectedDomains = this.unselectedDomainsSet(); // 👈 UNE seule lecture
     const unselectedTypes = this.unselectedTypesSet(); // 👈 UNE seule lecture
-
-    console.log(
-      'Calculating allFiltersToApply with unselectedDomainsSet:',
-      unselectedDomains,
-      'and unselectedTypesSet:',
-      unselectedTypes
-    );
     const search = this.searchSelected(); // 👈 IMPORTANT
 
     if (!search || search === '') {
@@ -208,8 +172,6 @@ export class ResearchStore {
     const unselectedTypesArray = [...unselectedTypes]
       .map((key) => key.split('/').pop())
       .join('|');
-    console.log('Unselected Domains Array:', unselectedDomainsArray);
-    console.log('Unselected Types Array:', unselectedTypesArray);
     const allFilters = [
       baseFilters,
       unselectedDomainsArray &&
@@ -218,9 +180,6 @@ export class ResearchStore {
     ]
       .filter(Boolean)
       .join(',');
-
-    console.log('allFilters:', allFilters);
-
     return allFilters;
   });
 
@@ -231,7 +190,6 @@ export class ResearchStore {
   keywordsResource = resource<string[] | null, string | null>({
     params: () => this.searchQuery(),
     loader: async ({ params, abortSignal }) => {
-      console.log('Loader keywordsResource called with params:', params);
       if (!params) return null;
       if (params.length < 3) return [];
       // --- LE DEBOUNCE ---
@@ -242,19 +200,17 @@ export class ResearchStore {
       let result = await firstValueFrom(
         this.api.getKeywordsList(params).pipe(delay(300))
       );
-      console.log('Keywords fetched:', result);
       return result;
     },
   });
 
-    workResource = resource<OpenAlexWork | undefined, string | undefined>({
-      params: () => this.idClicked(),
-      loader: async ({ params: id }) => {
-        console.log('resource:', id)
-        if (!id) return undefined;
-        return await firstValueFrom(this.api.getDatasWork(id));
-      },
-    });
+  workResource = resource<OpenAlexWork | undefined, string | undefined>({
+    params: () => this.idClicked(),
+    loader: async ({ params: id }) => {
+      if (!id) return undefined;
+      return await firstValueFrom(this.api.getDatasWork(id));
+    },
+  });
 
   groupByDomainResource = resource<
     OpenAlexGroupBy<OpenAlexGroupByResult>,
@@ -266,10 +222,7 @@ export class ResearchStore {
     }),
     loader: async ({ params }) => {
       // const filters: string = this.filtersToString(params.filters);
-      console.log('Resource GROUP_BY DOMAIN:', params.search, params.filters);
       if (!params.search || params.search === '') {
-        console.log('Retour VIDE  GROUP_BY DOMAIN resource');
-
         // Note: Le retour doit correspondre au type OpenAlexResponse ou lever une erreur/null
         // Pour éviter les erreurs de type, on peut retourner un objet vide typé
         return {} as OpenAlexGroupBy<OpenAlexGroupByResult>;
@@ -290,7 +243,6 @@ export class ResearchStore {
     }),
     loader: async ({ params }) => {
       if (!params.search || params.search === '') {
-        console.log('Retour VIDE GROUP_BY TYPE resource');
         return {} as OpenAlexGroupBy<OpenAlexGroupByResult>;
       }
       return await firstValueFrom(
@@ -307,7 +259,6 @@ export class ResearchStore {
     }),
 
     loader: async ({ params }) => {
-      console.log('groupByDomainsFilters', params.filters);
       if (!params.filters) {
         return {} as OpenAlexGroupBy<OpenAlexGroupByResult>;
       }
@@ -326,8 +277,6 @@ export class ResearchStore {
     }),
 
     loader: async ({ params }) => {
-      console.log('groupByTypeFilters', params.filters);
-
       if (!params.filters) {
         return {} as OpenAlexGroupBy<OpenAlexGroupByResult>;
       }
@@ -351,7 +300,6 @@ export class ResearchStore {
       const filters = this.allFiltersToApply();
       const perPage = '25';
       const page = params.page.toString();
-      console.log('search: ', search, 'filters: ', filters, 'page: ', page);
       if (!params.page || params.page === 0) {
         // Note: Le retour doit correspondre au type OpenAlexResponse ou lever une erreur/null
         // Pour éviter les erreurs de type, on peut retourner un objet vide typé
@@ -360,28 +308,13 @@ export class ResearchStore {
       const worksDatas = await firstValueFrom(
         this.api.getResultWorks(search, perPage, page, filters)
       );
-      console.log('WORKSDATA', worksDatas);
       return worksDatas;
     },
   });
-  //   //Actions
-  //   handleFilterChange() {
-  //   this.unselectedDomainsSet.set(new Set());
-  //   this.unselectedTypesSet.set(new Set());
-  //   this.pageNumber.set(0);
-  // }
   searchKeyword(inputString: string) {
     this.search.set(inputString);
-    console.log('Search keyword set to:', inputString);
   }
   keywordSelect(keyword: string) {
-    // this.searchSelected.set('');
-
-    // 1️⃣ d’abord reset le Set
-    // this.unselectedDomainsSet.set(new Set());
-    // this.unselectedTypesSet.set(new Set());
-    // this.pageNumber.set(0);
-    // this.search.set(keyword);
     this.resetFilters();
     this.searchSelected.set(keyword.toLowerCase());
   }
@@ -389,17 +322,12 @@ export class ResearchStore {
   filtersChanged(partial: Partial<SearchFilters>): void {
     // 1. update filters
     this.filters.update((f) => ({ ...f, ...partial }));
-
     // 2. reset states liés
     this.unselectedDomainsSet.set(new Set());
     this.unselectedTypesSet.set(new Set());
-
     // 3. reset pagination
     this.pageNumber.set(0);
   }
-  //  updateFilters(partial: Partial<SearchFilters>) {
-  //     this.filters.update((f) => ({ ...f, ...partial }));
-  //   }
   //TODO:Voir si utile, Lors du changement de search
   resetFilters() {
     this.filters.set({
@@ -409,7 +337,6 @@ export class ResearchStore {
       hasOaAcceptedOrPublishedVersion: true,
       language: ['fr', 'en'],
     });
-    console.log('Filters reset to default', this.filters());
   }
   isDomainSelected(domainKey: string): boolean {
     return !this.unselectedDomainsSet().has(domainKey);
@@ -489,8 +416,7 @@ export class ResearchStore {
       this.pageNumber.set(page);
     }
   }
-  onClickCard(id:string){
+  onClickCard(id: string) {
     this.idClicked.set(id);
-    console.log('store', id, 'idClicked:', this.idClicked())
   }
 }

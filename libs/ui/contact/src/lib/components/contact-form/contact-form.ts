@@ -7,7 +7,12 @@ import { ContactFormData } from '../../models/contact-form.model';
 
 @Component({
   selector: 'lib-contact-form',
-  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatDividerModule],
+  imports: [
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatDividerModule,
+  ],
   templateUrl: './contact-form.html',
   styleUrl: './contact-form.scss',
 })
@@ -29,8 +34,6 @@ export class ContactForm {
     }
 
     const data: ContactFormData = this.form.getRawValue(); // typé ContactFormData
-    console.log(data);
-
     // this.form.reset(); // optionnel
   }
 }

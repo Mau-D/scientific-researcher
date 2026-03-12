@@ -135,5 +135,5 @@ app.get('/api/products-metadata/price-range', (req, res) => {
 });
 
 app.listen(port, host, () => {
-  console.log(`[ ready ] http://${host}:${port}`);
+ // console.log(`[ ready ] http://${host}:${port}`);
 });

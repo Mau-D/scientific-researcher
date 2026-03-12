@@ -1,8 +1,3 @@
-//Le <T> est une sorte de variable pour les types.
-//Exemple: Ici, on dit : "Je veux une réponse OpenAlex dont les résultats sont des 'Work'"
-// this.http.get<OpenAlexResponse<Work>>(url).subscribe(data => {
-//    console.log(data.results[0].title);
-// });
 export interface OpenAlexResponse<T> {
   meta: OpenAlexMeta;
   results: T[];
@@ -49,12 +44,7 @@ export interface OpenAlexWork {
   best_oa_location: OpenAlexBestOaLocation | null;
   open_access: OpenAccess;
   awards: Awards[];
-  // authorships: Authorship[];
   concepts: Concept[];
-  // cited_by_count: number;
-  // referenced_works: string[];
-  // related_works: string[];
-  // counts_by_year: CountByYear[];
 }
 export interface Awards {
   id: string;

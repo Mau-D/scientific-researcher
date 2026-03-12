@@ -3,7 +3,7 @@ import { Navigation } from '@org/core';
 import { NavRoute } from '@org/models';
 import { RouterModule } from '@angular/router';
 import { LoginButton } from '@org/buttons';
-import { ThemeToggle } from './theme-toggle/theme-toggle'
+import { ThemeToggle } from './theme-toggle/theme-toggle';
 @Component({
   selector: 'lib-header',
   imports: [RouterModule, LoginButton, ThemeToggle],
@@ -15,6 +15,5 @@ export class Header implements OnInit {
   private readonly nav = inject(Navigation);
   ngOnInit(): void {
     this.routes = this.nav.getNavigationRoutes();
-    console.log('Header routes', this.routes);
   }
 }

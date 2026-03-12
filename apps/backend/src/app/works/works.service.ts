@@ -6,7 +6,12 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { OpenAlexResponse, OpenAlexWork, OpenAlexGroupBy, OpenAlexGroupByResult } from '@org/models';
+import {
+  OpenAlexResponse,
+  OpenAlexWork,
+  OpenAlexGroupBy,
+  OpenAlexGroupByResult,
+} from '@org/models';
 import { firstValueFrom } from 'rxjs';
 @Injectable()
 export class WorksService {
@@ -32,20 +37,10 @@ export class WorksService {
   ): Promise<OpenAlexResponse<OpenAlexWork>> {
     const urlSample = `${this.base}${this.works}?sample=${sample}`;
     const url = !filters ? `${urlSample}` : `${urlSample}&filter=${filters}`;
-
-    console.log(
-      'WorksService - getWorksSample URL:',
-      url,
-      ' with filters:',
-      filters
-    );
-    // On fait l'appel. Si Axios (httpService) reçoit une erreur 404/500,
-    // il lèvera une exception automatiquement.
     try {
       const { data } = await firstValueFrom(
         this.http.get<OpenAlexResponse<OpenAlexWork>>(url)
       );
-
       return data;
     } catch (error) {
       throw new HttpException(
@@ -64,21 +59,10 @@ export class WorksService {
     const url = !filters
       ? `${urlSample}filter=title.search:${search}&per_page=${perPage}`
       : `${urlSample}filter=${filters},title.search:${search}&per_page=${perPage}`;
-    console.log(
-      'WorksService - getWorks URL:',
-      url,
-      ' with filters:',
-      filters,
-      'search:',
-      search,
-      'per-page: ',
-      perPage
-    );
     try {
       const { data } = await firstValueFrom(
         this.http.get<OpenAlexResponse<OpenAlexWork>>(url)
       );
-      console.log('DATA group_by:  ', data.group_by.length);
       return data;
     } catch (error) {
       throw new HttpException(
@@ -96,19 +80,10 @@ export class WorksService {
     const url = !filters
       ? `${urlSample}filter=title.search:${search}&group_by=primary_topic.domain.id`
       : `${urlSample}filter=${filters},title.search:${search}&group_by=primary_topic.domain.id`;
-    console.log(
-      'WorksService - getWorks URL:',
-      url,
-      ' with filters:',
-      filters,
-      'search:',
-      search
-    );
     try {
       const { data } = await firstValueFrom(
         this.http.get<OpenAlexGroupBy<OpenAlexGroupByResult>>(url)
       );
-      console.log('DATA group_by:  ', data.group_by.length);
       return data;
     } catch (error) {
       throw new HttpException(
@@ -126,19 +101,10 @@ export class WorksService {
     const url = !filters
       ? `${urlSample}filter=title.search:${search}&group_by=type`
       : `${urlSample}filter=${filters},title.search:${search}&group_by=type`;
-    console.log(
-      'WorksService - getWorks URL:',
-      url,
-      ' with filters:',
-      filters,
-      'search:',
-      search
-    );
     try {
       const { data } = await firstValueFrom(
         this.http.get<OpenAlexGroupBy<OpenAlexGroupByResult>>(url)
       );
-      console.log('DATA group_by:  ', data.group_by.length);
       return data;
     } catch (error) {
       throw new HttpException(
@@ -158,23 +124,10 @@ export class WorksService {
     const url = !filters
       ? `${urlSample}filter=title.search:${search}&per_page=${perPage}&page=${page}`
       : `${urlSample}filter=${filters},title.search:${search}&per_page=${perPage}&page=${page}`;
-    console.log(
-      'WorksService - getWorks URL:',
-      url,
-      ' with filters:',
-      filters,
-      'search:',
-      search,
-      'per-page: ',
-      perPage,
-      'page: ',
-      page
-    );
     try {
       const { data } = await firstValueFrom(
         this.http.get<OpenAlexResponse<OpenAlexWork>>(url)
       );
-      console.log('DATA group_by:  ', data.group_by.length);
       return data;
     } catch (error) {
       throw new HttpException(

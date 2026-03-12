@@ -12,8 +12,6 @@ export class KeywordsService {
 
   async findAll(query: string): Promise<string[]> {
     const url = `${this.base}${this.keywordEndpoint}?search=${query}`;
-    console.log('KeywordsService - findAll URL:', url);
-    // return['artificial Intelligence', 'YO']
     try {
       const { data } = await firstValueFrom(this.http.get(url));
       const q = query;
@@ -28,12 +26,6 @@ export class KeywordsService {
           if (!aStart && bStart) return 1; // 'b' commence par le terme, on le descend
           return a.localeCompare(b); // Sinon, tri alphabétique classique
         })
-
-        // .slice(0, 100); //OpenAlex fourni 25 mots-clés par défaut
-      // console.log('Nombre de Résultats', data.results.length);
-      // console.log('KeywordsService - findAll keywords:', keywords);
-      // console.log('Nombre de Résultats', data.results.length);
-
       return keywords;
     } catch (err) {
       console.error('ERROR', err);

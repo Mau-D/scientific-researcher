@@ -7,8 +7,7 @@ export class KeywordsController {
 
   @Get()
   findAll(@Query('query') query:string) {
-    console.log('KeywordsController - findAll query:', query);
-    // return ['artificial Intelligence', 'YO', 'come on']
+   
     return  this.keywordsService.findAll(query);
   }
 }
