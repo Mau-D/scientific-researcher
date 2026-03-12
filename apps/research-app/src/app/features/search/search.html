@@ -52,6 +52,7 @@
           (toggleChip)="toggleDomain($event)"
           [selectedState]="isDomainSelected()"
           [disabledState]="isDomainDisabled()"
+          [loading]="domainsLoading()"
         ></app-domain-type-filters>
       </mat-expansion-panel>
     </div>
@@ -75,23 +76,30 @@
           (toggleChip)="toggleType($event)"
           [selectedState]="isTypeSelected()"
           [disabledState]="isTypeDisabled()"
+          [loading]="typesLoading()"
         ></app-domain-type-filters>
       </mat-expansion-panel>
     </div>
   </div>
+  
+  } 
+  @if(worksLoading()){
+    <mat-spinner [diameter]="40"></mat-spinner>
   }
+  @if(worksResults().length === 0){
   <div>
     <button
-      class="bg-blue-500 p-4 my-4 disabled:hidden"
+      class="text-white bg-secondary p-4 my-4 disabled:hidden cursor-pointer hover:bg-secondary-hover"
       (click)="displayWorks(1)"
       [disabled]="!searchSelected()"
     >
       Afficher les résultats
     </button>
-    <div><h1>{{worksResult.value()?.meta?.count}}</h1></div>
   </div>
-  <div class="w-full">
-    <mat-drawer-container class="w-full h-dvh">
+  }  @else{
+
+  <div class="w-full h-full">
+    <mat-drawer-container class="w-full min-h-dvh">
       <mat-drawer
         #drawer
         mode="over"
@@ -119,16 +127,16 @@
           <app-work-details [data]="data.value()"></app-work-details>
         </div>
       </mat-drawer>
+
       <mat-drawer-content class="h-full overflow-auto">
-        @if(worksResult){
         <app-results
-          [worksResult]="worksResult.value()?.results ?? []"
+          [worksResult]="worksAPI.value()?.results ?? []"
           [isLoading]="worksLoading()"
           [error]="worksError()"
           (clickedForDetails)="onOpenDetails($event)"
         ></app-results>
-        }
       </mat-drawer-content>
     </mat-drawer-container>
   </div>
+  }
 </section>

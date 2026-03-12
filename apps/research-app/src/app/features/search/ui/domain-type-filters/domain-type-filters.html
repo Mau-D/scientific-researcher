@@ -1,3 +1,4 @@
+@if(!loading()){
 <div>
   <p>Cliquez pour exclure ou inclure une catégorie</p>
   <div class="flex justify-center mt-5">
@@ -20,3 +21,10 @@
     }
   </div>
 </div>
+
+}@else {
+<div class="flex flex-col justify-center items-center w-full">
+  <mat-spinner [diameter]="40"></mat-spinner>
+</div>
+
+}

@@ -21,13 +21,17 @@ export class ResearchFacade {
   readonly allFiltersToApply = this.store.allFiltersToApply;
   readonly filtersString = this.store.filtersString;
   readonly domainsInitial = this.store.domainsInitial;
+  readonly domainsLoading = this.store.groupByDomainsFilteredResource.isLoading;
   readonly domainsDisplayed = this.store.domainsDisplayed;
   readonly typesInitial = this.store.typesInitial;
+  readonly typesLoading = this.store.groupByTypesFilteredResource.isLoading;
+
   readonly typesDisplayed = this.store.typesDisplayed;
   readonly unselectedDomains = this.store.unselectedDomainsSet;
   readonly unselectedTypes = this.store.unselectedTypesSet;
 
   readonly worksApi = this.store.worksResultResource;
+  readonly worksResults = this.store.worksResults;
   readonly worksLoading = this.worksApi.isLoading;
   readonly worksError = this.worksApi.error;
   readonly idClicked = this.store.idClicked;

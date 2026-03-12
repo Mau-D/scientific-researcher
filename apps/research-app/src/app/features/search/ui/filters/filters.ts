@@ -21,6 +21,8 @@ export class Filters implements OnInit {
   private formBuilder = inject(FormBuilder);
   private facade = inject(ResearchFacade);
 
+  private loading = this.facade
+
   filtersForm = this.formBuilder.nonNullable.group({
     isOa: true,
     hasAbstract: true,
@@ -28,9 +30,6 @@ export class Filters implements OnInit {
     hasOaAcceptedOrPublishedVersion: true,
     language: this.formBuilder.nonNullable.control<string[]>(['fr', 'en']),
   });
-  // formSignal = toSignal(this.filtersForm.valueChanges, {
-  //   initialValue: this.filtersForm.value,
-  // });
   ngOnInit() {
     this.facade.filtersReset.subscribe(() => {
       const filters = this.facade.getCurrentFilters();

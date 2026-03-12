@@ -15,7 +15,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
 import { OpenAlexGroupByResult } from '@org/models';
-import { OpenalexApi, ResearchFacade } from '@org/research';
+import { ResearchFacade } from '@org/research';
 import { DomainTypeFilters } from './ui/domain-type-filters/domain-type-filters';
 import { Filters } from './ui/filters/filters';
 import { Results } from './ui/results/results';
@@ -49,7 +49,6 @@ import { WorkDetails } from './ui/work-details/work-details';
 })
 export class Search {
   //TODO: ajouter un scroll top à chaque nouvelle recherche ou changement des résultats
-  private api = inject(OpenalexApi);
   facade = inject(ResearchFacade);
 
   drawer = viewChild(MatDrawer);
@@ -60,18 +59,20 @@ export class Search {
   readonly searchSelected = this.facade.searchSelected;
 
   readonly countWorks = this.facade.countWorks;
-  readonly worksResult = this.facade.worksApi;
+  readonly worksAPI = this.facade.worksApi;
+  readonly worksResults = this.facade.worksResults;
   readonly worksLoading = this.facade.worksLoading;
   readonly worksError = this.facade.worksError;
 
   readonly domainsDisplayed = this.facade.domainsDisplayed;
   readonly unselectedDomains = this.facade.unselectedDomains;
+  readonly domainsLoading = this.facade.domainsLoading;
   readonly typesDisplayed = this.facade.typesDisplayed;
   readonly unselectedTypes = this.facade.unselectedTypes;
+  readonly typesLoading = this.facade.typesLoading;
 
   readonly idClicked = this.facade.idClicked;
   readonly data = this.facade.workDetails;
-
   toggleDomain = (domainKey: OpenAlexGroupByResult) => {
     this.facade.toggleDomain(domainKey);
   };

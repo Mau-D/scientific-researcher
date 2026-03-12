@@ -150,7 +150,7 @@ export class ResearchStore {
     return domainsFilt;
   });
   typesFiltered = computed(() => {
-    const typesFilt = this.groupByTypeFilteredResource.value()?.group_by ?? [];
+    const typesFilt = this.groupByTypesFilteredResource.value()?.group_by ?? [];
     return typesFilt;
   });
   //   //computed for set a new string filters with unselect domainsè
@@ -186,7 +186,10 @@ export class ResearchStore {
   keywords = computed(() => {
     return this.keywordsResource.value() ?? [];
   });
-  //   //resources
+  worksResults = computed(() => {
+    return this.worksResultResource.value()?.results ?? [];
+  });
+  //resources
   keywordsResource = resource<string[] | null, string | null>({
     params: () => this.searchQuery(),
     loader: async ({ params, abortSignal }) => {
@@ -268,7 +271,7 @@ export class ResearchStore {
       );
     },
   });
-  groupByTypeFilteredResource = resource<
+  groupByTypesFilteredResource = resource<
     OpenAlexGroupBy<OpenAlexGroupByResult>,
     { filters: string }
   >({
