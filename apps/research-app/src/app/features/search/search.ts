@@ -73,6 +73,7 @@ export class Search {
 
   readonly idClicked = this.facade.idClicked;
   readonly data = this.facade.workDetails;
+  readonly next_cursor = this.facade.next_cursor;
   toggleDomain = (domainKey: OpenAlexGroupByResult) => {
     this.facade.toggleDomain(domainKey);
   };
@@ -115,5 +116,10 @@ export class Search {
   }
   closeDrawer() {
     this.drawer()?.close();
+  }
+  next_page(){
+    const cursor = this.next_cursor() ?? '*'
+    console.log('Charger plus de résultats', this.next_cursor())
+    this.facade.loadMoreResults(cursor);
   }
 }

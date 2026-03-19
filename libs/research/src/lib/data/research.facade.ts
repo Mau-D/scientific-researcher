@@ -36,6 +36,13 @@ export class ResearchFacade {
   readonly worksError = this.worksApi.error;
   readonly idClicked = this.store.idClicked;
   readonly workDetails = this.store.workResource;
+
+  readonly cursor = this.store.cursor;
+  readonly next_cursor = this.store.next_cursor;
+  readonly per_page = this.store.per_page;
+  loadMoreResults(next:string){
+    this.store.loadMoreResults(next);
+  }
   onClickCard(id: string) {
     this.store.onClickCard(id);
   }

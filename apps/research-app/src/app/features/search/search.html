@@ -81,12 +81,10 @@
       </mat-expansion-panel>
     </div>
   </div>
-  
-  } 
-  @if(worksLoading()){
-    <mat-spinner [diameter]="40"></mat-spinner>
-  }
-  @if(worksResults().length === 0){
+
+  } @if(worksLoading()){
+  <mat-spinner [diameter]="40"></mat-spinner>
+  } @if(worksResults().length === 0){
   <div>
     <button
       class="text-white bg-secondary p-4 my-4 disabled:hidden cursor-pointer hover:bg-secondary-hover"
@@ -96,7 +94,7 @@
       Afficher les résultats
     </button>
   </div>
-  }  @else{
+  } @else{
 
   <div class="w-full h-full">
     <mat-drawer-container class="w-full min-h-dvh">
@@ -135,6 +133,12 @@
           [error]="worksError()"
           (clickedForDetails)="onOpenDetails($event)"
         ></app-results>
+        <button
+          class="text-white bg-secondary p-4 my-4 disabled:hidden cursor-pointer hover:bg-secondary-hover"
+          (click)="next_page()"
+        >
+          Résultats suivants
+        </button>
       </mat-drawer-content>
     </mat-drawer-container>
   </div>

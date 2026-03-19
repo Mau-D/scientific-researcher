@@ -33,11 +33,12 @@ export class OpenalexApi {
     search: string,
     perPage: string,
     page: string,
-    filters: string
+    filters: string,
+    cursor:string
   ) {
     return this.http.get<OpenAlexResponse<OpenAlexWork>>(
       `${this.baseUrl}/works?`,
-      { params: { research: search, perPage, page, filters } }
+      { params: { research: search, perPage, page, filters, cursor } }
     );
   }
   getMetaWorks(search: string, filters: string) {

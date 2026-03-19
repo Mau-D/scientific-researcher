@@ -27,7 +27,12 @@ export class ResearchStore {
     hasOaAcceptedOrPublishedVersion: true,
     language: ['fr', 'en'],
   });
+  cursor = signal<string>('*');
+  per_page = signal<number>(25);
   //computed
+  next_cursor = computed(
+    () => this.worksResultResource?.value()?.meta?.next_cursor
+  );
   searchQuery = computed(() => {
     const value = this.search().trim();
     return value.length >= 2 ? value : null;
@@ -291,17 +296,19 @@ export class ResearchStore {
   });
   worksResultResource = resource<
     OpenAlexResponse<OpenAlexWork>,
-    { page: number }
+    { page: number; per_page: number; cursor: string }
   >({
     params: () => ({
       page: this.pageNumber(),
+      per_page: this.per_page(),
+      cursor: this.cursor(),
     }),
     loader: async ({ params }) => {
       // Ici, params est ton objet { sample, language }
 
       const search = this.searchSelected();
       const filters = this.allFiltersToApply();
-      const perPage = '25';
+      const perPage = params.per_page.toString();
       const page = params.page.toString();
       if (!params.page || params.page === 0) {
         // Note: Le retour doit correspondre au type OpenAlexResponse ou lever une erreur/null
@@ -309,7 +316,7 @@ export class ResearchStore {
         return {} as OpenAlexResponse<OpenAlexWork>;
       }
       const worksDatas = await firstValueFrom(
-        this.api.getResultWorks(search, perPage, page, filters)
+        this.api.getResultWorks(search, perPage, page, filters, params.cursor)
       );
       return worksDatas;
     },
@@ -418,6 +425,9 @@ export class ResearchStore {
     if (this.searchSelected()) {
       this.pageNumber.set(page);
     }
+  }
+  loadMoreResults(next: string) {
+    this.cursor.set(next);
   }
   onClickCard(id: string) {
     this.idClicked.set(id);

@@ -118,12 +118,13 @@ export class WorksService {
     search: string,
     perPage: string,
     page: string,
-    filters: string
+    filters: string,
+    cursor: string
   ): Promise<OpenAlexResponse<OpenAlexWork>> {
     const urlSample = `${this.base}${this.works}?`;
     const url = !filters
-      ? `${urlSample}filter=title.search:${search}&per_page=${perPage}&page=${page}`
-      : `${urlSample}filter=${filters},title.search:${search}&per_page=${perPage}&page=${page}`;
+      ? `${urlSample}filter=title.search:${search}&per_page=${perPage}&page=${page}&cursor=${cursor}`
+      : `${urlSample}filter=${filters},title.search:${search}&per_page=${perPage}&page=${page}&cursor=${cursor}`;
     try {
       const { data } = await firstValueFrom(
         this.http.get<OpenAlexResponse<OpenAlexWork>>(url)

@@ -10,13 +10,15 @@ export class WorksController {
     @Query('research') research: string,
     @Query('perPage') perPage: string,
     @Query('page') page: string,
-    @Query('filters') filters?: string
+    @Query('filters') filters?: string,
+    @Query('cursor') cursor?: string
   ): Promise<OpenAlexResponse<OpenAlexWork>> {
     return await this.worksService.getWorksResult(
       research,
       perPage,
       page,
-      filters
+      filters,
+      cursor
     );
   }
   @Get('meta')

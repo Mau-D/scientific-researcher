@@ -21,6 +21,7 @@ export interface OpenAlexMeta {
   db_response_time_ms: number;
   page: number; // Page actuelle
   per_page: number; // Résultats par page
+  next_cursor: string;//Id des prochains résultats
   groups_count: number | null;
 }
 export interface OpenAlexGroupByResult {
