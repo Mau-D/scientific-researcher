@@ -1,3 +1,4 @@
+@let resultsCount = worksAPI.value()?.results?.length ?? 0;
 <section class="flex flex-col justify-start items-center h-auto w-full">
   <div>
     <app-search-input
@@ -84,11 +85,11 @@
 
   } @if(worksLoading()){
   <mat-spinner [diameter]="40"></mat-spinner>
-  } @if(worksResults().length === 0){
+  } @if(works().length === 0){
   <div>
     <button
       class="text-white bg-secondary p-4 my-4 disabled:hidden cursor-pointer hover:bg-secondary-hover"
-      (click)="displayWorks(1)"
+      (click)="displayWorks()"
       [disabled]="!searchSelected()"
     >
       Afficher les résultats
@@ -128,17 +129,24 @@
 
       <mat-drawer-content class="h-full overflow-auto">
         <app-results
+          [worksResult]="works()"
+          [isLoading]="worksLoading()"
+          [error]="worksError()"
+          (clickedForDetails)="onOpenDetails($event)"
+        ></app-results> 
+         <!-- <app-results
           [worksResult]="worksAPI.value()?.results ?? []"
           [isLoading]="worksLoading()"
           [error]="worksError()"
           (clickedForDetails)="onOpenDetails($event)"
-        ></app-results>
-        <button
+        ></app-results> -->
+        @if( resultsCount >= perPage()){ <button
           class="text-white bg-secondary p-4 my-4 disabled:hidden cursor-pointer hover:bg-secondary-hover"
           (click)="next_page()"
         >
           Résultats suivants
-        </button>
+        </button>}
+       
       </mat-drawer-content>
     </mat-drawer-container>
   </div>

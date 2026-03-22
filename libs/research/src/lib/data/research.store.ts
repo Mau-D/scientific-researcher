@@ -1,5 +1,5 @@
 import { Injectable, computed, inject, resource, signal } from '@angular/core';
-import { delay, firstValueFrom } from 'rxjs';
+import { delay, firstValueFrom, map } from 'rxjs';
 
 import {
   OpenAlexGroupBy,
@@ -17,7 +17,7 @@ export class ResearchStore {
   public idClicked = signal<string>('');
   search = signal('');
   searchSelected = signal('');
-  pageNumber = signal(0);
+  // pageNumber = signal(1);
   unselectedDomainsSet = signal<Set<string>>(new Set());
   unselectedTypesSet = signal<Set<string>>(new Set());
   private filters = signal<SearchFilters>({
@@ -27,12 +27,14 @@ export class ResearchStore {
     hasOaAcceptedOrPublishedVersion: true,
     language: ['fr', 'en'],
   });
-  cursor = signal<string>('*');
-  per_page = signal<number>(25);
+  nextCursor = signal<string | null>(null);
+  cursor = signal<string | null>(null);
+  perPage = signal<number>(25);
+  worksMap = signal(new Map<string, OpenAlexWork>());
+
   //computed
-  next_cursor = computed(
-    () => this.worksResultResource?.value()?.meta?.next_cursor
-  );
+  works = computed(() => Array.from(this.worksMap().values()));
+
   searchQuery = computed(() => {
     const value = this.search().trim();
     return value.length >= 2 ? value : null;
@@ -296,11 +298,10 @@ export class ResearchStore {
   });
   worksResultResource = resource<
     OpenAlexResponse<OpenAlexWork>,
-    { page: number; per_page: number; cursor: string }
+    { perPage: number; cursor: string | null }
   >({
     params: () => ({
-      page: this.pageNumber(),
-      per_page: this.per_page(),
+      perPage: this.perPage(),
       cursor: this.cursor(),
     }),
     loader: async ({ params }) => {
@@ -308,16 +309,18 @@ export class ResearchStore {
 
       const search = this.searchSelected();
       const filters = this.allFiltersToApply();
-      const perPage = params.per_page.toString();
-      const page = params.page.toString();
-      if (!params.page || params.page === 0) {
+      const perPage = params.perPage.toString();
+      if (!search || !params.cursor) {
         // Note: Le retour doit correspondre au type OpenAlexResponse ou lever une erreur/null
         // Pour éviter les erreurs de type, on peut retourner un objet vide typé
         return {} as OpenAlexResponse<OpenAlexWork>;
       }
       const worksDatas = await firstValueFrom(
-        this.api.getResultWorks(search, perPage, page, filters, params.cursor)
+        this.api.getResultWorks(search, perPage, filters, params.cursor)
       );
+      this.mergeResults(worksDatas);
+
+      console.log('worksDatas', worksDatas);
       return worksDatas;
     },
   });
@@ -326,6 +329,9 @@ export class ResearchStore {
   }
   keywordSelect(keyword: string) {
     this.resetFilters();
+    this.nextCursor.set(null);
+    this.cursor.set(null);
+    this.worksMap.set(new Map());
     this.searchSelected.set(keyword.toLowerCase());
   }
   //TODO: ajuster après fait les domaines et types
@@ -335,8 +341,11 @@ export class ResearchStore {
     // 2. reset states liés
     this.unselectedDomainsSet.set(new Set());
     this.unselectedTypesSet.set(new Set());
-    // 3. reset pagination
-    this.pageNumber.set(0);
+    
+    this.nextCursor.set(null);
+    this.cursor.set(null);
+    this.worksMap.set(new Map());
+    this.cursor.set('*');
   }
   //TODO:Voir si utile, Lors du changement de search
   resetFilters() {
@@ -397,7 +406,9 @@ export class ResearchStore {
     return false;
   }
   toggleDomainSelection(domain: OpenAlexGroupByResult) {
-    this.pageNumber.set(0);
+    // this.pageNumber.set(0);
+    this.worksMap.set(new Map());
+    this.nextCursor.set(null);
     this.unselectedDomainsSet.update((current) => {
       const updated = new Set(current);
       if (updated.has(domain.key)) {
@@ -409,7 +420,9 @@ export class ResearchStore {
     });
   }
   toggleTypeSelection(type: OpenAlexGroupByResult) {
-    this.pageNumber.set(0);
+    // this.pageNumber.set(0);
+    this.worksMap.set(new Map());
+    this.nextCursor.set(null);
     this.unselectedTypesSet.update((current) => {
       const updated = new Set(current);
       if (updated.has(type.key)) {
@@ -420,14 +433,32 @@ export class ResearchStore {
       return updated;
     });
   }
-
-  displayWorks(page: number): void {
-    if (this.searchSelected()) {
-      this.pageNumber.set(page);
-    }
+  displayWorks(): void {
+    // reset complet
+    this.worksMap.set(new Map());
+    this.nextCursor.set(null);
+    this.cursor.set(null);
+    // déclenche API
+    this.cursor.set('*');
   }
-  loadMoreResults(next: string) {
+  loadMore(): void {
+    const next = this.nextCursor();
+
+    if (!next) return;
+
     this.cursor.set(next);
+  }
+
+  mergeResults(response: OpenAlexResponse<OpenAlexWork>): void {
+    this.nextCursor.set(response.meta?.next_cursor ?? null);
+
+    const map = new Map(this.worksMap());
+
+    for (const work of response.results ?? []) {
+      map.set(work.id, work);
+    }
+
+    this.worksMap.set(map);
   }
   onClickCard(id: string) {
     this.idClicked.set(id);

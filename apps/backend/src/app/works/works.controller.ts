@@ -9,14 +9,14 @@ export class WorksController {
   async getWorks(
     @Query('research') research: string,
     @Query('perPage') perPage: string,
-    @Query('page') page: string,
+    // @Query('page') page: string,
     @Query('filters') filters?: string,
     @Query('cursor') cursor?: string
   ): Promise<OpenAlexResponse<OpenAlexWork>> {
     return await this.worksService.getWorksResult(
       research,
       perPage,
-      page,
+      
       filters,
       cursor
     );

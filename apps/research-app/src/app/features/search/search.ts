@@ -63,6 +63,7 @@ export class Search {
   readonly worksResults = this.facade.worksResults;
   readonly worksLoading = this.facade.worksLoading;
   readonly worksError = this.facade.worksError;
+  readonly works = this.facade.works;
 
   readonly domainsDisplayed = this.facade.domainsDisplayed;
   readonly unselectedDomains = this.facade.unselectedDomains;
@@ -73,7 +74,10 @@ export class Search {
 
   readonly idClicked = this.facade.idClicked;
   readonly data = this.facade.workDetails;
-  readonly next_cursor = this.facade.next_cursor;
+  readonly nextCursor = this.facade.nextCursor;
+  readonly perPage = this.facade.perPage;
+
+
   toggleDomain = (domainKey: OpenAlexGroupByResult) => {
     this.facade.toggleDomain(domainKey);
   };
@@ -100,7 +104,7 @@ export class Search {
     const value: string = event.option.value;
     this.facade.unselectedDomains.set(new Set());
     this.facade.unselectedTypes.set(new Set());
-    this.facade.pageNumber.set(0);
+    this.facade.cursor.set('');
     this.facade.keywordSelection(value);
   }
   researchKeywords(value: string) {
@@ -109,17 +113,15 @@ export class Search {
   toggleDrawer() {
     this.drawer()?.toggle();
   }
-  displayWorks(page: number): void {
-    if (this.facade.searchSelected()) {
-      this.facade.pageNumber.set(page);
-    }
+  displayWorks(): void {
+    this.facade.displayWorks();
+    console.log('this.displayWorks');
   }
   closeDrawer() {
     this.drawer()?.close();
   }
-  next_page(){
-    const cursor = this.next_cursor() ?? '*'
-    console.log('Charger plus de résultats', this.next_cursor())
-    this.facade.loadMoreResults(cursor);
+
+  next_page(): void {
+    this.facade.loadMore()
   }
 }

@@ -16,7 +16,6 @@ export class Results {
   worksResult = input<OpenAlexWork[]>([]);
   isLoading = input<boolean>(false);
   error = input<Error>();
-
   clickedForDetails = output<string>();
 
   onCardClicked(id: string) {

@@ -32,13 +32,12 @@ export class OpenalexApi {
   getResultWorks(
     search: string,
     perPage: string,
-    page: string,
     filters: string,
     cursor:string
   ) {
     return this.http.get<OpenAlexResponse<OpenAlexWork>>(
       `${this.baseUrl}/works?`,
-      { params: { research: search, perPage, page, filters, cursor } }
+      { params: { research: search, perPage,  filters, cursor } }
     );
   }
   getMetaWorks(search: string, filters: string) {

@@ -7,7 +7,7 @@ export class ResearchFacade {
   private store = inject(ResearchStore);
   filtersReset = new EventEmitter<void>();
 
-  readonly pageNumber = this.store.pageNumber;
+  // readonly pageNumber = this.store.pageNumber;
   readonly countWorks = this.store.countWorks;
 
   readonly keywordsApi = this.store.keywordsResource;
@@ -37,12 +37,11 @@ export class ResearchFacade {
   readonly idClicked = this.store.idClicked;
   readonly workDetails = this.store.workResource;
 
+  readonly works = this.store.works;
   readonly cursor = this.store.cursor;
-  readonly next_cursor = this.store.next_cursor;
-  readonly per_page = this.store.per_page;
-  loadMoreResults(next:string){
-    this.store.loadMoreResults(next);
-  }
+  readonly nextCursor = this.store.nextCursor;
+  readonly perPage = this.store.perPage;
+  
   onClickCard(id: string) {
     this.store.onClickCard(id);
   }
@@ -53,9 +52,15 @@ export class ResearchFacade {
   searchKeywords(value: string) {
     this.store.searchKeyword(value);
   }
-  displayWorks(page: number) {
-    this.store.displayWorks(page);
+  displayWorks() {
+    this.store.displayWorks();
   }
+  loadMore() {
+    this.store.loadMore()
+  }
+
+  
+
   getCurrentFilters(): SearchFilters {
     return this.store.filtersState(); // appelle le signal pour récupérer la valeur actuelle
   }
