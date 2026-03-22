@@ -320,7 +320,6 @@ export class ResearchStore {
       );
       this.mergeResults(worksDatas);
 
-      console.log('worksDatas', worksDatas);
       return worksDatas;
     },
   });
@@ -329,9 +328,7 @@ export class ResearchStore {
   }
   keywordSelect(keyword: string) {
     this.resetFilters();
-    this.nextCursor.set(null);
-    this.cursor.set(null);
-    this.worksMap.set(new Map());
+    this.resetDatas();
     this.searchSelected.set(keyword.toLowerCase());
   }
   //TODO: ajuster après fait les domaines et types
@@ -341,10 +338,7 @@ export class ResearchStore {
     // 2. reset states liés
     this.unselectedDomainsSet.set(new Set());
     this.unselectedTypesSet.set(new Set());
-    
-    this.nextCursor.set(null);
-    this.cursor.set(null);
-    this.worksMap.set(new Map());
+this.resetDatas();
     this.cursor.set('*');
   }
   //TODO:Voir si utile, Lors du changement de search
@@ -356,6 +350,11 @@ export class ResearchStore {
       hasOaAcceptedOrPublishedVersion: true,
       language: ['fr', 'en'],
     });
+  }
+  resetDatas(): void {
+    this.nextCursor.set(null);
+    this.cursor.set(null);
+    this.worksMap.set(new Map());
   }
   isDomainSelected(domainKey: string): boolean {
     return !this.unselectedDomainsSet().has(domainKey);
@@ -407,8 +406,7 @@ export class ResearchStore {
   }
   toggleDomainSelection(domain: OpenAlexGroupByResult) {
     // this.pageNumber.set(0);
-    this.worksMap.set(new Map());
-    this.nextCursor.set(null);
+   this.resetDatas();
     this.unselectedDomainsSet.update((current) => {
       const updated = new Set(current);
       if (updated.has(domain.key)) {
@@ -420,9 +418,7 @@ export class ResearchStore {
     });
   }
   toggleTypeSelection(type: OpenAlexGroupByResult) {
-    // this.pageNumber.set(0);
-    this.worksMap.set(new Map());
-    this.nextCursor.set(null);
+    this.resetDatas();
     this.unselectedTypesSet.update((current) => {
       const updated = new Set(current);
       if (updated.has(type.key)) {
@@ -435,9 +431,7 @@ export class ResearchStore {
   }
   displayWorks(): void {
     // reset complet
-    this.worksMap.set(new Map());
-    this.nextCursor.set(null);
-    this.cursor.set(null);
+    this.resetDatas();
     // déclenche API
     this.cursor.set('*');
   }

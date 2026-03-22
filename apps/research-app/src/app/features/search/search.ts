@@ -115,7 +115,6 @@ export class Search {
   }
   displayWorks(): void {
     this.facade.displayWorks();
-    console.log('this.displayWorks');
   }
   closeDrawer() {
     this.drawer()?.close();

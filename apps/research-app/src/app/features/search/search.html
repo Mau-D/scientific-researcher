@@ -140,7 +140,7 @@
           [error]="worksError()"
           (clickedForDetails)="onOpenDetails($event)"
         ></app-results> -->
-        @if( resultsCount >= perPage()){ <button
+        @if( resultsCount > perPage()){ <button
           class="text-white bg-secondary p-4 my-4 disabled:hidden cursor-pointer hover:bg-secondary-hover"
           (click)="next_page()"
         >
