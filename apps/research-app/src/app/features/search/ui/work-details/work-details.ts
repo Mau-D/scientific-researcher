@@ -1,18 +1,18 @@
 import { DatePipe, PercentPipe } from '@angular/common';
 import { Component, computed, input } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Button } from '@org/buttons';
 import {
+  Concept,
   OA_STATUS_DETAILS,
   OaStatus,
   OpenAlexWork,
-  Concept,
 } from '@org/models';
-import { MatChipsModule } from '@angular/material/chips';
 
 @Component({
   selector: 'app-work-details',
@@ -31,13 +31,10 @@ import { MatChipsModule } from '@angular/material/chips';
   styleUrl: './work-details.scss',
 })
 export class WorkDetails {
-  readonly data = input.required<OpenAlexWork | undefined>();
+  readonly data = input<OpenAlexWork | undefined>();
   readonly sortedConcepts = computed(() => {
-                console.log('lenght awards', this.data()?.awards)
-
     const concepts: Concept[] = this.data()?.concepts || [];
-
-    return [...concepts.filter((concept) => concept.score >= 0.3)]    //On retire les éléments avec une confiance < 30%
+    return [...concepts.filter((concept) => concept.score >= 0.3)] //On retire les éléments avec une confiance < 30%
       .sort((a, b) => {
         // 1. Priorité au niveau le plus élevé (ex: Level 3 avant Level 0)
         if (b.level !== a.level) {
@@ -46,12 +43,10 @@ export class WorkDetails {
         // 2. Si même niveau, on prend le score le plus haut
         return b.score - a.score;
       })
-      .slice(0, 10)
-      
+      .slice(0, 10);
     // On limite aux 10 plus pertinents
   });
   dataId = computed(() => {
-
     const fullId = this.data()?.id; // ex: "https://openalex.org/W2741809807"
     if (!fullId) return undefined;
 

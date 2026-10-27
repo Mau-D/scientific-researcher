@@ -1,0 +1,24 @@
+<section class="flex flex-col justify-center items-center">
+   @if (isLoading()) {
+    <mat-spinner></mat-spinner>
+    } @if (error()) {
+    <p class="error">Erreur : {{ error() }}</p>
+    } 
+  <div class="w-full flex flex-col flex-wrap justify-center items-center">
+   @if (!isLoading() && !worksResult()) {
+    <p class="mt-10 text-center">En attente d'une recherche...</p>
+    } @if(!isLoading() && worksResult().length !== 0 && worksResult()) {
+    <h2 class="w-full text-3xl text-center px-5 mb-5 underline text-gray-blue">
+      Résultats de la recherche
+    </h2>
+    <div class="container">
+      @for(work of worksResult(); track work.id) {
+      <app-card-work
+        [data]="work"
+        (clickedForDetails)="onCardClicked($event)"
+      ></app-card-work>
+      }
+    </div>
+    }
+  </div>
+</section>

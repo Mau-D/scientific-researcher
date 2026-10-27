@@ -1,14 +1,11 @@
-<mat-card class="p-2.5" appearance="outlined">
+<mat-card class="p-2.5 mb-5" appearance="outlined">
   <mat-card-header class="flex flex-col justify-center items-start p-2.5 my-2">
-    <!-- <mat-card-subtitle class="text-gray-blue text-xxs">#{{dataId()}}</mat-card-subtitle> -->
     <p class="text-gray-blue text-[9px]">#{{dataId()}}</p>
     <mat-card-title class="text-dark text-left"
       >{{data()?.display_name}}</mat-card-title
     >
   </mat-card-header>
   <mat-divider></mat-divider>
-
-  <!-- <img mat-card-image src="https://material.angular.dev/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu"> -->
   <mat-card-content>
     <div class="flex justify-between flex-wrap py-2.5">
       <div class="flex justify-start items-center w-1/3">
@@ -52,11 +49,17 @@
           class="bg-gray-100 p-2.5 rounded-md flex justify-start items-center"
         >
           <p class="text-gray-light text-sm mr-2">Domaine:</p>
+          @if(!data()?.primary_topic?.domain?.display_name) {
+          <p class="text-sm text-black p-2.5 rounded-md text-left">
+            Non disponible
+          </p>
+          }@else{
           <p
             class="text-sm text-primary bg-primary-bkg p-2.5 rounded-md text-left"
           >
             {{data()?.primary_topic?.domain?.display_name}}
           </p>
+          }
         </div>
       </div>
       <div class="w-1/2 px-1">
@@ -121,19 +124,14 @@
       <div class="flex justify-center items-center text-right">
         @if (data()?.updated_date !== "") {
         <p class="text-gray-light text-xs ml-2 text-bold mr-2">
-          Mise à jour le<br>{{data()?.updated_date | date:'dd MMM yyyy'}}
+          Mise à jour le<br />{{data()?.updated_date | date:'dd MMM yyyy'}}
         </p>
         }
         <lib-button
           [variant]="'primary-button'"
           [label]="'Détails'"
           (click)="onClickForDetails()"
-        ></lib-button>  
-         <!-- <lib-button
-          [routerLink]="`/publication/${dataId()}`"
-          [variant]="'primary-button'"
-          [label]="'Détails'"
-        ></lib-button> -->
+        ></lib-button>
       </div>
     </div>
   </mat-card-actions>

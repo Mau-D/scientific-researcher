@@ -1,176 +1,126 @@
-import { Component, inject, resource, signal, viewChild } from '@angular/core';
-import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
+import { Component, inject, viewChild } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
+import {
+  MatAutocompleteModule,
+  MatAutocompleteSelectedEvent,
+} from '@angular/material/autocomplete';
+import { MatBadgeModule } from '@angular/material/badge';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatChipsModule } from '@angular/material/chips';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
-import { OpenAlexFilters, OpenAlexResponse, OpenAlexWork } from '@org/models';
-import { OpenalexApi } from '@org/research';
-import { ResearchCard } from '@org/ui-layout';
-import { firstValueFrom } from 'rxjs'; // Pour gérer le cas initial
-import { WorkDetails } from '../work-details/work-details';
+import { OpenAlexGroupByResult } from '@org/models';
+import { ResearchFacade } from '@org/research';
+import { DomainTypeFilters } from './ui/domain-type-filters/domain-type-filters';
+import { Filters } from './ui/filters/filters';
+import { Results } from './ui/results/results';
+import { SearchInput } from './ui/search-input/search-input';
+import { WorkDetails } from './ui/work-details/work-details';
 
 @Component({
   selector: 'app-search',
   imports: [
-    ResearchCard,
+    SearchInput,
     MatProgressSpinnerModule,
     MatSidenavModule,
     MatDrawer,
-    WorkDetails,
     MatIconModule,
     MatCheckboxModule,
     MatExpansionModule,
     MatSelectModule,
     MatFormFieldModule,
+    MatInputModule,
+    MatAutocompleteModule,
     ReactiveFormsModule,
+    MatChipsModule,
+    MatBadgeModule,
+    Filters,
+    DomainTypeFilters,
+    Results,
+    WorkDetails,
   ],
   templateUrl: './search.html',
   styleUrl: './search.scss',
 })
 export class Search {
-  currentWork: OpenAlexWork | undefined;
-  private api = inject(OpenalexApi);
-  private formBuilder = inject(FormBuilder);
+  //TODO: ajouter un scroll top à chaque nouvelle recherche ou changement des résultats
+  facade = inject(ResearchFacade);
+
   drawer = viewChild(MatDrawer);
 
-  filtersForm = this.formBuilder.group({
-    isOa: new FormControl<boolean>(true, {
-      nonNullable: true,
-    }),
-    hasAbstract: new FormControl<boolean>(true, {
-      nonNullable: true,
-    }),
-    hasPdf: new FormControl<boolean>(true, {
-      nonNullable: true,
-    }),
-    hasOaAcceptedOrPublishedVersion: new FormControl<boolean>(true, {
-      nonNullable: true,
-    }),
-    language: new FormControl<string[]>(['fr', 'en']), // Valeur par défaut en français
-  });
+  readonly searchLoading = this.facade.keywordsLoading;
+  readonly search = this.facade.search;
+  readonly keywords = this.facade.keywords;
+  readonly searchSelected = this.facade.searchSelected;
 
-  public idClicked = signal<string>('');
-  sampleWorks = signal<string | undefined>(undefined);
-  filtersToApply = signal<OpenAlexFilters>({});
+  readonly countWorks = this.facade.countWorks;
+  readonly worksAPI = this.facade.worksApi;
+  readonly worksResults = this.facade.worksResults;
+  readonly worksLoading = this.facade.worksLoading;
+  readonly worksError = this.facade.worksError;
+  readonly works = this.facade.works;
 
+  readonly domainsDisplayed = this.facade.domainsDisplayed;
+  readonly unselectedDomains = this.facade.unselectedDomains;
+  readonly domainsLoading = this.facade.domainsLoading;
+  readonly typesDisplayed = this.facade.typesDisplayed;
+  readonly unselectedTypes = this.facade.unselectedTypes;
+  readonly typesLoading = this.facade.typesLoading;
+
+  readonly idClicked = this.facade.idClicked;
+  readonly data = this.facade.workDetails;
+  readonly nextCursor = this.facade.nextCursor;
+  readonly perPage = this.facade.perPage;
+
+
+  toggleDomain = (domainKey: OpenAlexGroupByResult) => {
+    this.facade.toggleDomain(domainKey);
+  };
+  isDomainSelected() {
+    return this.facade.isDomainSelected;
+  }
+  isDomainDisabled() {
+    return this.facade.isDomainDisabled;
+  }
+  toggleType = (typeKey: OpenAlexGroupByResult) => {
+    this.facade.toggleType(typeKey);
+  };
+  isTypeSelected() {
+    return this.facade.isTypeSelected;
+  }
+  isTypeDisabled() {
+    return this.facade.isTypeDisabled;
+  }
+  onOpenDetails(id: string) {
+    this.facade.onClickCard(id);
+    this.toggleDrawer();
+  }
+  onSelect(event: MatAutocompleteSelectedEvent) {
+    const value: string = event.option.value;
+    this.facade.unselectedDomains.set(new Set());
+    this.facade.unselectedTypes.set(new Set());
+    this.facade.cursor.set('');
+    this.facade.keywordSelection(value);
+  }
+  researchKeywords(value: string) {
+    this.facade.searchKeywords(value);
+  }
   toggleDrawer() {
     this.drawer()?.toggle();
   }
-
-  onCardClicked(id: string): void {
-    this.idClicked.set(id);
-    this.toggleDrawer();
-    console.log('Card clicked');
+  displayWorks(): void {
+    this.facade.displayWorks();
   }
-  getResults(sampleCount: string): void {
-    this.sampleWorks.set(sampleCount);
-    this.filtersToApply.set({
-      language: this.filtersForm.value.language?.join('|') || '',
-      is_oa: this.filtersForm.value.isOa,
-      has_abstract: this.filtersForm.value.hasAbstract,
-      'has_content.pdf': this.filtersForm.value.hasPdf,
-      has_oa_accepted_or_published_version:
-        this.filtersForm.value.hasOaAcceptedOrPublishedVersion,
-    });
-    console.log('Get results clicked with sample count:', sampleCount);
-    console.log('Language filter:', this.filtersForm.value.language);
-    console.log('Filters to apply:', this.filtersToApply());
-    console.log('count signal:', this.sampleWorks());
+  closeDrawer() {
+    this.drawer()?.close();
   }
 
-  toggleScroll(isOpened: boolean) {
-    if (isOpened) {
-      document.body.classList.add('no-scroll');
-    } else {
-      document.body.classList.remove('no-scroll');
-    }
+  next_page(): void {
+    this.facade.loadMore()
   }
-  workResource = resource<OpenAlexWork | undefined, string | undefined>({
-    params: () => this.idClicked(),
-    loader: async ({ params: id }) => {
-      if (!id) return undefined;
-      const datas = await firstValueFrom(this.api.getDatasWork(id));
-      return datas;
-    },
-  });
-
-  worksResource = resource<
-    OpenAlexResponse<OpenAlexWork>,
-    { sampleWorks: string | undefined; filters: OpenAlexFilters }
-  >({
-    params: () => ({
-      sampleWorks: this.sampleWorks(),
-      filters: this.filtersToApply(),
-    }),
-    loader: async ({ params }) => {
-      const filters: string = Object.keys(params.filters)
-        .filter((key) => {
-          const value = (params.filters as OpenAlexFilters)[
-            key as keyof OpenAlexFilters
-          ];
-          return value !== false && value !== '';
-        })
-        .map(
-          (key) =>
-            `${key}:${
-              (params.filters as OpenAlexFilters)[key as keyof OpenAlexFilters]
-            }`
-        )
-        .join(',');
-      // Ici, params est ton objet { sample, language }
-      console.log(
-        'Loader worksResource triggered with params:',
-        params.sampleWorks,
-        filters
-      );
-      if (!params.sampleWorks || params.sampleWorks === '0') {
-        // Note: Le retour doit correspondre au type OpenAlexResponse ou lever une erreur/null
-        // Pour éviter les erreurs de type, on peut retourner un objet vide typé
-        return {} as OpenAlexResponse<OpenAlexWork>;
-      }
-      // Appel à votre API
-      // firstValueFrom transforme votre Observable en Promise (requis par le loader)
-      const list = await firstValueFrom(
-        this.api.getWorksList(params.sampleWorks, filters)
-      );
-      return list;
-    },
-  });
-  //  worksResource = resource<OpenAlexResponse<OpenAlexWork>, string | undefined>({
-  //   params: () => this.sampleWorks(),
-  //   loader: async ({ params: sample }) => {
-  //     console.log('Loader worksResource triggered with sample:', sample);
-  //     if (!sample || sample === '0') {
-  //       // Note: Le retour doit correspondre au type OpenAlexResponse ou lever une erreur/null
-  //       // Pour éviter les erreurs de type, on peut retourner un objet vide typé
-  //       return {} as OpenAlexResponse<OpenAlexWork>;
-  //     }
-  //     // Appel à votre API
-  //     // firstValueFrom transforme votre Observable en Promise (requis par le loader)
-  //     const list = await firstValueFrom(this.api.getWorksList(sample, this.language()));
-
-  //     return list;
-  //   },
-  // });
-
-  // Getters pour simplifier l'accès dans le template
-  //   .value() : La dernière valeur reçue avec succès (Signal).
-  // .isLoading() : true si une requête est en cours (Signal).
-  // .error() : Contient l'objet d'erreur si la requête échoue (Signal).
-  // .status() : L'état précis (Idle, Loading, Resolved, Error).
-  // .reload() : Une méthode pour forcer manuellement le rafraîchissement.
-
-  // Alias pour le template
-  workData = this.worksResource.value;
-  isLoading = this.worksResource.isLoading;
-  error = this.worksResource.error;
-  // Méthode pour mettre à jour la recherche
-  //   performSearch(newId: string): void {
-  //     this.searchId.set(newId);
-  //   }
-  // }
 }

@@ -1,0 +1,30 @@
+@if(!loading()){
+<div>
+  <p>Cliquez pour exclure ou inclure une catégorie</p>
+  <div class="flex justify-center mt-5">
+    @for (result of data(); track result.key ){
+    <div
+      class="mr-6 mt-2"
+      matBadge="{{result.count}}"
+      matBadgeSize="large"
+      [matBadgeHidden]="result.count === 0"
+    >
+      <mat-chip
+        class="domain-chip cursor-crosshair"
+        [disabled]="disabledState()(result)"
+        (click)="onToggle(result)"
+        [class.selected-chip]="selectedState()(result.key)"
+        [class.unselected-chip]="result.count === 0 && !selectedState()(result.key)"
+        >{{result.key_display_name}}</mat-chip
+      >
+    </div>
+    }
+  </div>
+</div>
+
+}@else {
+<div class="flex flex-col justify-center items-center w-full">
+  <mat-spinner [diameter]="40"></mat-spinner>
+</div>
+
+}

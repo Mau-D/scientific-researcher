@@ -1,16 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Research } from './research';
 
-describe('Research', () => {
-  let component: Research;
-  let fixture: ComponentFixture<Research>;
+import { Paginator } from './paginator';
+
+describe('Paginator', () => {
+  let component: Paginator;
+  let fixture: ComponentFixture<Paginator>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Research],
-    }).compileComponents();
+      imports: [Paginator]
+    })
+    .compileComponents();
 
-    fixture = TestBed.createComponent(Research);
+    fixture = TestBed.createComponent(Paginator);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

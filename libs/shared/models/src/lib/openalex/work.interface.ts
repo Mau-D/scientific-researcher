@@ -1,19 +1,19 @@
-//Le <T> est une sorte de variable pour les types.
-//Exemple: Ici, on dit : "Je veux une réponse OpenAlex dont les résultats sont des 'Work'"
-// this.http.get<OpenAlexResponse<Work>>(url).subscribe(data => {
-//    console.log(data.results[0].title);
-// });
 export interface OpenAlexResponse<T> {
   meta: OpenAlexMeta;
   results: T[];
   group_by?: OpenAlexGroupByResult[]; // Optionnel, si vous utilisez les agrégations
 }
+export interface OpenAlexGroupBy<OpenAlexGroupByResult> {
+  meta: OpenAlexMeta;
+  group_by: OpenAlexGroupByResult[]; // Optionnel, si vous utilisez les agrégations
+}
 export interface OpenAlexFilters {
   language?: string; // Filtrer par langue (ex: "en" pour anglais)
   is_oa?: boolean | string; // Filtrer par accès ouvert
   has_abstract?: boolean | string; // Filtrer par présence de résumé
- "has_content.pdf"?: boolean | string; // Filtrer par présence de PDF
+  'has_content.pdf'?: boolean | string; // Filtrer par présence de PDF
   has_oa_accepted_or_published_version?: boolean | string; // Filtrer par version acceptée ou publiée en libre accès
+  'primary_topic.domain.id'?: string;
 }
 
 export interface OpenAlexMeta {
@@ -21,6 +21,7 @@ export interface OpenAlexMeta {
   db_response_time_ms: number;
   page: number; // Page actuelle
   per_page: number; // Résultats par page
+  next_cursor: string;//Id des prochains résultats
   groups_count: number | null;
 }
 export interface OpenAlexGroupByResult {
@@ -44,12 +45,7 @@ export interface OpenAlexWork {
   best_oa_location: OpenAlexBestOaLocation | null;
   open_access: OpenAccess;
   awards: Awards[];
-  // authorships: Authorship[];
   concepts: Concept[];
-  // cited_by_count: number;
-  // referenced_works: string[];
-  // related_works: string[];
-  // counts_by_year: CountByYear[];
 }
 export interface Awards {
   id: string;

@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ResearchCard } from './research-card';
+import { DomainTypeFilters } from './domain-type-filters';
 
-describe('ResearchCard', () => {
-  let component: ResearchCard;
-  let fixture: ComponentFixture<ResearchCard>;
+describe('DomainTypeFilters', () => {
+  let component: DomainTypeFilters;
+  let fixture: ComponentFixture<DomainTypeFilters>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ResearchCard]
+      imports: [DomainTypeFilters]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ResearchCard);
+    fixture = TestBed.createComponent(DomainTypeFilters);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
